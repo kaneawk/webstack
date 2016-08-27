@@ -74,3 +74,7 @@ jemalloc_version=4.2.1
 
 # tcmalloc
 tcmalloc_version=2.5
+
+# boost
+boost_version=1.59.0
+boost_version_2=1_59_0
