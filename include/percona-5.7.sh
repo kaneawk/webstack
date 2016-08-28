@@ -13,9 +13,10 @@ cd $oneinstack_dir/src
 [ "$IPADDR_COUNTRY"x == "CN"x ] && DOWN_ADDR_BOOST=http://mirrors.linuxeye.com/oneinstack/src || DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
 
 if [ ! -e "/usr/local/lib/libboost_system.so" ];then
-    src_url=$DOWN_ADDR_BOOST/boost_${boost_version_2}.tar.gz && Download_src
-    tar xzf boost_${boost_version_2}.tar.gz
-    cd boost_${boost_version_2}
+    boostVersion2=$(echo $boost_version | awk -F. '{print $1}')_$(echo $boost_version | awk -F. '{print $2}')_$(echo $boost_version | awk -F. '{print $3}')
+    src_url=$DOWN_ADDR_BOOST/boost_${boostVersion2}.tar.gz && Download_src
+    tar xzf boost_${boostVersion2}.tar.gz
+    cd boost_${boostVersion2}
     ./bootstrap.sh
     ./bjam --prefix=/usr/local
     ./b2 install
