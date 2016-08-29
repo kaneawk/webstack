@@ -11,7 +11,6 @@
 Install_XCache()
 {
 cd $oneinstack_dir/src
-src_url=http://xcache.lighttpd.net/pub/Releases/$xcache_version/xcache-$xcache_version.tar.gz && Download_src
 
 tar xzf xcache-$xcache_version.tar.gz
 cd xcache-$xcache_version

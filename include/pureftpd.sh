@@ -10,7 +10,6 @@
 
 Install_PureFTPd() {
 cd $oneinstack_dir/src
-src_url=http://download.pureftpd.org/pub/pure-ftpd/releases/pure-ftpd-$pureftpd_version.tar.gz && Download_src
 
 tar xzf pure-ftpd-$pureftpd_version.tar.gz
 

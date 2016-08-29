@@ -10,7 +10,6 @@
 
 Install_eAccelerator-0-9() {
 cd $oneinstack_dir/src
-src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_version}.tar.bz2 && Download_src
 
 tar jxf eaccelerator-${eaccelerator_version}.tar.bz2
 cd eaccelerator-${eaccelerator_version}

@@ -455,6 +455,10 @@ IPADDR_COUNTRY_ISP=`./include/get_ipaddr_state.py $PUBLIC_IPADDR`
 IPADDR_COUNTRY=`echo $IPADDR_COUNTRY_ISP | awk '{print $1}'`
 [ "`echo $IPADDR_COUNTRY_ISP | awk '{print $2}'`"x == '1000323'x ] && IPADDR_ISP=aliyun
 
+# check download src
+. ./include/check_download.sh
+checkDownload 2>&1 | tee -a $oneinstack_dir/install.log
+
 # init
 . ./include/memory.sh
 if [ "$OS" == 'CentOS' ];then

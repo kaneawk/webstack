@@ -29,7 +29,6 @@ if [[ "$Ubuntu_version" =~ ^14$|^15$ ]];then
     apt-get -y install libcloog-ppl1
     apt-get -y remove bison
     cd src
-    src_url=http://ftp.gnu.org/gnu/bison/bison-${bison_version}.tar.gz && Download_src
     tar xzf bison-${bison_version}.tar.gz
     cd bison-${bison_version}
     ./configure

@@ -11,7 +11,6 @@
 Install_ZendOPcache()
 {
 cd $oneinstack_dir/src
-src_url=https://pecl.php.net/get/zendopcache-$zendopcache_version.tgz && Download_src
 
 tar xzf zendopcache-$zendopcache_version.tgz
 cd zendopcache-$zendopcache_version

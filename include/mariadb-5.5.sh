@@ -11,25 +11,6 @@
 Install_MariaDB-5-5() {
 cd $oneinstack_dir/src
 
-FILE_NAME=mariadb-${mariadb_5_5_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
-
-if [ "$IPADDR_COUNTRY"x == "CN"x ];then
-    DOWN_ADDR_MARIADB=http://mirrors.aliyun.com/mariadb/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-$SYS_BIT_a
-    MARAIDB_TAR_MD5=`curl -Lk $DOWN_ADDR_MARIADB/md5sums.txt | grep $FILE_NAME | awk '{print $1}'`
-    [ -z "$MARAIDB_TAR_MD5" ] && { DOWN_ADDR_MARIADB=https://mirrors.ustc.edu.cn/mariadb/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-$SYS_BIT_a; MARAIDB_TAR_MD5=`curl -Lk $DOWN_ADDR_MARIADB/md5sums.txt | grep $FILE_NAME | awk '{print $1}'`; }
-else
-    DOWN_ADDR_MARIADB=https://downloads.mariadb.org/interstitial/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-$SYS_BIT_a
-    MARAIDB_TAR_MD5=`curl -Lk http://archive.mariadb.org/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-$SYS_BIT_a/md5sums.txt |  grep $FILE_NAME | awk '{print $1}'`
-fi
-
-src_url=$DOWN_ADDR_MARIADB/$FILE_NAME && Download_src
-
-while [ "`md5sum $FILE_NAME | awk '{print $1}'`" != "$MARAIDB_TAR_MD5" ];
-do
-    wget -c --no-check-certificate $DOWN_ADDR_MARIADB/$FILE_NAME;sleep 1
-    [ "`md5sum $FILE_NAME | awk '{print $1}'`" == "$MARAIDB_TAR_MD5" ] && break || continue
-done
-
 id -u mysql >/dev/null 2>&1
 [ $? -ne 0 ] && useradd -M -s /sbin/nologin mysql
 

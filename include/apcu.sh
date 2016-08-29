@@ -10,7 +10,7 @@
 
 Install_APCU() {
 cd $oneinstack_dir/src
-src_url=http://pecl.php.net/get/apcu-$apcu_version.tgz && Download_src
+
 
 tar xzf apcu-$apcu_version.tgz
 cd apcu-$apcu_version
