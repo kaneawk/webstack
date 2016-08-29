@@ -31,7 +31,7 @@ checkDownload(){
 
     if [[ "${Nginx_version}" =~ ^[1-3]$ || ${Apache_version} == "1" ]]; then
       echo "Download pcre..."
-      src_url=${mirrorLink}/pcre-$pcre_version.tar.gz && Download_src
+      src_url=${mirrorLink}/pcre-${pcre_version}.tar.gz && Download_src
     fi
 
     # apache
@@ -84,7 +84,7 @@ checkDownload(){
   fi
 
   if [ "${DB_yn}" == "y" ]; then
-    if [ "{$DB_version}" == "7" ]; then
+    if [ "${DB_version}" == "7" ]; then
       echo "Download boost..."
       [ "${IPADDR_COUNTRY}"x == "CN"x ] && DOWN_ADDR_BOOST=${mirrorLink} || DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
       boostVersion2=$(echo ${boost_version} | awk -F. '{print $1}')_$(echo ${boost_version} | awk -F. '{print $2}')_$(echo ${boost_version} | awk -F. '{print $3}')
@@ -95,23 +95,23 @@ checkDownload(){
       # mysql 5.7
       echo "Download mysql 5.7..."
       if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == 'aliyun' -a "`../include/check_port.py aliyun-oss.linuxeye.com 80`" == 'True' ];then
-          DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.7
+        DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.7
       else
-          if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-              if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
-                  DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.7
-              else
-                  DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.7
-                  DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
-              fi
+        if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
+          if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
+            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.7
           else
-              if [ "$(../include/check_port.py cdn.mysql.com 80)" == 'True' ];then
-                  DOWN_ADDR_MYSQL=http://cdn.mysql.com/Downloads/MySQL-5.7
-              else
-                  DOWN_ADDR_MYSQL=http://mysql.he.net/Downloads/MySQL-5.7
-                  DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
-              fi
+            DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.7
+            DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
           fi
+        else
+          if [ "$(../include/check_port.py cdn.mysql.com 80)" == 'True' ];then
+            DOWN_ADDR_MYSQL=http://cdn.mysql.com/Downloads/MySQL-5.7
+          else
+            DOWN_ADDR_MYSQL=http://mysql.he.net/Downloads/MySQL-5.7
+            DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
+          fi
+        fi
       fi
 
       FILE_NAME=mysql-${mysql_5_7_version}-linux-glibc2.5-${SYS_BIT_b}.tar.gz
@@ -120,30 +120,30 @@ checkDownload(){
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
-          wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
-          [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
+        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
       done
     fi
     if [ "${DB_version}" == "2" ]; then
       echo "Download mysql 5.6..."
       if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == 'aliyun' -a "$(../include/check_port.py aliyun-oss.linuxeye.com 80)" == 'True' ];then
-          DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.6
+        DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.6
       else
-          if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-              if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
-                  DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.6
-              else
-                  DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.6
-                  DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
-              fi
+        if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
+          if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
+            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.6
           else
-              if [ "$(../include/check_port.py cdn.mysql.com 80)" == 'True' ];then
-                  DOWN_ADDR_MYSQL=http://cdn.mysql.com/Downloads/MySQL-5.6
-              else
-                  DOWN_ADDR_MYSQL=http://mysql.he.net/Downloads/MySQL-5.6
-                  DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
-              fi
+            DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.6
+            DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
           fi
+        else
+          if [ "$(../include/check_port.py cdn.mysql.com 80)" == 'True' ];then
+            DOWN_ADDR_MYSQL=http://cdn.mysql.com/Downloads/MySQL-5.6
+          else
+            DOWN_ADDR_MYSQL=http://mysql.he.net/Downloads/MySQL-5.6
+            DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
+          fi
+        fi
       fi
 
       FILE_NAME=mysql-${mysql_5_6_version}-linux-glibc2.5-${SYS_BIT_b}.tar.gz
@@ -152,31 +152,31 @@ checkDownload(){
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
-          wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
-          [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
+        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
       done
     fi
     if [ "${DB_version}" == "3" ]; then
       # mysql 5.5
       echo "Download MySQL 5.5..."
       if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == 'aliyun' -a "$(../include/check_port.py aliyun-oss.linuxeye.com 80)" == 'True' ]; then
-          DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.5
+        DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.5
       else
-          if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-              if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
-                  DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.5
-              else
-                  DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.5
-                  DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
-              fi
+        if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
+          if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
+            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.5
           else
-              if [ "$(../include/check_port.py cdn.mysql.com 80)" == 'True' ];then
-                  DOWN_ADDR_MYSQL=http://cdn.mysql.com/Downloads/MySQL-5.5
-              else
-                  DOWN_ADDR_MYSQL=http://mysql.he.net/Downloads/MySQL-5.5
-                  DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
-              fi
+            DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.5
+            DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
           fi
+        else
+          if [ "$(../include/check_port.py cdn.mysql.com 80)" == 'True' ];then
+            DOWN_ADDR_MYSQL=http://cdn.mysql.com/Downloads/MySQL-5.5
+          else
+            DOWN_ADDR_MYSQL=http://mysql.he.net/Downloads/MySQL-5.5
+            DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
+          fi
+        fi
       fi
 
       FILE_NAME=mysql-${mysql_5_5_version}-linux2.6-${SYS_BIT_b}.tar.gz
@@ -185,8 +185,8 @@ checkDownload(){
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
-          wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
-          [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
+        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
       done
     fi
     if [ "${DB_version}" == "4" ]; then
@@ -207,8 +207,8 @@ checkDownload(){
 
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ];
       do
-          wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
-          [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" ] && break || continue
+        wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" ] && break || continue
       done
     fi
     if [ "${DB_version}" == "5" ]; then
@@ -217,20 +217,20 @@ checkDownload(){
       FILE_NAME=mariadb-${mariadb_10_0_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
 
       if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-          DOWN_ADDR_MARIADB=http://mirrors.aliyun.com/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
-          MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}')
-          [ -z "${MARAIDB_TAR_MD5}" ] && { DOWN_ADDR_MARIADB=https://mirrors.ustc.edu.cn/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}; MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}'); }
+        DOWN_ADDR_MARIADB=http://mirrors.aliyun.com/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
+        MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}')
+        [ -z "${MARAIDB_TAR_MD5}" ] && { DOWN_ADDR_MARIADB=https://mirrors.ustc.edu.cn/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}; MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}'); }
       else
-          DOWN_ADDR_MARIADB=https://downloads.mariadb.org/interstitial/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
-          MARAIDB_TAR_MD5=$(curl -Lk http://archive.mariadb.org/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}/md5sums.txt |  grep ${FILE_NAME} | awk '{print $1}')
+        DOWN_ADDR_MARIADB=https://downloads.mariadb.org/interstitial/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
+        MARAIDB_TAR_MD5=$(curl -Lk http://archive.mariadb.org/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}/md5sums.txt |  grep ${FILE_NAME} | awk '{print $1}')
       fi
 
       src_url=${DOWN_ADDR_MARIADB}/${FILE_NAME} && Download_src
 
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ];
       do
-          wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
-          [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" ] && break || continue
+        wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" ] && break || continue
       done
     fi
     if [ "${DB_version}" == "6" ]; then
@@ -251,8 +251,8 @@ checkDownload(){
 
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ];
       do
-         wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
-         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" ] && break || continue
+       wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
+       [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" ] && break || continue
       done
     fi
     if [ "${DB_version}" == "7" ]; then
@@ -446,7 +446,7 @@ checkDownload(){
 
   if [ "${memcached_yn}" == "y" ]; then
     echo "Download memcached..."
-    src_url=http://www.memcached.org/files/memcached-$memcached_version.tar.gz && Download_src
+    src_url=http://www.memcached.org/files/memcached-${memcached_version}.tar.gz && Download_src
     if [ "${PHP_version}" == "5" ]; then
       echo "Download pecl memcache for php 7..."
       src_url=${mirrorLink}/pecl-memcache-php7.tgz && Download_src
