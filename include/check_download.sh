@@ -98,10 +98,10 @@ checkDownload(){
         DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.7
       else
         if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-          if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
-            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.7
+          if [ "$(../include/check_port.py mirrors.tuna.tsinghua.edu.cn 443)" == 'True' ];then
+            DOWN_ADDR_MYSQL=https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-5.7
           else
-            DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.7
+            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.6
             DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
           fi
         else
@@ -120,7 +120,7 @@ checkDownload(){
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
-        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        wget -4c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
       done
     fi
@@ -130,10 +130,10 @@ checkDownload(){
         DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.6
       else
         if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-          if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
-            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.6
+          if [ "$(../include/check_port.py mirrors.tuna.tsinghua.edu.cn 443)" == 'True' ];then
+            DOWN_ADDR_MYSQL=https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-5.6
           else
-            DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.6
+            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.6
             DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
           fi
         else
@@ -152,7 +152,7 @@ checkDownload(){
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
-        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        wget -4c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
       done
     fi
@@ -163,10 +163,10 @@ checkDownload(){
         DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.5
       else
         if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-          if [ "$(../include/check_port.py mirrors.sohu.com 80)" == 'True' ];then
-            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.5
+          if [ "$(../include/check_port.py mirrors.tuna.tsinghua.edu.cn 443)" == 'True' ];then
+            DOWN_ADDR_MYSQL=https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-5.5
           else
-            DOWN_ADDR_MYSQL=http://mirror.bit.edu.cn/mysql/Downloads/MySQL-5.5
+            DOWN_ADDR_MYSQL=http://mirrors.sohu.com/mysql/MySQL-5.5
             DOWN_ADDR_MYSQL_BK=${DOWN_ADDR_MYSQL}
           fi
         else
@@ -185,7 +185,7 @@ checkDownload(){
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
-        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        wget -4c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
       done
     fi
@@ -195,7 +195,7 @@ checkDownload(){
       FILE_NAME=mariadb-${mariadb_10_1_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
 
       if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-          DOWN_ADDR_MARIADB=http://mirrors.aliyun.com/mariadb/mariadb-${mariadb_10_1_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
+          DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_10_1_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
           MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}')
           [ -z "${MARAIDB_TAR_MD5}" ] && { DOWN_ADDR_MARIADB=https://mirrors.ustc.edu.cn/mariadb/mariadb-${mariadb_10_1_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}; MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}'); }
       else
@@ -217,7 +217,7 @@ checkDownload(){
       FILE_NAME=mariadb-${mariadb_10_0_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
 
       if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-        DOWN_ADDR_MARIADB=http://mirrors.aliyun.com/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
+        DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
         MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}')
         [ -z "${MARAIDB_TAR_MD5}" ] && { DOWN_ADDR_MARIADB=https://mirrors.ustc.edu.cn/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}; MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}'); }
       else
@@ -239,7 +239,7 @@ checkDownload(){
       FILE_NAME=mariadb-${mariadb_5_5_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
 
       if [ "${IPADDR_COUNTRY}"x == "CN"x ];then
-        DOWN_ADDR_MARIADB=http://mirrors.aliyun.com/mariadb/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
+        DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-$SYS_BIT_a
         MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}')
         [ -z "${MARAIDB_TAR_MD5}" ] && { DOWN_ADDR_MARIADB=https://mirrors.ustc.edu.cn/mariadb/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}; MARAIDB_TAR_MD5=$(curl -Lk ${DOWN_ADDR_MARIADB}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}'); }
       else
@@ -480,7 +480,7 @@ checkDownload(){
     src_url=${mirrorLink}/tmux-${tmux_version}.tar.gz && Download_src
 
     echo "Download htop for CentOS..."
-    src_url=http://hisham.hm/htop/releases/2.0.0/htop-2.0.0.tar.gz && Download_src
+    src_url=http://hisham.hm/htop/releases/${htop_version}/htop-${htop_version}.tar.gz && Download_src
   fi
 
   if [[ "${Ubuntu_version}" =~ ^14$|^15$ ]];then
