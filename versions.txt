@@ -79,7 +79,7 @@ jemalloc_version=4.2.1
 tcmalloc_version=2.5
 
 # boost
-boost_version=1.59.0
+boost_version=1.60.0
 
 # Others
 libevent_version=2.0.22-stable
