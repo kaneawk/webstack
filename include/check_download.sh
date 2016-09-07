@@ -119,8 +119,8 @@ checkDownload(){
         echo "Download mysql 5.7 source package..."
         FILE_NAME=mysql-${mysql_5_7_version}.tar.gz
       fi
-      src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src
-      src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src
+      wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
+      wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
@@ -157,8 +157,8 @@ checkDownload(){
         echo "Download MySQL 5.5 source package..."
         FILE_NAME=mysql-${mysql_5_6_version}.tar.gz
       fi
-      src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src
-      src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src
+      wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
+      wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
       do
@@ -195,8 +195,8 @@ checkDownload(){
         echo "Download MySQL 5.5 source package..."
         FILE_NAME=mysql-${mysql_5_5_version}.tar.gz
       fi
-      src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src
-      src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src
+      wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
+      wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
 
       while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
