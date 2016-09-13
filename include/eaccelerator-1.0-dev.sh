@@ -10,7 +10,6 @@
 
 Install_eAccelerator-1-0-dev() {
 cd $oneinstack_dir/src
-
 /bin/mv master eaccelerator-eaccelerator-42067ac.tar.gz
 tar xzf eaccelerator-eaccelerator-42067ac.tar.gz
 cd eaccelerator-eaccelerator-42067ac

@@ -10,7 +10,6 @@
 
 Install_jemalloc() {
 cd $oneinstack_dir/src
-
 tar xjf jemalloc-$jemalloc_version.tar.bz2
 cd jemalloc-$jemalloc_version
 LDFLAGS="${LDFLAGS} -lrt" ./configure

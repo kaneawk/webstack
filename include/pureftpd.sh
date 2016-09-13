@@ -11,11 +11,10 @@
 Install_PureFTPd() {
 cd $oneinstack_dir/src
 
-tar xzf pure-ftpd-$pureftpd_version.tar.gz
-
 id -u $run_user >/dev/null 2>&1
 [ $? -ne 0 ] && useradd -M -s /sbin/nologin $run_user
 
+tar xzf pure-ftpd-$pureftpd_version.tar.gz
 cd pure-ftpd-$pureftpd_version
 [ ! -d "$pureftpd_install_dir" ] && mkdir -p $pureftpd_install_dir
 ./configure --prefix=$pureftpd_install_dir CFLAGS=-O2 --with-puredb --with-quotas --with-cookie --with-virtualhosts --with-virtualchroot --with-diraliases --with-sysquotas --with-ratios --with-altlog --with-paranoidmsg --with-shadow --with-welcomemsg  --with-throttling --with-uploadscript --with-language=english --with-rfc2640

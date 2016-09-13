@@ -471,17 +471,17 @@ IPADDR_COUNTRY=`echo $IPADDR_COUNTRY_ISP | awk '{print $1}'`
 
 # check download src
 . ./include/check_download.sh
-checkDownload 2>&1 | tee -a $oneinstack_dir/install.log
+checkDownload 2>&1 | tee $oneinstack_dir/install.log
 
 # init
 . ./include/memory.sh
 if [ "$OS" == 'CentOS' ];then
-    . include/init_CentOS.sh 2>&1 | tee $oneinstack_dir/install.log
+    . include/init_CentOS.sh 2>&1 | tee -a $oneinstack_dir/install.log
     [ -n "`gcc --version | head -n1 | grep '4\.1\.'`" ] && export CC="gcc44" CXX="g++44"
 elif [ "$OS" == 'Debian' ];then
-    . include/init_Debian.sh 2>&1 | tee $oneinstack_dir/install.log
+    . include/init_Debian.sh 2>&1 | tee -a $oneinstack_dir/install.log
 elif [ "$OS" == 'Ubuntu' ];then
-    . include/init_Ubuntu.sh 2>&1 | tee $oneinstack_dir/install.log
+    . include/init_Ubuntu.sh 2>&1 | tee -a $oneinstack_dir/install.log
 fi
 
 # jemalloc or tcmalloc

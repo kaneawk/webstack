@@ -10,8 +10,6 @@
 
 Install_APCU() {
 cd $oneinstack_dir/src
-
-
 tar xzf apcu-$apcu_version.tgz
 cd apcu-$apcu_version
 make clean

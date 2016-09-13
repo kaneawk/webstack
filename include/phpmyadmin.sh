@@ -10,7 +10,6 @@
 
 Install_phpMyAdmin() {
 cd $oneinstack_dir/src
-
 tar xzf phpMyAdmin-${phpMyAdmin_version}-all-languages.tar.gz
 /bin/mv phpMyAdmin-${phpMyAdmin_version}-all-languages $wwwroot_dir/default/phpMyAdmin
 /bin/cp $wwwroot_dir/default/phpMyAdmin/{config.sample.inc.php,config.inc.php}

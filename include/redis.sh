@@ -10,7 +10,6 @@
 
 Install_redis-server() {
 cd $oneinstack_dir/src
-
 tar xzf redis-$redis_version.tar.gz
 cd redis-$redis_version
 if [ "$OS_BIT" == '32' ];then

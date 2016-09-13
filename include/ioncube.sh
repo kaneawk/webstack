@@ -14,7 +14,7 @@ cd $oneinstack_dir/src
 PHP_version=`$php_install_dir/bin/php -r 'echo PHP_VERSION;'`
 PHP_main_version=${PHP_version%.*}
 
-if [ "$OS_BIT" == '64' ] ;then
+if [ "$OS_BIT" == '64' ]; then
     tar xzf ioncube_loaders_lin_x86-64.tar.gz
 else
     tar xzf ioncube_loaders_lin_x86.tar.gz

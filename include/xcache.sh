@@ -8,10 +8,8 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_XCache()
-{
+Install_XCache() {
 cd $oneinstack_dir/src
-
 tar xzf xcache-$xcache_version.tar.gz
 cd xcache-$xcache_version
 make clean

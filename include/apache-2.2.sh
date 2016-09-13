@@ -119,7 +119,6 @@ Include conf/vhost/*.conf
 EOF
 
 if [ "$Nginx_version" != '4' -o -e "$web_install_dir/sbin/nginx" ];then
-
     $apache_install_dir/bin/apxs -i -c -n mod_remoteip.so mod_remoteip.c
     cat > $apache_install_dir/conf/extra/httpd-remoteip.conf << EOF
 LoadModule remoteip_module modules/mod_remoteip.so

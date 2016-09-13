@@ -44,7 +44,9 @@ fi
 #[ "$sendmail_yn" == 'y' ] && yum -y install sendmail && service sendmail restart
 
 # closed Unnecessary services and remove obsolete rpm package
-for Service in `chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis'`;do chkconfig --level 3 $Service off;done
+[ "$CentOS_RHEL_version" == '7' ] && [ "`systemctl is-active NetworkManager.service`" == 'active' ] && NM_flag=1
+for Service in `chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis|NetworkManager'`;do chkconfig --level 3 $Service off;done
+[ "$NM_flag" == '1' ] && systemctl enable NetworkManager.service
 for Service in sshd network crond iptables messagebus irqbalance syslog rsyslog sendmail;do chkconfig --level 3 $Service on;done
 
 # Close SELINUX
@@ -180,7 +182,6 @@ service sshd restart
 # install tmux
 if [ ! -e "`which tmux`" ];then
     cd src
-    
     tar xzf libevent-${libevent_version}.tar.gz
     cd libevent-${libevent_version}
     ./configure

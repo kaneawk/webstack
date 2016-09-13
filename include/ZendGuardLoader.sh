@@ -8,15 +8,14 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_ZendGuardLoader()
-{
+Install_ZendGuardLoader() {
 cd $oneinstack_dir/src
 
 PHP_version=`$php_install_dir/bin/php -r 'echo PHP_VERSION;'`
 PHP_main_version=${PHP_version%.*}
 
 [ ! -d "`$php_install_dir/bin/php-config --extension-dir`" ] && mkdir -p `$php_install_dir/bin/php-config --extension-dir`
-if [ "$OS_BIT" == '64' ] ;then
+if [ "$OS_BIT" == '64' ]; then
     if [ "$PHP_main_version" == '5.6' ];then
         tar xzf zend-loader-php5.6-linux-x86_64.tar.gz
         /bin/cp zend-loader-php5.6-linux-x86_64/ZendGuardLoader.so `$php_install_dir/bin/php-config --extension-dir`

@@ -8,10 +8,8 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_ZendOPcache()
-{
+Install_ZendOPcache() {
 cd $oneinstack_dir/src
-
 tar xzf zendopcache-$zendopcache_version.tgz
 cd zendopcache-$zendopcache_version
 make clean

@@ -35,7 +35,7 @@ if [[ "$Ubuntu_version" =~ ^14$|^15$ ]];then
     ./configure
     make -j ${THREAD} && make install
     cd ..
-    rm -rf bison-2.7.1
+    rm -rf bison-${bison_version}
     cd ..
     ln -sf /usr/include/freetype2 /usr/include/freetype2/freetype
 elif [ "$Ubuntu_version" == '13' ];then

@@ -9,7 +9,6 @@
 
 checkDownload(){
   mirrorLink=http://mirrors.linuxeye.com/oneinstack/src
-
   pushd ${oneinstack_dir}/src
 
   # Web
@@ -66,7 +65,7 @@ checkDownload(){
       src_url=http://mirrors.linuxeye.com/apache/tomcat/v${tomcat_6_version}/catalina-jmx-remote.jar && Download_src
     fi
 
-    if [[ "${JDK_version}"  =~ ^1$|^2$|^3$ ]]; then
+    if [[ "${JDK_version}"  =~ ^[1-3]$ ]]; then
       if [ "${JDK_version}" == "1" ]; then
         echo "Download JDK 1.8..."
         JDK_FILE="jdk-$(echo ${jdk_8_version} | awk -F. '{print $2}')u$(echo ${jdk_8_version} | awk -F_ '{print $NF}')-linux-${SYS_BIG_FLAG}.tar.gz"
@@ -84,7 +83,7 @@ checkDownload(){
   fi
 
   if [ "${DB_yn}" == "y" ]; then
-    if [[ "${DB_version}" =~ ^1$|^4$|^7$ ]]; then
+    if [[ "${DB_version}" =~ ^[1,4,7]$ ]] && [ "${dbInstallMethods}" == "2" ]; then
       echo "Download boost..."
       [ "${IPADDR_COUNTRY}"x == "CN"x ] && DOWN_ADDR_BOOST=${mirrorLink} || DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
       boostVersion2=$(echo ${boost_version} | awk -F. '{print $1}')_$(echo ${boost_version} | awk -F. '{print $2}')_$(echo ${boost_version} | awk -F. '{print $3}')
@@ -194,6 +193,7 @@ checkDownload(){
       elif [ "${dbInstallMethods}" == "2" ]; then
         echo "Download MySQL 5.5 source package..."
         FILE_NAME=mysql-${mysql_5_5_version}.tar.gz
+        src_url=${mirrorLink}/mysql-5.5-fix-arm-client_plugin.patch && Download_src
       fi
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
@@ -490,14 +490,12 @@ checkDownload(){
       echo "Download apcu..."
       src_url=http://pecl.php.net/get/apcu-${apcu_version}.tgz && Download_src
     fi
-    if [ "${PHP_cache}" == "4" ]; then
-      if [ "${PHP_version}" == "2" ]; then
-        echo "Download eaccelerator 1.0 dev..."
-        src_url=https://github.com/eaccelerator/eaccelerator/tarball/master && Download_src
-      else
-        echo "Download eaccelerator 0.9..."
-        src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_version}.tar.bz2 && Download_src
-      fi
+    if [ "${PHP_cache}" == "4" -a "${PHP_version}" == "2" ];then
+      echo "Download eaccelerator 1.0 dev..."
+      src_url=https://github.com/eaccelerator/eaccelerator/tarball/master && Download_src
+    elif [ "${PHP_cache}" == "4" -a "${PHP_version}" == "1" ];then
+      echo "Download eaccelerator 0.9..."
+      src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_version}.tar.bz2 && Download_src
     fi
 
     # Zend Guard Loader
@@ -561,21 +559,23 @@ checkDownload(){
       if [ "${Magick}" == "1" ]; then
         echo "Download ImageMagick..."
         src_url=${mirrorLink}/ImageMagick-${ImageMagick_version}.tar.gz && Download_src
-
-        echo "Download image for php 5.3..."
-        src_url=https://pecl.php.net/get/imagick-3.3.0.tgz && Download_src
-
-        echo "Download imagick..."
-        src_url=http://pecl.php.net/get/imagick-${imagick_version}.tgz && Download_src
+        if [ "${PHP_version}" == "1" ]; then
+          echo "Download image for php 5.3..."
+          src_url=https://pecl.php.net/get/imagick-${imagick_for_php53_version}.tgz && Download_src
+        else
+          echo "Download imagick..."
+          src_url=http://pecl.php.net/get/imagick-${imagick_version}.tgz && Download_src
+        fi
       else
         echo "Download graphicsmagick..."
         src_url=http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${GraphicsMagick_version}/GraphicsMagick-${GraphicsMagick_version}.tar.gz && Download_src
-
-        echo "Download gmagick for php7..."
-        src_url=https://pecl.php.net/get/gmagick-${gmagick_for_php7_version}.tgz && Download_src
-
-        echo "Download gmagick for php..."
-        src_url=http://pecl.php.net/get/gmagick-${gmagick_version}.tgz && Download_src
+        if [ "${PHP_version}" == "5" ]; then
+          echo "Download gmagick for php 7.x..."
+          src_url=https://pecl.php.net/get/gmagick-${gmagick_for_php7_version}.tgz && Download_src
+        else
+          echo "Download gmagick for php..."
+          src_url=http://pecl.php.net/get/gmagick-${gmagick_version}.tgz && Download_src
+        fi
       fi
     fi
 
@@ -600,7 +600,7 @@ checkDownload(){
     fi
     # redis addon
     if [ "${PHP_version}" == "5" ]; then
-      echo "Download redis pecl for php7..."
+      echo "Download redis pecl for php 7.x..."
       src_url=http://pecl.php.net/get/redis-${redis_pecl_for_php7_version}.tgz && Download_src
     else
       echo "Download redis pecl..."
@@ -612,14 +612,14 @@ checkDownload(){
     echo "Download memcached..."
     src_url=http://www.memcached.org/files/memcached-${memcached_version}.tar.gz && Download_src
     if [ "${PHP_version}" == "5" ]; then
-      echo "Download pecl memcache for php 7..."
+      echo "Download pecl memcache for php 7.x..."
       src_url=${mirrorLink}/pecl-memcache-php7.tgz && Download_src
-      echo "Download php-memcached for php7..."
+      echo "Download php-memcached for php 7.x..."
       src_url=${mirrorLink}/php-memcached-php7.tgz && Download_src
     else
-      echo "Download pecl memcache for php 7-..."
+      echo "Download pecl memcache for php..."
       src_url=http://pecl.php.net/get/memcache-${memcache_pecl_version}.tgz && Download_src
-      echo "Download php-memcached for php7-..."
+      echo "Download php-memcached for php..."
     src_url=http://pecl.php.net/get/memcached-${memcached_pecl_version}.tgz && Download_src
     fi
 

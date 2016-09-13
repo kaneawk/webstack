@@ -10,7 +10,6 @@
 
 Install_eAccelerator-0-9() {
 cd $oneinstack_dir/src
-
 tar jxf eaccelerator-${eaccelerator_version}.tar.bz2
 cd eaccelerator-${eaccelerator_version}
 make clean
