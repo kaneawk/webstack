@@ -1,6 +1,6 @@
 # newest software version
 # Web
-nginx_version=1.10.1
+nginx_version=1.11.1
 tengine_version=2.1.1
 openresty_version=1.11.2.1
 openssl_version=1.0.2h
