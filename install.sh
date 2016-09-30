@@ -221,7 +221,7 @@ while :; do echo
                 echo -e "\t${CMSG}2${CEND}. Install php-5.4"
                 echo -e "\t${CMSG}3${CEND}. Install php-5.5"
                 echo -e "\t${CMSG}4${CEND}. Install php-5.6"
-                echo -e "\t${CMSG}5${CEND}. Install php-7"
+                echo -e "\t${CMSG}5${CEND}. Install php-7.0"
                 read -p "Please input a number:(Default 3 press Enter) " PHP_version
                 [ -z "$PHP_version" ] && PHP_version=3
                 if [[ ! $PHP_version =~ ^[1-5]$ ]];then
@@ -328,16 +328,14 @@ while :; do echo
                         done
                     fi
 
-                    if [ "$PHP_version" != '5' ];then
-                        while :; do echo
-                            read -p "Do you want to install ionCube? [y/n]: " ionCube_yn
-                            if [[ ! $ionCube_yn =~ ^[y,n]$ ]];then
-                                echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
-                            else
-                                break
-                            fi
-                        done
-                    fi
+                    while :; do echo
+                        read -p "Do you want to install ionCube? [y/n]: " ionCube_yn
+                        if [[ ! $ionCube_yn =~ ^[y,n]$ ]];then
+                            echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
+                        else
+                            break
+                        fi
+                    done
 
                     # ImageMagick or GraphicsMagick
                     while :; do echo

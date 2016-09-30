@@ -21,7 +21,10 @@ else
 fi
 
 [ ! -d "`$php_install_dir/bin/php-config --extension-dir`" ] && mkdir -p `$php_install_dir/bin/php-config --extension-dir`
-if [ "$PHP_main_version" == '5.6' ];then
+if [ "$PHP_main_version" == '7.0' ];then
+    /bin/cp ioncube/ioncube_loader_lin_7.0.so `$php_install_dir/bin/php-config --extension-dir`
+    zend_extension="`$php_install_dir/bin/php-config --extension-dir`/ioncube_loader_lin_7.0.so"
+elif [ "$PHP_main_version" == '5.6' ];then
     /bin/cp ioncube/ioncube_loader_lin_5.6.so `$php_install_dir/bin/php-config --extension-dir`
     zend_extension="`$php_install_dir/bin/php-config --extension-dir`/ioncube_loader_lin_5.6.so"
 elif [ "$PHP_main_version" == '5.5' ];then
