@@ -48,7 +48,7 @@ LIBC_YN=$(awk -v A=$(getconf -a | grep GNU_LIBC_VERSION | awk '{print $NF}') -v 
 [ $LIBC_YN == '0' ] && GLIBC_FLAG=linux-glibc_214 || GLIBC_FLAG=linux
 
 if uname -m | grep -Eqi "arm"; then
-  armTarget="y"
+  armPlatform="y"
 fi
 
 CPU=$(grep 'processor' /proc/cpuinfo | sort -u | wc -l)
