@@ -26,6 +26,7 @@ sed -i "s@^oneinstack_dir.*@oneinstack_dir=`pwd`@" ./options.conf
 . ./include/color.sh
 . ./include/memory.sh
 . ./include/check_os.sh
+. ./include/check_download.sh
 . ./include/download.sh
 . ./include/get_char.sh
 
@@ -261,25 +262,31 @@ What Are You Doing?
                     break
                 fi
             done
-            if [ $ACTION = 1 ];then
-                Check_PHP_Extension
-                if [[ $PHP_main_version =~ ^5.[3-6]$ ]];then
-                    if [ $Loader = 1 ];then
-                        if [ -e $php_install_dir/etc/php.d/ext-opcache.ini ];then
-                            echo; echo "${CWARNING}You have to install OpCache, You need to uninstall it before install ZendGuardLoader! ${CEND}"; echo; exit 1
-                        else
-                            Install_ZendGuardLoader
-                            Check_succ
-                        fi
-                    elif [ $Loader = 2 ];then
-                        Install_ionCube
-                        Restart_PHP; echo "${CSUCCESS}PHP ioncube module installed successfully! ${CEND}";
-                    fi
+            if [ ${ACTION} = "1" ];then
+              Check_PHP_Extension
+              if [ ${Loader} = "1" ]; then
+                if [[ ${PHP_main_version} =~ ^5.[3-6]$ ]] || [ "${armPlatform}" != "y" ]; then
+                  if [ -e ${php_install_dir}/etc/php.d/ext-opcache.ini ]; then
+                    echo; echo "${CWARNING}You have to install OpCache, You need to uninstall it before install ZendGuardLoader! ${CEND}"; echo; exit 1
+                  else
+                    ZendGuardLoader_yn="y" && checkDownload
+                    Install_ZendGuardLoader
+                    Check_succ
+                  fi
                 else
-                    echo; echo "${CWARNING}Your php does not support $PHP_extension! ${CEND}";
+                  echo; echo "${CWARNING}Your php ${PHP_version} or platform ${TARGET_ARCH} does not support ${PHP_extension}! ${CEND}";
                 fi
+              elif [ ${Loader} = "2" ]; then
+                if [[ ${PHP_main_version} =~ ^5.[3-6]$|^7.0$ ]] || [ "${TARGET_ARCH}" != "arm64" ]; then
+                  ionCube_yn="y" && checkDownload
+                  Install_ionCube
+                  Restart_PHP; echo "${CSUCCESS}PHP ioncube module installed successfully! ${CEND}";
+                else
+                  echo; echo "${CWARNING}Your php ${PHP_version} or platform ${TARGET_ARCH} does not support ${PHP_extension}! ${CEND}";
+                fi
+              fi
             else
-                Uninstall_succ
+              Uninstall_succ
             fi
             ;;
         3)

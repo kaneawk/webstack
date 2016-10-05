@@ -317,7 +317,7 @@ while :; do echo
                             (( ${#xcache_admin_pass} >= 5 )) && { xcache_admin_md5_pass=`echo -n "$xcache_admin_pass" | md5sum | awk '{print $1}'` ; break ; } || echo "${CFAILURE}xcache admin password least 5 characters! ${CEND}"
                         done
                     fi
-                    if [ "$PHP_version" != '5' -a "$PHP_cache" != '1' ];then
+                    if [ "$PHP_version" != '5' -a "$PHP_cache" != '1' -a "${armPlatform}" != "y" ]; then
                         while :; do echo
                             read -p "Do you want to install ZendGuardLoader? [y/n]: " ZendGuardLoader_yn
                             if [[ ! $ZendGuardLoader_yn =~ ^[y,n]$ ]];then
@@ -328,14 +328,16 @@ while :; do echo
                         done
                     fi
 
-                    while :; do echo
-                        read -p "Do you want to install ionCube? [y/n]: " ionCube_yn
-                        if [[ ! $ionCube_yn =~ ^[y,n]$ ]];then
-                            echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
-                        else
-                            break
-                        fi
-                    done
+                    if [ "${TARGET_ARCH}" != "arm64" ]; then
+                        while :; do echo
+                            read -p "Do you want to install ionCube? [y/n]: " ionCube_yn
+                            if [[ ! $ionCube_yn =~ ^[y,n]$ ]];then
+                                echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
+                            else
+                                break
+                            fi
+                        done
+                    fi
 
                     # ImageMagick or GraphicsMagick
                     while :; do echo

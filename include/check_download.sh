@@ -473,112 +473,114 @@ checkDownload(){
     if [ "${PHP_version}" == "5" ]; then
       src_url=http://www.php.net/distributions/php-${php_7_version}.tar.gz && Download_src
     fi
+  fi
+  # PHP OPCache
+  if [ "${PHP_cache}" == "1" ]; then
+    # php 5.3 5.4 5.5 5.6 7.x
+    echo "Download Zend OPCache..."
+    src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
+  fi
+  if [ "${PHP_cache}" == "2" ]; then
+    # php 5.3 5.4 5.5 5.6 7.x
+    echo "Download xcache..."
+    src_url=http://xcache.lighttpd.net/pub/Releases/${xcache_version}/xcache-${xcache_version}.tar.gz && Download_src
+  fi
+  if [ "${PHP_cache}" == "3" ]; then
+    # php 5.3 5.4 5.5 5.6 7.x
+    echo "Download apcu..."
+    src_url=http://pecl.php.net/get/apcu-${apcu_version}.tgz && Download_src
+  fi
+  if [ "${PHP_cache}" == "4" -a "${PHP_version}" == "2" ];then
+    echo "Download eaccelerator 1.0 dev..."
+    src_url=https://github.com/eaccelerator/eaccelerator/tarball/master && Download_src
+  elif [ "${PHP_cache}" == "4" -a "${PHP_version}" == "1" ];then
+    echo "Download eaccelerator 0.9..."
+    src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_version}.tar.bz2 && Download_src
+  fi
 
-    # PHP OPCache
-    if [ "${PHP_cache}" == "1" ]; then
-      # php 5.3 5.4 5.5 5.6 7.x
-      echo "Download Zend OPCache..."
-      src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
+  # Zend Guard Loader
+  if [ "${ZendGuardLoader_yn}" == "y" -a "${armPlatform}" != "y" ]; then
+    if [ "${PHP_version}" == "4" ]; then
+      if [ "${OS_BIT}" == "64" ]; then
+        # 64 bit
+        echo "Download zend loader for php 5.6..."
+        src_url=${mirrorLink}/zend-loader-php5.6-linux-x86_64.tar.gz && Download_src
+      else
+        # 32 bit
+        echo "Download zend loader for php 5.6..."
+        src_url=${mirrorLink}/zend-loader-php5.6-linux-i386.tar.gz && Download_src
+      fi
     fi
-    if [ "${PHP_cache}" == "2" ]; then
-      # php 5.3 5.4 5.5 5.6 7.x
-      echo "Download xcache..."
-      src_url=http://xcache.lighttpd.net/pub/Releases/${xcache_version}/xcache-${xcache_version}.tar.gz && Download_src
+    if [ "${PHP_version}" == "3" ]; then
+      if [ "${OS_BIT}" == "64" ]; then
+        # 64 bit
+        echo "Download zend loader for php 5.5..."
+        src_url=${mirrorLink}/zend-loader-php5.5-linux-x86_64.tar.gz && Download_src
+      else
+        # 32 bit
+        echo "Download zend loader for php 5.5..."
+        src_url=${mirrorLink}/zend-loader-php5.5-linux-i386.tar.gz && Download_src
+      fi
     fi
-    if [ "${PHP_cache}" == "3" ]; then
-      # php 5.3 5.4 5.5 5.6 7.x
-      echo "Download apcu..."
-      src_url=http://pecl.php.net/get/apcu-${apcu_version}.tgz && Download_src
+    if [ "${PHP_version}" == "2" ]; then
+      if [ "${OS_BIT}" == "64" ]; then
+        # 64 bit
+        echo "Download zend loader for php 5.4..."
+        src_url=${mirrorLink}/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-x86_64.tar.gz && Download_src
+      else
+        # 32 bit
+        echo "Download zend loader for php 5.4..."
+        src_url=${mirrorLink}/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-i386.tar.gz && Download_src
+      fi
     fi
-    if [ "${PHP_cache}" == "4" -a "${PHP_version}" == "2" ];then
-      echo "Download eaccelerator 1.0 dev..."
-      src_url=https://github.com/eaccelerator/eaccelerator/tarball/master && Download_src
-    elif [ "${PHP_cache}" == "4" -a "${PHP_version}" == "1" ];then
-      echo "Download eaccelerator 0.9..."
-      src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_version}.tar.bz2 && Download_src
+    if [ "${PHP_version}" == "1" ]; then
+      if [ "${OS_BIT}" == "64" ]; then
+        # 64 bit
+        echo "Download zend loader for php 5.3..."
+        src_url=${mirrorLink}/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz && Download_src
+      else
+        # 32 bit
+        echo "Download zend loader for php 5.3..."
+        src_url=${mirrorLink}/ZendGuardLoader-php-5.3-linux-glibc23-i386.tar.gz && Download_src
+      fi
     fi
+  fi
 
-    # Zend Guard Loader
-    if [ "${ZendGuardLoader_yn}" == "y" ]; then
-      if [ "${PHP_version}" == "4" ]; then
-        if [ "${OS_BIT}" == "64" ]; then
-          # 64 bit
-          echo "Download zend loader for php 5.6..."
-          src_url=${mirrorLink}/zend-loader-php5.6-linux-x86_64.tar.gz && Download_src
-        else
-          # 32 bit
-          echo "Download zend loader for php 5.6..."
-          src_url=${mirrorLink}/zend-loader-php5.6-linux-i386.tar.gz && Download_src
-        fi
-      fi
-      if [ "${PHP_version}" == "3" ]; then
-        if [ "${OS_BIT}" == "64" ]; then
-          # 64 bit
-          echo "Download zend loader for php 5.5..."
-          src_url=${mirrorLink}/zend-loader-php5.5-linux-x86_64.tar.gz && Download_src
-        else
-          # 32 bit
-          echo "Download zend loader for php 5.5..."
-          src_url=${mirrorLink}/zend-loader-php5.5-linux-i386.tar.gz && Download_src
-        fi
-      fi
-      if [ "${PHP_version}" == "2" ]; then
-        if [ "${OS_BIT}" == "64" ]; then
-          # 64 bit
-          echo "Download zend loader for php 5.4..."
-          src_url=${mirrorLink}/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-x86_64.tar.gz && Download_src
-        else
-          # 32 bit
-          echo "Download zend loader for php 5.4..."
-          src_url=${mirrorLink}/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-i386.tar.gz && Download_src
-        fi
-      fi
-      if [ "${PHP_version}" == "1" ]; then
-        if [ "${OS_BIT}" == "64" ]; then
-          # 64 bit
-          echo "Download zend loader for php 5.3..."
-          src_url=${mirrorLink}/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz && Download_src
-        else
-          # 32 bit
-          echo "Download zend loader for php 5.3..."
-          src_url=${mirrorLink}/ZendGuardLoader-php-5.3-linux-glibc23-i386.tar.gz && Download_src
-        fi
-      fi
-    fi
-
-    if [ "${ionCube_yn}" == "y" ]; then
-      echo "Download ioncube..."
-      if [ "${OS_BIT}" == '64' ]; then
+  if [ "${ionCube_yn}" == "y" ]; then
+    echo "Download ioncube..."
+    if [ "${OS_BIT}" == '64' ]; then
         src_url=http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && Download_src
+    else
+      if [ "${TARGET_ARCH}" == "armv7" ]; then
+        src_url=http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_armv7l.tar.gz && Download_src
       else
         src_url=http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86.tar.gz && Download_src
       fi
     fi
+  fi
 
-    if [ "${Magick_yn}" == "y" ]; then
-      if [ "${Magick}" == "1" ]; then
-        echo "Download ImageMagick..."
-        src_url=${mirrorLink}/ImageMagick-${ImageMagick_version}.tar.gz && Download_src
-        if [ "${PHP_version}" == "1" ]; then
-          echo "Download image for php 5.3..."
-          src_url=https://pecl.php.net/get/imagick-${imagick_for_php53_version}.tgz && Download_src
-        else
-          echo "Download imagick..."
-          src_url=http://pecl.php.net/get/imagick-${imagick_version}.tgz && Download_src
-        fi
+  if [ "${Magick_yn}" == "y" ]; then
+    if [ "${Magick}" == "1" ]; then
+      echo "Download ImageMagick..."
+      src_url=${mirrorLink}/ImageMagick-${ImageMagick_version}.tar.gz && Download_src
+      if [ "${PHP_version}" == "1" ]; then
+        echo "Download image for php 5.3..."
+        src_url=https://pecl.php.net/get/imagick-${imagick_for_php53_version}.tgz && Download_src
       else
-        echo "Download graphicsmagick..."
-        src_url=http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${GraphicsMagick_version}/GraphicsMagick-${GraphicsMagick_version}.tar.gz && Download_src
-        if [ "${PHP_version}" == "5" ]; then
-          echo "Download gmagick for php 7.x..."
-          src_url=https://pecl.php.net/get/gmagick-${gmagick_for_php7_version}.tgz && Download_src
-        else
-          echo "Download gmagick for php..."
-          src_url=http://pecl.php.net/get/gmagick-${gmagick_version}.tgz && Download_src
-        fi
+        echo "Download imagick..."
+        src_url=http://pecl.php.net/get/imagick-${imagick_version}.tgz && Download_src
+      fi
+    else
+      echo "Download graphicsmagick..."
+      src_url=http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${GraphicsMagick_version}/GraphicsMagick-${GraphicsMagick_version}.tar.gz && Download_src
+      if [ "${PHP_version}" == "5" ]; then
+        echo "Download gmagick for php 7.x..."
+        src_url=https://pecl.php.net/get/gmagick-${gmagick_for_php7_version}.tgz && Download_src
+      else
+        echo "Download gmagick for php..."
+        src_url=http://pecl.php.net/get/gmagick-${gmagick_version}.tgz && Download_src
       fi
     fi
-
   fi
 
   if [ "${FTP_yn}" == "y" ]; then
