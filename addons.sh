@@ -225,6 +225,11 @@ What Are You Doing?
                         fi
                     elif [ ${PHP_cache} = 3 ];then
                         if [[ ${PHP_main_version} =~ ^5.[3-5]$|^7.[0-1]$ ]]; then
+                            PHP_cache="3"
+                            if [[ ${PHP_main_version} =~ ^7.[0-1]$ ]]; then
+                              PHP_version="5"
+                            fi
+                            checkDownload
                             Install_APCU
                             Check_succ
                         else
