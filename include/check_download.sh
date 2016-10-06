@@ -85,7 +85,7 @@ checkDownload(){
   if [ "${DB_yn}" == "y" ]; then
     if [[ "${DB_version}" =~ ^[1,4,7]$ ]] && [ "${dbInstallMethods}" == "2" ]; then
       echo "Download boost..."
-      [ "${IPADDR_COUNTRY}"x == "CN"x ] && DOWN_ADDR_BOOST=${mirrorLink} || DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
+      DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
       boostVersion2=$(echo ${boost_version} | awk -F. '{print $1}')_$(echo ${boost_version} | awk -F. '{print $2}')_$(echo ${boost_version} | awk -F. '{print $3}')
       src_url=${DOWN_ADDR_BOOST}/boost_${boostVersion2}.tar.gz && Download_src
     fi
@@ -643,7 +643,7 @@ checkDownload(){
   if [ "${OS}" == "CentOS" ]; then
     echo "Download tmux for CentOS..."
     src_url=${mirrorLink}/libevent-${libevent_version}.tar.gz && Download_src
-    src_url=${mirrorLink}/tmux-${tmux_version}.tar.gz && Download_src
+    src_url=https://github.com/tmux/tmux/releases/download/${tmux_version}/tmux-${tmux_version}.tar.gz && Download_src
 
     echo "Download htop for CentOS..."
     src_url=http://hisham.hm/htop/releases/${htop_version}/htop-${htop_version}.tar.gz && Download_src
