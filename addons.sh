@@ -223,8 +223,8 @@ What Are You Doing?
                         else
                             echo "${CWARNING}Your php does not support XCache! ${CEND}"; exit 1
                         fi
-                    elif [ $PHP_cache = 3 ];then
-                        if [[ $PHP_main_version =~ ^5.[3-5]$ ]];then
+                    elif [ ${PHP_cache} = 3 ];then
+                        if [[ ${PHP_main_version} =~ ^5.[3-5]$|^7.[0-1]$ ]]; then
                             Install_APCU
                             Check_succ
                         else

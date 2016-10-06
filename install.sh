@@ -294,13 +294,14 @@ while :; do echo
                                         fi
                                     done
                                 fi
-                                if [ $PHP_version == 5 ];then
+                                if [ ${PHP_version} == 5 ];then
                                     while :; do
                                         echo 'Please select a opcode cache of the PHP:'
                                         echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                                        echo -e "\t${CMSG}3${CEND}. Install APCU"
                                         read -p "Please input a number:(Default 1 press Enter) " PHP_cache
-                                        [ -z "$PHP_cache" ] && PHP_cache=1
-                                        if [ $PHP_cache != 1 ];then
+                                        [ -z "${PHP_cache}" ] && PHP_cache=1
+                                        if [[ ! ${PHP_cache} =~ ^[1,3]$ ]]; then
                                             echo "${CWARNING}input error! Please only input number 1${CEND}"
                                         else
                                             break

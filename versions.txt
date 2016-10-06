@@ -43,6 +43,7 @@ php_3_version=5.3.29
 zendopcache_version=7.0.5
 xcache_version=3.2.0
 apcu_version=4.0.11
+apcu_for_php7_version=5.1.6
 ImageMagick_version=6.9.5-9
 imagick_version=3.4.1
 imagick_for_php53_version=3.3.0
@@ -80,7 +81,7 @@ jemalloc_version=4.2.1
 tcmalloc_version=2.5
 
 # boost
-boost_version=1.60.0
+boost_version=1.62.0
 
 # Others
 libevent_version=2.0.22-stable

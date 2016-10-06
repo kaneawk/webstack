@@ -488,7 +488,11 @@ checkDownload(){
   if [ "${PHP_cache}" == "3" ]; then
     # php 5.3 5.4 5.5 5.6 7.x
     echo "Download apcu..."
-    src_url=http://pecl.php.net/get/apcu-${apcu_version}.tgz && Download_src
+    if [ "${PHP_version}" != "5" ]; then
+      src_url=http://pecl.php.net/get/apcu-${apcu_version}.tgz && Download_src
+    else
+      src_url=http://pecl.php.net/get/apcu-${apcu_for_php7_version}.tgz && Download_src
+    fi
   fi
   if [ "${PHP_cache}" == "4" -a "${PHP_version}" == "2" ];then
     echo "Download eaccelerator 1.0 dev..."
