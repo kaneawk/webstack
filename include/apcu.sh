@@ -37,6 +37,9 @@ EOF
     echo "${CFAILURE}APCU module install failed, Please contact the author! ${CEND}"
   fi
   popd
+  # Clean up
   rm -rf apcu-${apcu_version}
+  rm -rf apcu-${apcu_for_php7_version}
+  rm -f package.xml
   popd
 }
