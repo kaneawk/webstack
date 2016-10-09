@@ -26,26 +26,32 @@ Install_ionCube() {
   fi
 
   [ ! -d "${phpExtensionDir}" ] && mkdir -p ${phpExtensionDir}
-  if [ "$PHP_main_version" == '7.0' ]; then
-    /bin/cp ioncube/ioncube_loader_lin_7.0.so ${phpExtensionDir}
-    zend_extension="${phpExtensionDir}/ioncube_loader_lin_7.0.so"
-  elif [ "$PHP_main_version" == '5.6' ]; then
-    /bin/cp ioncube/ioncube_loader_lin_5.6.so ${phpExtensionDir}
-    zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.6.so"
-  elif [ "$PHP_main_version" == '5.5' ]; then
-    /bin/cp ioncube/ioncube_loader_lin_5.5.so ${phpExtensionDir}
-    zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.5.so"
-  elif [ "$PHP_main_version" == '5.4' ]; then
-    /bin/cp ioncube/ioncube_loader_lin_5.4.so ${phpExtensionDir}
-    zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.4.so"
-  elif [ "$PHP_main_version" == '5.3' ]; then
-    /bin/cp ioncube/ioncube_loader_lin_5.3.so ${phpExtensionDir}
-    zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.3.so"
-  else
-    echo "Error! Your PHP ${PHP_version} does not support ionCube!"
-    rm -rf ioncube
-    exit 1
-  fi
+  case "${PHP_main_version}" in
+    7.0)
+      /bin/cp ioncube/ioncube_loader_lin_7.0.so ${phpExtensionDir}
+      zend_extension="${phpExtensionDir}/ioncube_loader_lin_7.0.so"
+      ;;
+    5.6)
+      /bin/cp ioncube/ioncube_loader_lin_5.6.so ${phpExtensionDir}
+      zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.6.so"
+      ;;
+    5.5)
+     /bin/cp ioncube/ioncube_loader_lin_5.5.so ${phpExtensionDir}
+     zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.5.so"
+     ;;
+    5.4)
+      /bin/cp ioncube/ioncube_loader_lin_5.4.so ${phpExtensionDir}
+      zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.4.so"
+      ;;
+    5.3)
+      /bin/cp ioncube/ioncube_loader_lin_5.3.so ${phpExtensionDir}
+      zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.3.so"
+      ;;
+    *)
+      echo "Error! Your PHP ${PHP_version} does not support ionCube!"
+      exit 1
+      ;;
+  esac
 
   rm -rf ioncube
   cat > ${php_install_dir}/etc/php.d/ext-0ioncube.ini << EOF
