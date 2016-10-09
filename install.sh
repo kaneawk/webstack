@@ -565,8 +565,8 @@ elif [ "$PHP_version" == '4' ];then
     . include/php-5.6.sh
     Install_PHP-5-6 2>&1 | tee -a $oneinstack_dir/install.log
 elif [ "$PHP_version" == '5' ];then
-    . include/php-7.sh
-    Install_PHP-7 2>&1 | tee -a $oneinstack_dir/install.log
+    . include/php-7.0.sh
+    Install_PHP-7-0 2>&1 | tee -a $oneinstack_dir/install.log
 fi
 
 # ImageMagick or GraphicsMagick
