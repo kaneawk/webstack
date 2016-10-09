@@ -475,18 +475,18 @@ checkDownload(){
     fi
   fi
   # PHP OPCache
-  if [ "${PHP_cache}" == "1" ]; then
-    # php 5.3 5.4 5.5 5.6 7.x
+  if [ "${PHP_cache}" == "1" ] && [[ "$PHP_version" =~ ^[1,2]$ ]]; then
+    # php 5.3 5.4
     echo "Download Zend OPCache..."
     src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
   fi
-  if [ "${PHP_cache}" == "2" ]; then
-    # php 5.3 5.4 5.5 5.6 7.x
+  if [ "${PHP_cache}" == "2" ] && [[ "$PHP_version" =~ ^[1-4]$ ]]; then
+    # php 5.3 5.4 5.5 5.6
     echo "Download xcache..."
     src_url=http://xcache.lighttpd.net/pub/Releases/${xcache_version}/xcache-${xcache_version}.tar.gz && Download_src
   fi
   if [ "${PHP_cache}" == "3" ]; then
-    # php 5.3 5.4 5.5 5.6 7.x
+    # php 5.3 5.4 5.5 5.6 7.0
     echo "Download apcu..."
     if [ "${PHP_version}" != "5" ]; then
       src_url=http://pecl.php.net/get/apcu-${apcu_version}.tgz && Download_src

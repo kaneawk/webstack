@@ -285,10 +285,11 @@ while :; do echo
                                         echo 'Please select a opcode cache of the PHP:'
                                         echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
                                         echo -e "\t${CMSG}2${CEND}. Install XCache"
+                                        echo -e "\t${CMSG}3${CEND}. Install APCU"
                                         read -p "Please input a number:(Default 1 press Enter) " PHP_cache
                                         [ -z "$PHP_cache" ] && PHP_cache=1
-                                        if [[ ! $PHP_cache =~ ^[1-2]$ ]];then
-                                            echo "${CWARNING}input error! Please only input number 1,2${CEND}"
+                                        if [[ ! $PHP_cache =~ ^[1-3]$ ]];then
+                                            echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
                                         else
                                             break
                                         fi
@@ -302,7 +303,7 @@ while :; do echo
                                         read -p "Please input a number:(Default 1 press Enter) " PHP_cache
                                         [ -z "${PHP_cache}" ] && PHP_cache=1
                                         if [[ ! ${PHP_cache} =~ ^[1,3]$ ]]; then
-                                            echo "${CWARNING}input error! Please only input number 1${CEND}"
+                                            echo "${CWARNING}input error! Please only input number 1,3${CEND}"
                                         else
                                             break
                                         fi

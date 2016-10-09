@@ -194,6 +194,7 @@ What Are You Doing?
                     if [ $PHP_cache = 1 ];then
                         cd $oneinstack_dir/src
                         if [[ $PHP_main_version =~ ^5.[3-4]$ ]];then
+                            src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
                             Install_ZendOPcache
                         elif [ "$PHP_main_version" == '5.5' ];then
                             src_url=http://www.php.net/distributions/php-$php_5_version.tar.gz && Download_src
@@ -218,14 +219,14 @@ What Are You Doing?
                                 read -p "Please input xcache admin password: " xcache_admin_pass
                                 (( ${#xcache_admin_pass} >= 5 )) && { xcache_admin_md5_pass=`echo -n "$xcache_admin_pass" | md5sum | awk '{print $1}'` ; break ; } || echo "${CFAILURE}xcache admin password least 5 characters! ${CEND}"
                             done
+                            checkDownload
                             Install_XCache
                             Check_succ
                         else
                             echo "${CWARNING}Your php does not support XCache! ${CEND}"; exit 1
                         fi
                     elif [ ${PHP_cache} = 3 ];then
-                        if [[ ${PHP_main_version} =~ ^5.[3-5]$|^7.[0-1]$ ]]; then
-                            PHP_cache="3"
+                        if [[ ${PHP_main_version} =~ ^5.[3-6]$|^7.[0-1]$ ]]; then
                             if [[ ${PHP_main_version} =~ ^7.[0-1]$ ]]; then
                               PHP_version="5"
                             fi
@@ -237,9 +238,11 @@ What Are You Doing?
                         fi
                     elif [ $PHP_cache = 4 ];then
                         if [ "$PHP_main_version" == '5.3' ];then
+                            PHP_version="1" && checkDownload
                             Install_eAccelerator-0-9
                             Check_succ
                         elif [ "$PHP_main_version" == '5.4' ];then
+                            PHP_version="2" && checkDownload
                             Install_eAccelerator-1-0-dev
                             Check_succ
                         else
@@ -312,6 +315,7 @@ What Are You Doing?
             done
             if [ $ACTION = 1 ];then
                 Check_PHP_Extension
+                Magick_yn=y && checkDownload
                 if [ $Magick = 1 ];then
                     [ ! -d "/usr/local/imagemagick" ] && Install_ImageMagick
                     Install_php-imagick
@@ -363,6 +367,7 @@ What Are You Doing?
                 fi
             done
             if [ $ACTION = 1 ];then
+                memcached_yn=y && checkDownload
                 if [ $Memcache = 1 ];then
                     [ ! -d "$memcached_install_dir/include/memcached" ] && Install_memcached
                     Check_PHP_Extension
@@ -390,6 +395,7 @@ What Are You Doing?
         6)
             ACTION_FUN
             PHP_extension=redis
+            redis_yn=y && checkDownload
             if [ $ACTION = 1 ];then
                 [ ! -d "$redis_install_dir" ] && Install_redis-server
                 Check_PHP_Extension
