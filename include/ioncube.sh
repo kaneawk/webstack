@@ -11,8 +11,8 @@
 Install_ionCube() {
   pushd ${oneinstack_dir}/src
 
-  PHP_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
-  PHP_main_version=${PHP_version%.*}
+  PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
+  PHP_main_version=${PHP_detail_version%.*}
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 
   if [ "${OS_BIT}" == '64' ]; then
@@ -48,7 +48,7 @@ Install_ionCube() {
       zend_extension="${phpExtensionDir}/ioncube_loader_lin_5.3.so"
       ;;
     *)
-      echo "Error! Your PHP ${PHP_version} does not support ionCube!"
+      echo "Error! Your PHP ${PHP_detail_version} does not support ionCube!"
       exit 1
       ;;
   esac

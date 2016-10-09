@@ -11,8 +11,8 @@
 Install_ZendGuardLoader() {
 cd $oneinstack_dir/src
 
-PHP_version=`$php_install_dir/bin/php -r 'echo PHP_VERSION;'`
-PHP_main_version=${PHP_version%.*}
+PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
+PHP_main_version=${PHP_detail_version%.*}
 
 [ ! -d "`$php_install_dir/bin/php-config --extension-dir`" ] && mkdir -p `$php_install_dir/bin/php-config --extension-dir`
 if [ "$OS_BIT" == '64' ]; then

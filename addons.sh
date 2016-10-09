@@ -51,8 +51,8 @@ sed -i "s@^oneinstack_dir.*@oneinstack_dir=`pwd`@" ./options.conf
 
 # Check PHP
 if [ -e "$php_install_dir/bin/phpize" ];then
-    PHP_version=`$php_install_dir/bin/php -r 'echo PHP_VERSION;'`
-    PHP_main_version=${PHP_version%.*}
+    PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
+    PHP_main_version=${PHP_detail_version%.*}
 fi
 
 # Check PHP Extensions
@@ -282,7 +282,7 @@ What Are You Doing?
                     Check_succ
                   fi
                 else
-                  echo; echo "${CWARNING}Your php ${PHP_version} or platform ${TARGET_ARCH} does not support ${PHP_extension}! ${CEND}";
+                  echo; echo "${CWARNING}Your php ${PHP_detail_version} or platform ${TARGET_ARCH} does not support ${PHP_extension}! ${CEND}";
                 fi
               elif [ ${Loader} = "2" ]; then
                 if [[ ${PHP_main_version} =~ ^5.[3-6]$|^7.0$ ]] || [ "${TARGET_ARCH}" != "arm64" ]; then
@@ -290,7 +290,7 @@ What Are You Doing?
                   Install_ionCube
                   Restart_PHP; echo "${CSUCCESS}PHP ioncube module installed successfully! ${CEND}";
                 else
-                  echo; echo "${CWARNING}Your php ${PHP_version} or platform ${TARGET_ARCH} does not support ${PHP_extension}! ${CEND}";
+                  echo; echo "${CWARNING}Your php ${PHP_detail_version} or platform ${TARGET_ARCH} does not support ${PHP_extension}! ${CEND}";
                 fi
               fi
             else
@@ -337,9 +337,9 @@ What Are You Doing?
             if [ $ACTION = 1 ];then
                 Check_PHP_Extension
                 cd $oneinstack_dir/src
-                src_url=http://www.php.net/distributions/php-$PHP_version.tar.gz && Download_src
-                tar xzf php-$PHP_version.tar.gz
-                cd php-$PHP_version/ext/fileinfo
+                src_url=http://www.php.net/distributions/php-$PHP_detail_version.tar.gz && Download_src
+                tar xzf php-$PHP_detail_version.tar.gz
+                cd php-$PHP_detail_version/ext/fileinfo
                 $php_install_dir/bin/phpize
                 ./configure --with-php-config=$php_install_dir/bin/php-config
                 make -j ${THREAD} && make install
