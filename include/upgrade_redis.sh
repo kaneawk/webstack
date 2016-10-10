@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Upgrade_Redis() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 [ ! -d "$redis_install_dir" ] && echo "${CWARNING}Redis is not installed on your system! ${CEND}" && exit 1
 OLD_Redis_version=`$redis_install_dir/bin/redis-cli --version | awk '{print $2}'`
 echo "Current Redis Version: ${CMSG}$OLD_Redis_version${CEND}"
@@ -33,8 +33,7 @@ if [ -e "redis-$NEW_Redis_version.tar.gz" ];then
     echo "Press Ctrl+c to cancel or Press any key to continue..."
     char=`get_char`
     tar xzf redis-$NEW_Redis_version.tar.gz
-    cd redis-$NEW_Redis_version
-    make clean
+    pushd redis-$NEW_Redis_version
     if [ "$OS_BIT" == '32' ];then
         sed -i '1i\CFLAGS= -march=i686' src/Makefile
         sed -i 's@^OPT=.*@OPT=-O2 -march=i686@' src/.make-settings
@@ -51,7 +50,10 @@ if [ -e "redis-$NEW_Redis_version.tar.gz" ];then
     else
         echo "${CFAILURE}Upgrade Redis failed! ${CEND}"
     fi
-    cd ..
+    popd
+    # Clean up
+    rm -rf redis-${NEW_Redis_version}
+    rm -rf redis-${OLD_Redis_version}
 fi
-cd ..
+popd
 }

@@ -9,14 +9,14 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_ZendOPcache() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 tar xzf zendopcache-$zendopcache_version.tgz
-cd zendopcache-$zendopcache_version
+pushd zendopcache-$zendopcache_version
 $php_install_dir/bin/phpize
 ./configure --with-php-config=$php_install_dir/bin/php-config
 make -j ${THREAD} && make install
-cd ..
+popd
 if [ -f "${phpExtensionDir}/opcache.so" ];then
     cat > $php_install_dir/etc/php.d/ext-opcache.ini << EOF
 [opcache]
@@ -38,5 +38,5 @@ else
 fi
 # Clean up
 rm -rf zendopcache-${zendopcache_version}
-cd ..
+popd
 }

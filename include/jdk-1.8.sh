@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install-JDK-1-8() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 
 JDK_FILE="jdk-`echo $jdk_8_version | awk -F. '{print $2}'`u`echo $jdk_8_version | awk -F_ '{print $NF}'`-linux-$SYS_BIG_FLAG.tar.gz"
 JAVA_dir=/usr/java
@@ -34,5 +34,5 @@ else
     echo "${CFAILURE}JDK install failed, Please contact the author! ${CEND}"
     kill -9 $$
 fi
-cd ..
+popd
 }

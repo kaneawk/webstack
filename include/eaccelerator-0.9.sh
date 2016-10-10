@@ -9,14 +9,14 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_eAccelerator-0-9() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 tar jxf eaccelerator-${eaccelerator_version}.tar.bz2
-cd eaccelerator-${eaccelerator_version}
+pushd eaccelerator-${eaccelerator_version}
 $php_install_dir/bin/phpize
 ./configure --enable-eaccelerator=shared --with-php-config=$php_install_dir/bin/php-config
 make -j ${THREAD} && make install
-
+popd
 if [ -f "${phpExtensionDir}/eaccelerator.so" ];then
     mkdir /var/eaccelerator_cache;chown -R ${run_user}.$run_user /var/eaccelerator_cache
     cat > $php_install_dir/etc/php.d/ext-eaccelerator.ini << EOF
@@ -40,7 +40,6 @@ eaccelerator.sessions=disk_only
 eaccelerator.content=disk_only
 EOF
     echo "${CSUCCESS}Accelerator module installed successfully! ${CEND}"
-    cd ..
     [ -z "`grep 'kernel.shmmax = 67108864' /etc/sysctl.conf`" ] && echo 'kernel.shmmax = 67108864' >> /etc/sysctl.conf
     sysctl -p
     [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
@@ -49,5 +48,5 @@ else
 fi
 # Clean up
   rm -rf eaccelerator-${eaccelerator_version}
-cd ..
+popd
 }

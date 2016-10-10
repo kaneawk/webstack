@@ -9,12 +9,12 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_jemalloc() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 tar xjf jemalloc-$jemalloc_version.tar.bz2
-cd jemalloc-$jemalloc_version
+pushd jemalloc-$jemalloc_version
 LDFLAGS="${LDFLAGS} -lrt" ./configure
 make -j ${THREAD} && make install
-cd ..
+popd
 if [ -f "/usr/local/lib/libjemalloc.so" ];then
     if [ "$OS_BIT" == '64' -a "$OS" == 'CentOS' ];then
         ln -s /usr/local/lib/libjemalloc.so.2 /usr/lib64/libjemalloc.so.1
@@ -30,5 +30,5 @@ else
     rm -rf jemalloc-${jemalloc_version}
     kill -9 $$
 fi
-cd ..
+popd
 }

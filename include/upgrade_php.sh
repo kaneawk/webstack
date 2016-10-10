@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Upgrade_PHP() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 [ ! -e "$php_install_dir" ] && echo "${CWARNING}PHP is not installed on your system! ${CEND}" && exit 1
 echo
 OLD_PHP_version=`$php_install_dir/bin/php -r 'echo PHP_VERSION;'`
@@ -36,17 +36,18 @@ if [ -e "php-$NEW_PHP_version.tar.gz" ];then
     tar xzf php-$NEW_PHP_version.tar.gz
     src_url=http://mirrors.linuxeye.com/oneinstack/src/fpm-race-condition.patch && Download_src
     patch -d php-$NEW_PHP_version -p0 < fpm-race-condition.patch
-    cd php-$NEW_PHP_version
-    make clean
+    pushd php-$NEW_PHP_version
     $php_install_dir/bin/php -i |grep 'Configure Command' | awk -F'=>' '{print $2}' | bash
     make ZEND_EXTRA_LIBS='-liconv'
     echo "Stoping php-fpm..."
     service php-fpm stop
     make install
-    cd ..
+    popd
     echo "Starting php-fpm..."
     service php-fpm start
     echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}$OLD_PHP_version${CEND} to ${CWARNING}$NEW_PHP_version${CEND}"
 fi
-cd ..
+  # Clean up
+  rm -rf php-${NEW_PHP_version}
+  popd
 }

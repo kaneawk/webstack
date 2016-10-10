@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install-JDK-1-6() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 
 [ "$OS" == 'CentOS' ] && [ -n "`rpm -qa | grep jdk`" ] && rpm -e `rpm -qa | grep jdk`
 
@@ -30,5 +30,5 @@ else
     echo "${CFAILURE}JDK install failed, Please contact the author! ${CEND}"
     kill -9 $$
 fi
-cd ..
+popd
 }

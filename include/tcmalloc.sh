@@ -9,13 +9,13 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_tcmalloc() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 
 tar xzf gperftools-$tcmalloc_version.tar.gz
-cd gperftools-$tcmalloc_version
+pushd gperftools-$tcmalloc_version
 ./configure --enable-frame-pointers
 make -j ${THREAD} && make install
-cd ..
+popd
 
 if [ -f "/usr/local/lib/libtcmalloc.so" ];then
     echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
@@ -27,5 +27,5 @@ else
     rm -rf gperftools-${tcmalloc_version}
     kill -9 $$
 fi
-cd ..
+popd
 }

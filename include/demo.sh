@@ -9,9 +9,9 @@
 #       https://github.com/lj2007331/oneinstack
 
 DEMO() {
-cd $oneinstack_dir/src
+pushd ${oneinstack_dir}/src
 
-[ "$IPADDR_COUNTRY"x == "CN"x ] && /bin/cp ../config/index_cn.html $wwwroot_dir/default/index.html || /bin/cp ../config/index.html $wwwroot_dir/default
+[ "${IPADDR_COUNTRY}"x == "CN"x ] && /bin/cp ${oneinstack_dir}/config/index_cn.html ${wwwroot_dir}/default/index.html || /bin/cp ${oneinstack_dir}/config/index.html ${wwwroot_dir}/default
 
 if [ -e "$php_install_dir/bin/php" ];then
     if [ "$IPADDR_COUNTRY"x == "CN"x ];then
@@ -40,5 +40,5 @@ if [ -e "$php_install_dir/bin/php" ];then
 fi
 chown -R ${run_user}.$run_user $wwwroot_dir/default
 [ -e /usr/bin/systemctl ] && systemctl daemon-reload
-cd ..
+popd
 }

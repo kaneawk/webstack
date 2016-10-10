@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_ZendGuardLoader() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 
 PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
 PHP_main_version=${PHP_detail_version%.*}
@@ -79,5 +79,5 @@ EOF
 else
     echo "${CFAILURE}PHP ZendGuardLoader module install failed, Please contact the author! ${CEND}"
 fi
-cd ..
+popd
 }

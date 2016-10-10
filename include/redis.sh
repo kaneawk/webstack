@@ -9,9 +9,9 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_redis-server() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 tar xzf redis-$redis_version.tar.gz
-cd redis-$redis_version
+pushd redis-$redis_version
 if [ "$OS_BIT" == '32' ];then
     sed -i '1i\CFLAGS= -march=i686' src/Makefile
     sed -i 's@^OPT=.*@OPT=-O2 -march=i686@' src/.make-settings
@@ -32,7 +32,7 @@ if [ -f "src/redis-server" ];then
     redis_maxmemory=`expr $Mem / 8`000000
     [ -z "`grep ^maxmemory $redis_install_dir/etc/redis.conf`" ] && sed -i "s@maxmemory <bytes>@maxmemory <bytes>\nmaxmemory `expr $Mem / 8`000000@" $redis_install_dir/etc/redis.conf
     echo "${CSUCCESS}Redis-server installed successfully! ${CEND}"
-    cd ..
+    popd
     rm -rf redis-$redis_version
     id -u redis >/dev/null 2>&1
     [ $? -ne 0 ] && useradd -M -s /sbin/nologin redis
@@ -50,30 +50,30 @@ if [ -f "src/redis-server" ];then
     #sysctl -p
     service redis-server start
 else
-    cd ..
+    popd
     rm -rf redis-${redis_version}
     rm -rf $redis_install_dir
     echo "${CFAILURE}Redis-server install failed, Please contact the author! ${CEND}"
     kill -9 $$
 fi
-cd ..
+popd
 }
 
 Install_php-redis() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 if [ -e "$php_install_dir/bin/phpize" ];then
     if [ "`$php_install_dir/bin/php -r 'echo PHP_VERSION;' | awk -F. '{print $1}'`" == '7' ];then
         tar xzf redis-${redis_pecl_for_php7_version}.tgz
-        cd redis-${redis_pecl_for_php7_version}
+        pushd redis-${redis_pecl_for_php7_version}
     else
         tar xzf redis-$redis_pecl_version.tgz
-        cd redis-$redis_pecl_version
+        pushd redis-$redis_pecl_version
     fi
     $php_install_dir/bin/phpize
     ./configure --with-php-config=$php_install_dir/bin/php-config
     make -j ${THREAD} && make install
-    cd ..
+    popd
     if [ -f "${phpExtensionDir}/redis.so" ];then
         cat > $php_install_dir/etc/php.d/ext-redis.ini << EOF
 [redis]
@@ -88,5 +88,5 @@ fi
 # Clean up
   rm -rf redis-${redis_pecl_version}
   rm -rf redis-${redis_pecl_for_php7_version}
-cd ..
+  popd
 }

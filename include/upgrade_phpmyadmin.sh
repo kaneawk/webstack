@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Upgrade_phpMyAdmin() {
-cd $oneinstack_dir/src
+pushd $oneinstack_dir/src
 [ ! -e "$wwwroot_dir/default/phpMyAdmin" ] && echo "${CWARNING}phpMyAdmin is not installed on your system! ${CEND}" && exit 1
 OLD_phpMyAdmin_version=`grep Version $wwwroot_dir/default/phpMyAdmin/README | awk '{print $2}'`
 echo "Current phpMyAdmin Version: ${CMSG}$OLD_phpMyAdmin_version${CEND}"
@@ -44,5 +44,5 @@ if [ -e "phpMyAdmin-${NEW_phpMyAdmin_version}-all-languages.tar.gz" ];then
     chown -R ${run_user}.$run_user $wwwroot_dir/default/phpMyAdmin
     echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}$OLD_phpMyAdmin_version${CEND} to ${CWARNING}$NEW_phpMyAdmin_version${CEND}"
 fi
-cd ..
+popd
 }
