@@ -30,7 +30,6 @@ if [ -e "$php_install_dir/bin/phpize" ];then
         tar xzf gmagick-$gmagick_version.tgz
         cd gmagick-$gmagick_version
     fi
-    make clean
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
     $php_install_dir/bin/phpize
     ./configure --with-php-config=$php_install_dir/bin/php-config --with-gmagick=/usr/local/graphicsmagick
@@ -48,5 +47,8 @@ EOF
         echo "${CFAILURE}PHP gmagick module install failed, Please contact the author! ${CEND}"
     fi
 fi
+  # Clean up
+  rm -rf gmagick-${gmagick_for_php7_version}
+  rm -rf gmagick-${gmagick_version}
 cd ..
 }

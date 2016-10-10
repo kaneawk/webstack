@@ -14,7 +14,6 @@ cd $oneinstack_dir/src
 /bin/mv master eaccelerator-eaccelerator-42067ac.tar.gz
 tar xzf eaccelerator-eaccelerator-42067ac.tar.gz
 cd eaccelerator-eaccelerator-42067ac
-make clean
 $php_install_dir/bin/phpize
 ./configure --enable-eaccelerator=shared --with-php-config=$php_install_dir/bin/php-config
 make -j ${THREAD} && make install
@@ -48,5 +47,7 @@ EOF
 else
     echo "${CFAILURE}Accelerator module install failed, Please contact the author! ${CEND}"
 fi
+  # Cleanup
+  rm -rf eaccelerator-eaccelerator-42067ac
 cd ..
 }

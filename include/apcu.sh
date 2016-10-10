@@ -22,6 +22,7 @@ Install_APCU() {
   ${php_install_dir}/bin/phpize
   ./configure --with-php-config=${php_install_dir}/bin/php-config
   make -j ${THREAD} && make install
+  popd
   if [ -f "${phpExtensionDir}/apcu.so" ]; then
     cat > ${php_install_dir}/etc/php.d/ext-apcu.ini << EOF
 [apcu]
@@ -37,7 +38,6 @@ EOF
   else
     echo "${CFAILURE}APCU module install failed, Please contact the author! ${CEND}"
   fi
-  popd
   # Clean up
   rm -rf apcu-${apcu_version}
   rm -rf apcu-${apcu_for_php7_version}

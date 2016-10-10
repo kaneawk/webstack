@@ -30,13 +30,11 @@ if [ -e "$php_install_dir/bin/phpize" ];then
         tar xzf imagick-$imagick_version.tgz
         cd imagick-$imagick_version
     fi
-    make clean
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
     $php_install_dir/bin/phpize
     ./configure --with-php-config=$php_install_dir/bin/php-config --with-imagick=/usr/local/imagemagick
     make -j ${THREAD} && make install
     cd ..
-    rm -rf imagick-$imagick_version
 
     if [ -f "${phpExtensionDir}/imagick.so" ];then
         cat > $php_install_dir/etc/php.d/ext-imagick.ini << EOF
@@ -48,5 +46,8 @@ EOF
         echo "${CFAILURE}PHP imagick module install failed, Please contact the author! ${CEND}"
     fi
 fi
+  # Clean up
+  rm -rf imagick-${imagick_version}
+  rm -rf imagick-${imagick_for_php53_version}
 cd ..
 }

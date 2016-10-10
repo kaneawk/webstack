@@ -238,7 +238,7 @@ checkDownload(){
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" -o "${tryDlCount}" == "6" ] && break || continue
       done
-      if [ "${tryDlCount}" == "6" -o "${tryDlCount}" == "6" ]; then
+      if [ "${tryDlCount}" == "6" ]; then
         echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
         kill -9 $$
       else
@@ -278,7 +278,7 @@ checkDownload(){
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" -o "${tryDlCount}" == "6" ] && break || continue
       done
-      if [ "${tryDlCount}" == "6" -o "${tryDlCount}" == "6" ]; then
+      if [ "${tryDlCount}" == "6" ]; then
         echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
         kill -9 $$
       else
@@ -317,7 +317,7 @@ checkDownload(){
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" -o "${tryDlCount}" == "6" ] && break || continue
       done
-      if [ "${tryDlCount}" == "6" -o "${tryDlCount}" == "6" ]; then
+      if [ "${tryDlCount}" == "6" ]; then
         echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
         kill -9 $$
       else
@@ -352,7 +352,7 @@ checkDownload(){
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${PERCONA_TAR_MD5}" -o "${tryDlCount}" == "6" ] && break || continue
       done
-      if [ "${tryDlCount}" == "6" -o "${tryDlCount}" == "6" ]; then
+      if [ "${tryDlCount}" == "6" ]; then
         echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
         kill -9 $$
       else
@@ -388,7 +388,7 @@ checkDownload(){
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${PERCONA_TAR_MD5}" -o "${tryDlCount}" == "6" ] && break || continue
       done
-      if [ "${tryDlCount}" == "6" -o "${tryDlCount}" == "6" ]; then
+      if [ "${tryDlCount}" == "6" ]; then
         echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
         kill -9 $$
       else
@@ -494,10 +494,10 @@ checkDownload(){
       src_url=http://pecl.php.net/get/apcu-${apcu_for_php7_version}.tgz && Download_src
     fi
   fi
-  if [ "${PHP_cache}" == "4" -a "${PHP_version}" == "2" ];then
+  if [ "${PHP_cache}" == "4" -a "${PHP_version}" == "2" ]; then
     echo "Download eaccelerator 1.0 dev..."
     src_url=https://github.com/eaccelerator/eaccelerator/tarball/master && Download_src
-  elif [ "${PHP_cache}" == "4" -a "${PHP_version}" == "1" ];then
+  elif [ "${PHP_cache}" == "4" -a "${PHP_version}" == "1" ]; then
     echo "Download eaccelerator 0.9..."
     src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_version}.tar.bz2 && Download_src
   fi
@@ -619,6 +619,7 @@ checkDownload(){
     src_url=http://www.memcached.org/files/memcached-${memcached_version}.tar.gz && Download_src
     if [ "${PHP_version}" == "5" ]; then
       echo "Download pecl memcache for php 7.x..."
+      # src_url=https://codeload.github.com/websupport-sk/pecl-memcache/zip/php7 && Download_src
       src_url=${mirrorLink}/pecl-memcache-php7.tgz && Download_src
       echo "Download php-memcached for php 7.x..."
       src_url=${mirrorLink}/php-memcached-php7.tgz && Download_src

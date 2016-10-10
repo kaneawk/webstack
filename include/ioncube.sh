@@ -53,11 +53,12 @@ Install_ionCube() {
       ;;
   esac
 
-  rm -rf ioncube
   cat > ${php_install_dir}/etc/php.d/ext-0ioncube.ini << EOF
 [ionCube Loader]
 zend_extension=${zend_extension}
 EOF
   [ "${Apache_version}" != '1' -a "${Apache_version}" != '2' ] && service php-fpm restart || service httpd restart
+  # Clean up
+  rm -rf ioncube
   popd
 }

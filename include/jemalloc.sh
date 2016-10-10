@@ -14,6 +14,7 @@ tar xjf jemalloc-$jemalloc_version.tar.bz2
 cd jemalloc-$jemalloc_version
 LDFLAGS="${LDFLAGS} -lrt" ./configure
 make -j ${THREAD} && make install
+cd ..
 if [ -f "/usr/local/lib/libjemalloc.so" ];then
     if [ "$OS_BIT" == '64' -a "$OS" == 'CentOS' ];then
         ln -s /usr/local/lib/libjemalloc.so.2 /usr/lib64/libjemalloc.so.1
@@ -23,10 +24,10 @@ if [ -f "/usr/local/lib/libjemalloc.so" ];then
     echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
     ldconfig
     echo "${CSUCCESS}jemalloc module installed successfully! ${CEND}"
-    cd ..
-    rm -rf jemalloc-$jemalloc_version
+    rm -rf jemalloc-${jemalloc_version}
 else
     echo "${CFAILURE}jemalloc install failed, Please contact the author! ${CEND}"
+    rm -rf jemalloc-${jemalloc_version}
     kill -9 $$
 fi
 cd ..

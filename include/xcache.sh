@@ -13,7 +13,6 @@ cd $oneinstack_dir/src
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 tar xzf xcache-$xcache_version.tar.gz
 cd xcache-$xcache_version
-make clean
 $php_install_dir/bin/phpize
 ./configure --enable-xcache --enable-xcache-coverager --enable-xcache-optimizer --with-php-config=$php_install_dir/bin/php-config
 make -j ${THREAD} && make install
@@ -60,11 +59,11 @@ xcache.coverager_autostart = On
 xcache.coveragedump_directory = ""
 EOF
     echo "${CSUCCESS}Xcache module installed successfully! ${CEND}"
-    cd ..
-    rm -rf xcache-$xcache_version
     [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
 else
     echo "${CFAILURE}Xcache module install failed, Please contact the author! ${CEND}"
 fi
-cd ..
+# Clean up
+  rm -rf xcache-${xcache_version}
+  popd
 }

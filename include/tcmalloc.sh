@@ -15,15 +15,16 @@ tar xzf gperftools-$tcmalloc_version.tar.gz
 cd gperftools-$tcmalloc_version
 ./configure --enable-frame-pointers
 make -j ${THREAD} && make install
+cd ..
 
 if [ -f "/usr/local/lib/libtcmalloc.so" ];then
     echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
     ldconfig
     echo "${CSUCCESS}tcmalloc module installed successfully! ${CEND}"
-    cd ..
     rm -rf gperftools-$tcmalloc_version
 else
     echo "${CFAILURE}tcmalloc module install failed, Please contact the author! ${CEND}"
+    rm -rf gperftools-${tcmalloc_version}
     kill -9 $$
 fi
 cd ..

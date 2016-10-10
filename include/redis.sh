@@ -50,6 +50,8 @@ if [ -f "src/redis-server" ];then
     #sysctl -p
     service redis-server start
 else
+    cd ..
+    rm -rf redis-${redis_version}
     rm -rf $redis_install_dir
     echo "${CFAILURE}Redis-server install failed, Please contact the author! ${CEND}"
     kill -9 $$
@@ -68,22 +70,23 @@ if [ -e "$php_install_dir/bin/phpize" ];then
         tar xzf redis-$redis_pecl_version.tgz
         cd redis-$redis_pecl_version
     fi
-    make clean
     $php_install_dir/bin/phpize
     ./configure --with-php-config=$php_install_dir/bin/php-config
     make -j ${THREAD} && make install
+    cd ..
     if [ -f "${phpExtensionDir}/redis.so" ];then
         cat > $php_install_dir/etc/php.d/ext-redis.ini << EOF
 [redis]
 extension=redis.so
 EOF
         echo "${CSUCCESS}PHP Redis module installed successfully! ${CEND}"
-        cd ..
-        rm -rf redis-$redis_pecl_version
         [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
     else
         echo "${CFAILURE}PHP Redis module install failed, Please contact the author! ${CEND}"
     fi
 fi
+# Clean up
+  rm -rf redis-${redis_pecl_version}
+  rm -rf redis-${redis_pecl_for_php7_version}
 cd ..
 }

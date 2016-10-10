@@ -13,10 +13,10 @@ cd $oneinstack_dir/src
 phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 tar xzf zendopcache-$zendopcache_version.tgz
 cd zendopcache-$zendopcache_version
-make clean
 $php_install_dir/bin/phpize
 ./configure --with-php-config=$php_install_dir/bin/php-config
 make -j ${THREAD} && make install
+cd ..
 if [ -f "${phpExtensionDir}/opcache.so" ];then
     cat > $php_install_dir/etc/php.d/ext-opcache.ini << EOF
 [opcache]
@@ -32,11 +32,11 @@ opcache.enable_cli=1
 ;opcache.optimization_level=0
 EOF
     echo "${CSUCCESS}PHP OPcache module installed successfully! ${CEND}"
-    cd ..
-    rm -rf zendopcache-$zendopcache_version
     [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
 else
     echo "${CFAILURE}PHP OPcache module install failed, Please contact the author! ${CEND}"
 fi
+# Clean up
+rm -rf zendopcache-${zendopcache_version}
 cd ..
 }
