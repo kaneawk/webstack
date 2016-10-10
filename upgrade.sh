@@ -41,7 +41,7 @@ PUBLIC_IPADDR=`./include/get_public_ipaddr.py`
 IPADDR_COUNTRY=`./include/get_ipaddr_state.py $PUBLIC_IPADDR | awk '{print $1}'`
 
 Usage(){
-printf "
+  printf "
 Usage: $0 [ ${CMSG}web${CEND} | ${CMSG}db${CEND} | ${CMSG}php${CEND} | ${CMSG}redis${CEND} | ${CMSG}phpmyadmin${CEND} ]
 ${CMSG}web${CEND}            --->Upgrade Nginx/Tengine/OpenResty
 ${CMSG}db${CEND}             --->Upgrade MySQL/MariaDB/Percona
@@ -53,7 +53,7 @@ ${CMSG}phpmyadmin${CEND}     --->Upgrade phpMyAdmin
 }
 
 Menu(){
-while :; do
+  while :; do
     printf "
 What Are You Doing?
 \t${CMSG}1${CEND}. Upgrade Nginx/Tengine/OpenResty
@@ -65,77 +65,77 @@ What Are You Doing?
 "
     echo
     read -p "Please input the correct option: " Number
-    if [[ ! $Number =~ ^[1-5,q]$ ]];then
-        echo "${CWARNING}input error! Please only input 1,2,3,4,5 and q${CEND}"
+    if [[ ! $Number =~ ^[1-5,q]$ ]]; then
+      echo "${CWARNING}input error! Please only input 1,2,3,4,5 and q${CEND}"
     else
-        case "$Number" in
+      case "$Number" in
         1)
-            if [ -e "$nginx_install_dir/sbin/nginx" ];then
-                Upgrade_Nginx
-            elif [ -e "$tengine_install_dir/sbin/nginx" ];then
-                Upgrade_Tengine
-            elif [ -e "$openresty_install_dir/nginx/sbin/nginx" ];then
-                Upgrade_OpenResty
-            fi
-            ;;
+          if [ -e "$nginx_install_dir/sbin/nginx" ]; then
+            Upgrade_Nginx
+          elif [ -e "$tengine_install_dir/sbin/nginx" ]; then
+            Upgrade_Tengine
+          elif [ -e "$openresty_install_dir/nginx/sbin/nginx" ]; then
+            Upgrade_OpenResty
+          fi
+          ;;
 
         2)
-            Upgrade_DB
-            ;;
+          Upgrade_DB
+          ;;
 
         3)
-            Upgrade_PHP
-            ;;
+          Upgrade_PHP
+          ;;
         4)
-            Upgrade_Redis
-            ;;
+          Upgrade_Redis
+          ;;
 
         5)
-            Upgrade_phpMyAdmin
-            ;;
+          Upgrade_phpMyAdmin
+          ;;
 
         q)
-            exit
-            ;;
-        esac
+          exit
+          ;;
+      esac
     fi
-done
+  done
 }
 
-if [ $# == 0 ];then
+if [ $# == 0 ]; then
     Menu
-elif [ $# == 1 ];then
-    case $1 in
+elif [ $# == 1 ]; then
+  case $1 in
     web)
-        if [ -e "$nginx_install_dir/sbin/nginx" ];then
-            Upgrade_Nginx
-        elif [ -e "$tengine_install_dir/sbin/nginx" ];then
-            Upgrade_Tengine
-        elif [ -e "$openresty_install_dir/nginx/sbin/nginx" ];then
-            Upgrade_OpenResty
-        fi
-        ;;
+      if [ -e "$nginx_install_dir/sbin/nginx" ]; then
+        Upgrade_Nginx
+      elif [ -e "$tengine_install_dir/sbin/nginx" ]; then
+        Upgrade_Tengine
+      elif [ -e "$openresty_install_dir/nginx/sbin/nginx" ]; then
+        Upgrade_OpenResty
+      fi
+      ;;
 
     db)
-        Upgrade_DB
-        ;;
+      Upgrade_DB
+      ;;
 
     php)
-        Upgrade_PHP
-        ;;
+      Upgrade_PHP
+      ;;
 
     redis)
-        Upgrade_Redis
-        ;;
+      Upgrade_Redis
+      ;;
 
     phpmyadmin)
-        Upgrade_phpMyAdmin
-        ;;
+      Upgrade_phpMyAdmin
+      ;;
 
     *)
-        Usage
-        ;;
-    esac
+      Usage
+      ;;
+  esac
 else
-    Usage
+  Usage
 fi

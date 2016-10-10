@@ -9,15 +9,15 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_XCache() {
-pushd $oneinstack_dir/src
+  pushd $oneinstack_dir/src
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
-tar xzf xcache-$xcache_version.tar.gz
-pushd xcache-$xcache_version
-$php_install_dir/bin/phpize
-./configure --enable-xcache --enable-xcache-coverager --enable-xcache-optimizer --with-php-config=$php_install_dir/bin/php-config
-make -j ${THREAD} && make install
-popd
-if [ -f "${phpExtensionDir}/xcache.so" ];then
+  tar xzf xcache-$xcache_version.tar.gz
+  pushd xcache-$xcache_version
+  $php_install_dir/bin/phpize
+  ./configure --enable-xcache --enable-xcache-coverager --enable-xcache-optimizer --with-php-config=$php_install_dir/bin/php-config
+  make -j ${THREAD} && make install
+  popd
+  if [ -f "${phpExtensionDir}/xcache.so" ]; then
     /bin/cp -R htdocs $wwwroot_dir/default/xcache
     chown -R ${run_user}.$run_user $wwwroot_dir/default/xcache
     touch /tmp/xcache;chown ${run_user}.$run_user /tmp/xcache
@@ -61,10 +61,10 @@ xcache.coveragedump_directory = ""
 EOF
     echo "${CSUCCESS}Xcache module installed successfully! ${CEND}"
     [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
-else
+  else
     echo "${CFAILURE}Xcache module install failed, Please contact the author! ${CEND}"
-fi
-# Clean up
+  fi
+  # Clean up
   rm -rf xcache-${xcache_version}
   popd
 }

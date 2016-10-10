@@ -76,7 +76,7 @@ Install_Percona-5-5() {
     kill -9 $$
   fi
 
-/bin/cp -f ${percona_install_dir}/support-files/mysql.server /etc/init.d/mysqld
+  /bin/cp -f ${percona_install_dir}/support-files/mysql.server /etc/init.d/mysqld
   sed -i "s@^basedir=.*@basedir=${percona_install_dir}@" /etc/init.d/mysqld
   sed -i "s@^datadir=.*@datadir=${percona_data_dir}@" /etc/init.d/mysqld
   chmod +x /etc/init.d/mysqld
@@ -213,7 +213,7 @@ EOF
     sed -i 's@^table_open_cache.*@table_open_cache = 1024@' /etc/my.cnf
   fi
 
-${percona_install_dir}/scripts/mysql_install_db --user=mysql --basedir=${percona_install_dir} --datadir=${percona_data_dir}
+  ${percona_install_dir}/scripts/mysql_install_db --user=mysql --basedir=${percona_install_dir} --datadir=${percona_data_dir}
 
   chown mysql.mysql -R ${percona_data_dir}
   [ -d "/etc/mysql" ] && mv /etc/mysql{,_bk}

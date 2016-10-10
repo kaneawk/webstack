@@ -12,23 +12,23 @@ Install_GraphicsMagick() {
 pushd $oneinstack_dir/src
 tar xzf GraphicsMagick-$GraphicsMagick_version.tar.gz
 pushd GraphicsMagick-$GraphicsMagick_version
-./configure --prefix=/usr/local/graphicsmagick --enable-shared --enable-static
-make -j ${THREAD} && make install
-popd
+  ./configure --prefix=/usr/local/graphicsmagick --enable-shared --enable-static
+  make -j ${THREAD} && make install
+  popd
 rm -rf GraphicsMagick-$GraphicsMagick_version
-popd
+  popd
 }
 
 Install_php-gmagick() {
-pushd $oneinstack_dir/src
-phpExtensionDir=$($php_install_dir/bin/php-config --extension-dir)
-if [ -e "$php_install_dir/bin/phpize" ];then
-    if [ "`$php_install_dir/bin/php -r 'echo PHP_VERSION;' | awk -F. '{print $1}'`" == '7' ];then
-        tar xzf gmagick-${gmagick_for_php7_version}.tgz
-        pushd gmagick-${gmagick_for_php7_version}
+  pushd $oneinstack_dir/src
+  phpExtensionDir=$($php_install_dir/bin/php-config --extension-dir)
+  if [ -e "$php_install_dir/bin/phpize" ]; then
+    if [ "`$php_install_dir/bin/php -r 'echo PHP_VERSION;' | awk -F. '{print $1}'`" == '7' ]; then
+      tar xzf gmagick-${gmagick_for_php7_version}.tgz
+      pushd gmagick-${gmagick_for_php7_version}
     else
-        tar xzf gmagick-$gmagick_version.tgz
-        pushd gmagick-$gmagick_version
+      tar xzf gmagick-$gmagick_version.tgz
+      pushd gmagick-$gmagick_version
     fi
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
     $php_install_dir/bin/phpize
@@ -36,18 +36,18 @@ if [ -e "$php_install_dir/bin/phpize" ];then
     make -j ${THREAD} && make install
     popd
 
-    if [ -f "${phpExtensionDir}/gmagick.so" ];then
-        cat > $php_install_dir/etc/php.d/ext-gmagick.ini << EOF
+    if [ -f "${phpExtensionDir}/gmagick.so" ]; then
+      cat > $php_install_dir/etc/php.d/ext-gmagick.ini << EOF
 [gmagick]
 extension=gmagick.so
 EOF
-        [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
+      [ "$Apache_version" != '1' -a "$Apache_version" != '2' ] && service php-fpm restart || service httpd restart
     else
-        echo "${CFAILURE}PHP gmagick module install failed, Please contact the author! ${CEND}"
+      echo "${CFAILURE}PHP gmagick module install failed, Please contact the author! ${CEND}"
     fi
-fi
+  fi
   # Clean up
   rm -rf gmagick-${gmagick_for_php7_version}
   rm -rf gmagick-${gmagick_version}
-popd
+  popd
 }

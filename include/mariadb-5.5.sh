@@ -35,7 +35,7 @@ Install_MariaDB-5-5() {
     elif [ "${je_tc_malloc}" == "2" ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ltcmalloc'"
     fi
-    
+
     if [ "${armPlatform}" == "y" ]; then
       patch -p1 < ../mysql-5.5-fix-arm-client_plugin.patch
     fi

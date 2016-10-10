@@ -13,14 +13,14 @@ yum clean all
 
 yum makecache
 
-if [ "$CentOS_RHEL_version" == '7' ];then
+if [ "$CentOS_RHEL_version" == '7' ]; then
     yum -y groupremove "Basic Web Server" "MySQL Database server" "MySQL Database client" "File and Print Server"
     yum -y install iptables-services
     systemctl mask firewalld.service
     systemctl enable iptables.service
-elif [ "$CentOS_RHEL_version" == '6' ];then
+elif [ "$CentOS_RHEL_version" == '6' ]; then
     yum -y groupremove "FTP Server" "PostgreSQL Database client" "PostgreSQL Database server" "MySQL Database server" "MySQL Database client" "Web Server" "Office Suite and Productivity" "E-mail server" "Ruby Support" "Printing client"
-elif [ "$CentOS_RHEL_version" == '5' ];then
+elif [ "$CentOS_RHEL_version" == '5' ]; then
     yum -y groupremove "FTP Server" "Windows File Server" "PostgreSQL Database" "News Server" "MySQL Database" "DNS Name Server" "Web Server" "Dialup Networking Support" "Mail Server" "Ruby" "Office/Productivity" "Sound and Video" "Printing Support" "OpenFabrics Enterprise Distribution"
 fi
 
@@ -35,7 +35,7 @@ done
 yum -y update bash openssl glibc
 
 # use gcc-4.4
-if [ -n "`gcc --version | head -n1 | grep '4\.1\.'`" ];then
+if [ -n "`gcc --version | head -n1 | grep '4\.1\.'`" ]; then
     yum -y install gcc44 gcc44-c++ libstdc++44-devel
     export CC="gcc44" CXX="g++44"
 fi
@@ -134,15 +134,15 @@ net.netfilter.nf_conntrack_tcp_timeout_established = 3600
 EOF
 sysctl -p
 
-if [ "$CentOS_RHEL_version" == '5' ];then
+if [ "$CentOS_RHEL_version" == '5' ]; then
     sed -i 's@^[3-6]:2345:respawn@#&@g' /etc/inittab
     sed -i 's@^ca::ctrlaltdel@#&@' /etc/inittab
     sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
-elif [ "$CentOS_RHEL_version" == '6' ];then
+elif [ "$CentOS_RHEL_version" == '6' ]; then
     sed -i 's@^ACTIVE_CONSOLES.*@ACTIVE_CONSOLES=/dev/tty[1-2]@' /etc/sysconfig/init
     sed -i 's@^start@#start@' /etc/init/control-alt-delete.conf
     sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
-elif [ "$CentOS_RHEL_version" == '7' ];then
+elif [ "$CentOS_RHEL_version" == '7' ]; then
     sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/locale.conf
 fi
 
@@ -151,13 +151,13 @@ ntpdate pool.ntp.org
 [ ! -e "/var/spool/cron/root" -o -z "`grep 'ntpdate' /var/spool/cron/root`" ] && { echo "*/20 * * * * `which ntpdate` pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/root;chmod 600 /var/spool/cron/root; }
 
 # iptables
-if [ -e '/etc/sysconfig/iptables' ] && [ -n "`grep '^:INPUT DROP' /etc/sysconfig/iptables`" -a -n "`grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/sysconfig/iptables`" -a -n "`grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/sysconfig/iptables`" ];then
+if [ -e '/etc/sysconfig/iptables' ] && [ -n "`grep '^:INPUT DROP' /etc/sysconfig/iptables`" -a -n "`grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/sysconfig/iptables`" -a -n "`grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/sysconfig/iptables`" ]; then
     IPTABLES_STATUS=yes
 else
     IPTABLES_STATUS=no
 fi
 
-if [ "$IPTABLES_STATUS" == 'no' ];then
+if [ "$IPTABLES_STATUS" == 'no' ]; then
     [ -e '/etc/sysconfig/iptables' ] && /bin/mv /etc/sysconfig/iptables{,_bk}
     cat > /etc/sysconfig/iptables << EOF
 # Firewall configuration written by system-config-securitylevel
@@ -188,7 +188,7 @@ service iptables restart
 service sshd restart
 
 # install tmux
-if [ ! -e "`which tmux`" ];then
+if [ ! -e "`which tmux`" ]; then
     cd src
     tar xzf libevent-${libevent_version}.tar.gz
     cd libevent-${libevent_version}
@@ -202,7 +202,7 @@ if [ ! -e "`which tmux`" ];then
     make -j ${THREAD} && make install
     cd ../../
 
-    if [ "$OS_BIT" == '64' ];then
+    if [ "$OS_BIT" == '64' ]; then
         ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib64/libevent-2.0.so.5
     else
         ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib/libevent-2.0.so.5
@@ -210,7 +210,7 @@ if [ ! -e "`which tmux`" ];then
 fi
 
 # install htop
-if [ ! -e "`which htop`" ];then
+if [ ! -e "`which htop`" ]; then
     cd src
     tar xzf htop-${htop_version}.tar.gz
     cd htop-${htop_version}

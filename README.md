@@ -21,7 +21,7 @@ Script properties:
 - Provide local backup and remote backup (rsync between servers) script
 - Provided under HHVM install CentOS 6,7
 
-## How to use 
+## How to use
 
 If your server system: CentOS/Redhat (Do not enter "//" and "// subsequent sentence)
 ```bash
@@ -42,7 +42,7 @@ screen -S oneinstack    // If network interruption, you can execute the command 
 ./install.sh   // Do not sh install.sh or bash install.sh such execution
 ```
 
-## How to add Extensions 
+## How to add Extensions
 
 ```bash
 cd ~/oneinstack    // Must enter the directory execution under oneinstack
@@ -105,7 +105,7 @@ service httpd {start|restart|stop}
 ```
 Tomcat:
 ```bash
-service tomcat {start|stop|status|restart} 
+service tomcat {start|stop|status|restart}
 ```
 Pure-Ftpd:
 ```bash
@@ -120,13 +120,13 @@ Memcached:
 service memcached {start|stop|status|restart|reload}
 ```
 
-## How to upgrade 
+## How to upgrade
 
 ```bash
 ./upgrade.sh
 ```
 
-## How to uninstall 
+## How to uninstall
 
 ```bash
 ./uninstall.sh
