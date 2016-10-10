@@ -52,6 +52,7 @@ sed -i "s@^oneinstack_dir.*@oneinstack_dir=`pwd`@" ./options.conf
 # Check PHP
 if [ -e "$php_install_dir/bin/phpize" ];then
     PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
+    phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
     PHP_main_version=${PHP_detail_version%.*}
 fi
 
@@ -67,7 +68,7 @@ Restart_PHP() {
 
 # Check succ
 Check_succ() {
-[ -f "`$php_install_dir/bin/php-config --extension-dir`/${PHP_extension}.so" ] && { Restart_PHP; echo;echo "${CSUCCESS}PHP $PHP_extension module installed successfully! ${CEND}"; }
+[ -f "${phpExtensionDir}/${PHP_extension}.so" ] && { Restart_PHP; echo;echo "${CSUCCESS}PHP $PHP_extension module installed successfully! ${CEND}"; }
 }
 
 # Uninstall succ
@@ -384,7 +385,7 @@ What Are You Doing?
                     Install_php-memcache
                     PHP_extension=memcached && Check_PHP_Extension
                     Install_php-memcached
-                    [ -f "`$php_install_dir/bin/php-config --extension-dir`/memcache.so" -a "`$php_install_dir/bin/php-config --extension-dir`/memcached.so" ] && { Restart_PHP; echo;echo "${CSUCCESS}PHP memcache/memcached module installed successfully! ${CEND}"; }
+                    [ -f "${phpExtensionDir}/memcache.so" -a "${phpExtensionDir}/memcached.so" ] && { Restart_PHP; echo;echo "${CSUCCESS}PHP memcache/memcached module installed successfully! ${CEND}"; }
                 fi
             else
                 PHP_extension=memcache && Uninstall_succ

@@ -21,6 +21,7 @@ cd ..
 
 Install_php-gmagick() {
 cd $oneinstack_dir/src
+phpExtensionDir=$($php_install_dir/bin/php-config --extension-dir)
 if [ -e "$php_install_dir/bin/phpize" ];then
     if [ "`$php_install_dir/bin/php -r 'echo PHP_VERSION;' | awk -F. '{print $1}'`" == '7' ];then
         tar xzf gmagick-2.0.4RC1.tgz
@@ -37,7 +38,7 @@ if [ -e "$php_install_dir/bin/phpize" ];then
     cd ..
     rm -rf gmagick-$gmagick_version
 
-    if [ -f "`$php_install_dir/bin/php-config --extension-dir`/gmagick.so" ];then
+    if [ -f "${phpExtensionDir}/gmagick.so" ];then
         cat > $php_install_dir/etc/php.d/ext-gmagick.ini << EOF
 [gmagick]
 extension=gmagick.so

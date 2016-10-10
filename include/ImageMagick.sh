@@ -21,6 +21,7 @@ cd ..
 
 Install_php-imagick() {
 cd $oneinstack_dir/src
+phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 if [ -e "$php_install_dir/bin/phpize" ];then
     if [ "`$php_install_dir/bin/php -r 'echo PHP_VERSION;' | awk -F. '{print $1"."$2}'`" == '5.3' ];then
         tar xzf imagick-${imagick_for_php53_version}.tgz
@@ -37,7 +38,7 @@ if [ -e "$php_install_dir/bin/phpize" ];then
     cd ..
     rm -rf imagick-$imagick_version
 
-    if [ -f "`$php_install_dir/bin/php-config --extension-dir`/imagick.so" ];then
+    if [ -f "${phpExtensionDir}/imagick.so" ];then
         cat > $php_install_dir/etc/php.d/ext-imagick.ini << EOF
 [imagick]
 extension=imagick.so
