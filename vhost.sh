@@ -117,11 +117,11 @@ Choose_env() {
   fi
 
   if [ "$NGX_FLAG" == 'php' ]; then
-    NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n    #fastcgi_pass remote_php_ip:9000;\n    fastcgi_pass unix:/dev/shm/php-cgi.sock;\n    fastcgi_index index.php;\n    include fastcgi.conf;\n  }")
+    NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n  #fastcgi_pass remote_php_ip:9000;\n  fastcgi_pass unix:/dev/shm/php-cgi.sock;\n  fastcgi_index index.php;\n  include fastcgi.conf;\n}")
   elif [ "$NGX_FLAG" == 'java' ]; then
-    NGX_CONF=$(echo -e "location ~ {\n    proxy_pass http://127.0.0.1:8080;\n    include proxy.conf;\n  }")
+    NGX_CONF=$(echo -e "location ~ {\n  proxy_pass http://127.0.0.1:8080;\n  include proxy.conf;\n}")
   elif [ "$NGX_FLAG" == 'hhvm' ]; then
-    NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n    fastcgi_pass unix:/var/log/hhvm/sock;\n    fastcgi_index index.php;\n    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n    include fastcgi_params;\n  }")
+    NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n  fastcgi_pass unix:/var/log/hhvm/sock;\n  fastcgi_index index.php;\n  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n  include fastcgi_params;\n}")
   fi
 }
 
@@ -380,7 +380,7 @@ Nginx_anti_hotlinking() {
     else
       domain_allow_all=$domain_allow
     fi
-    anti_hotlinking=$(echo -e "location ~ .*\.(wma|wmv|asf|mp3|mmf|zip|rar|jpg|gif|png|swf|flv)$ {\n    valid_referers none blocked $domain_allow_all;\n    if (\$invalid_referer) {\n      #rewrite ^/ http://www.example.com/403.html;\n      return 403;\n    }\n  }")
+    anti_hotlinking=$(echo -e "location ~ .*\.(wma|wmv|asf|mp3|mmf|zip|rar|jpg|gif|png|swf|flv|mp4)$ {\n    valid_referers none blocked $domain_allow_all;\n    if (\$invalid_referer) {\n      #rewrite ^/ http://www.example.com/403.html;\n      return 403;\n    }\n  }")
   else
     anti_hotlinking=
   fi
@@ -445,7 +445,7 @@ server {
   root $vhostdir;
   $Nginx_redirect
   $anti_hotlinking
-  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
+  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
     expires 30d;
     access_log off;
   }
@@ -535,7 +535,7 @@ server {
   $Nginx_redirect
   $anti_hotlinking
   $NGX_CONF
-  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
+  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
     expires 30d;
     access_log off;
   }
@@ -680,7 +680,7 @@ server {
     proxy_pass http://127.0.0.1:88;
     include proxy.conf;
   }
-  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
+  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
     expires 30d;
     access_log off;
   }
