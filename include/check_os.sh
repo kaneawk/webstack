@@ -16,15 +16,15 @@ if [ -n "$(grep 'Aliyun Linux release' /etc/issue)" -o -e /etc/redhat-release ];
 elif [ -n "$(grep 'Amazon Linux AMI release' /etc/issue)" -o -e /etc/system-release ]; then
   OS=CentOS
   CentOS_RHEL_version=6
-elif [ -n "$(grep bian /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Debian' ]; then
+elif [ -n "$(grep 'bian' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "Debian" ]; then
   OS=Debian
   [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
   Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
-elif [ -n "$(grep Deepin /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Deepin' ]; then
+elif [ -n "$(grep 'Deepin' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "Deepin" ]; then
   OS=Debian
   [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
   Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
-elif [ -n "$(grep Ubuntu /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Ubuntu' -o -n "$(grep 'Linux Mint' /etc/issue)" ]; then
+elif [ -n "$(grep 'Ubuntu' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "Ubuntu" -o -n "$(grep 'Linux Mint' /etc/issue)" ]; then
   OS=Ubuntu
   [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
   Ubuntu_version=$(lsb_release -sr | awk -F. '{print $1}')
@@ -34,7 +34,7 @@ else
   kill -9 $$
 fi
 
-if [ $(getconf WORD_BIT) == 32 ] && [ $(getconf LONG_BIT) == 64 ]; then
+if [ "$(getconf WORD_BIT)" == "32" ] && [ "$(getconf LONG_BIT)" == "64" ]; then
   OS_BIT=64
   SYS_BIG_FLAG=x64 #jdk
   SYS_BIT_a=x86_64;SYS_BIT_b=x86_64; #mariadb
@@ -48,7 +48,7 @@ LIBC_YN=$(awk -v A=$(getconf -a | grep GNU_LIBC_VERSION | awk '{print $NF}') -v 
 [ $LIBC_YN == '0' ] && GLIBC_FLAG=linux-glibc_214 || GLIBC_FLAG=linux
 
 if uname -m | grep -Eqi "arm"; then
-  armPlatform="y"
+  armPlatform='y'
   if uname -m | grep -Eqi "armv7"; then
     TARGET_ARCH="armv7"
   elif uname -m | grep -Eqi "armv8"; then
@@ -58,18 +58,18 @@ if uname -m | grep -Eqi "arm"; then
   fi
 fi
 
-CPU=$(grep 'processor' /proc/cpuinfo | sort -u | wc -l)
+CPU=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
 let THREAD=${CPU}*2
 
 # Percona
 if [ -f "/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0" ]; then
-  if [ "${Debian_version}" == "6" ]; then
+  if [ "${Debian_version}" == '6' ]; then
     sslLibVer=ssl098
   else
     sslLibVer=ssl100
   fi
 elif [ -f "/usr/lib64/libssl.so.10" ]; then
-  if [ "${CentOS_RHEL_version}" == "5" ]; then
+  if [ "${CentOS_RHEL_version}" == '5' ]; then
     sslLibVer=ssl098e
   else
     sslLibVer=ssl101

@@ -17,22 +17,22 @@ Install_MySQL-5-6() {
   [ ! -d "${mysql_install_dir}" ] && mkdir -p ${mysql_install_dir}
   mkdir -p ${mysql_data_dir};chown mysql.mysql -R ${mysql_data_dir}
 
-  if [ "${dbInstallMethods}" == "1" ]; then
+  if [ "${dbInstallMethods}" == '1' ]; then
     tar xvf mysql-${mysql_5_6_version}-linux-glibc2.5-${SYS_BIT_b}.tar.gz
     mv mysql-${mysql_5_6_version}-linux-glibc2.5-${SYS_BIT_b}/* ${mysql_install_dir}
 
-    if [ "${je_tc_malloc}" == "1" ]; then
+    if [ "${je_tc_malloc}" == '1' ]; then
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libjemalloc.so@' ${mysql_install_dir}/bin/mysqld_safe
-    elif [ "${je_tc_malloc}" == "2" ]; then
+    elif [ "${je_tc_malloc}" == '2' ]; then
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libtcmalloc.so@' ${mysql_install_dir}/bin/mysqld_safe
     fi
-  elif [ "${dbInstallMethods}" == "2" ]; then
+  elif [ "${dbInstallMethods}" == '2' ]; then
     tar xvf mysql-${mysql_5_6_version}.tar.gz
     pushd mysql-${mysql_5_6_version}
 
-    if [ "${je_tc_malloc}" == "1" ]; then
+    if [ "${je_tc_malloc}" == '1' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ljemalloc'"
-    elif [ "${je_tc_malloc}" == "2" ]; then
+    elif [ "${je_tc_malloc}" == '2' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ltcmalloc'"
     fi
 
@@ -58,9 +58,9 @@ Install_MySQL-5-6() {
 
   if [ -d "${mysql_install_dir}/support-files" ]; then
     echo "${CSUCCESS}MySQL installed successfully! ${CEND}"
-    if [ "${dbInstallMethods}" == "1" ]; then
+    if [ "${dbInstallMethods}" == '1' ]; then
       rm -rf mysql-${mysql_5_6_version}-*-${SYS_BIT_b}
-    elif [ "${dbInstallMethods}" == "2" ]; then
+    elif [ "${dbInstallMethods}" == '2' ]; then
     rm -rf mysql-${mysql_5_6_version}
     fi
   else

@@ -65,16 +65,16 @@ What Are You Doing?
 "
     echo
     read -p "Please input the correct option: " Number
-    if [[ ! $Number =~ ^[1-5,q]$ ]]; then
+    if [[ ! "${Number}" =~ ^[1-5,q]$ ]]; then
       echo "${CWARNING}input error! Please only input 1,2,3,4,5 and q${CEND}"
     else
-      case "$Number" in
+      case "${Number}" in
         1)
-          if [ -e "$nginx_install_dir/sbin/nginx" ]; then
+          if [ -e "${nginx_install_dir}/sbin/nginx" ]; then
             Upgrade_Nginx
-          elif [ -e "$tengine_install_dir/sbin/nginx" ]; then
+          elif [ -e "${tengine_install_dir}/sbin/nginx" ]; then
             Upgrade_Tengine
-          elif [ -e "$openresty_install_dir/nginx/sbin/nginx" ]; then
+          elif [ -e "${openresty_install_dir}/nginx/sbin/nginx" ]; then
             Upgrade_OpenResty
           fi
           ;;
@@ -107,11 +107,11 @@ if [ $# == 0 ]; then
 elif [ $# == 1 ]; then
   case $1 in
     web)
-      if [ -e "$nginx_install_dir/sbin/nginx" ]; then
+      if [ -e "${nginx_install_dir}/sbin/nginx" ]; then
         Upgrade_Nginx
-      elif [ -e "$tengine_install_dir/sbin/nginx" ]; then
+      elif [ -e "${tengine_install_dir}/sbin/nginx" ]; then
         Upgrade_Tengine
-      elif [ -e "$openresty_install_dir/nginx/sbin/nginx" ]; then
+      elif [ -e "${openresty_install_dir}/nginx/sbin/nginx" ]; then
         Upgrade_OpenResty
       fi
       ;;

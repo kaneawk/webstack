@@ -17,27 +17,27 @@ Install_Percona-5-5() {
   [ ! -d "${percona_install_dir}" ] && mkdir -p ${percona_install_dir}
   mkdir -p ${percona_data_dir};chown mysql.mysql -R ${percona_data_dir}
 
-  if [ "${dbInstallMethods}" == "1" ]; then
+  if [ "${dbInstallMethods}" == '1' ]; then
     perconaVerStr1=$(echo ${percona_5_5_version} | sed "s@-@-rel@")
     tar xvf Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}.tar.gz
     mv Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}/* ${percona_install_dir}
 
-    if [ "${je_tc_malloc}" == "1" ]; then
+    if [ "${je_tc_malloc}" == '1' ]; then
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libjemalloc.so@' ${percona_install_dir}/bin/mysqld_safe
-    elif [ "${je_tc_malloc}" == "2" ]; then
+    elif [ "${je_tc_malloc}" == '2' ]; then
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libtcmalloc.so@' ${percona_install_dir}/bin/mysqld_safe
     fi
-  elif [ "${dbInstallMethods}" == "2" ]; then
+  elif [ "${dbInstallMethods}" == '2' ]; then
     tar xvf percona-server-${percona_5_5_version}.tar.gz
     pushd percona-server-${percona_5_5_version}
 
-    if [ "${je_tc_malloc}" == "1" ]; then
+    if [ "${je_tc_malloc}" == '1' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ljemalloc'"
-    elif [ "${je_tc_malloc}" == "2" ]; then
+    elif [ "${je_tc_malloc}" == '2' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ltcmalloc'"
     fi
 
-    if [ "${armPlatform}" == "y" ]; then
+    if [ "${armPlatform}" == 'y' ]; then
       patch -p1 < ../mysql-5.5-fix-arm-client_plugin.patch
     fi
 
@@ -64,9 +64,9 @@ Install_Percona-5-5() {
 
   if [ -d "${percona_install_dir}/support-files" ]; then
     echo "${CSUCCESS}Percona installed successfully! ${CEND}"
-    if [ "${dbInstallMethods}" == "1" ]; then
+    if [ "${dbInstallMethods}" == '1' ]; then
       rm -rf Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}
-    elif [ "${dbInstallMethods}" == "2" ]; then
+    elif [ "${dbInstallMethods}" == '2' ]; then
     rm -rf percona-server-${percona_5_5_version}
     fi
   else

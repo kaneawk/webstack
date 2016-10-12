@@ -11,11 +11,11 @@
 Install_ionCube() {
   pushd ${oneinstack_dir}/src
 
-  PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
+  PHP_detail_version=$(${php_install_dir}/bin/php -r "echo PHP_VERSION;")
   PHP_main_version=${PHP_detail_version%.*}
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
 
-  if [ "${OS_BIT}" == '64' ]; then
+  if [ "${OS_BIT}" == "64" ]; then
       tar xzf ioncube_loaders_lin_x86-64.tar.gz
   else
     if  [ "${TARGET_ARCH}" == "armv7" ]; then

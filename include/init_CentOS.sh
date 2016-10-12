@@ -13,14 +13,14 @@ yum clean all
 
 yum makecache
 
-if [ "$CentOS_RHEL_version" == '7' ]; then
+if [ "${CentOS_RHEL_version}" == '7' ]; then
     yum -y groupremove "Basic Web Server" "MySQL Database server" "MySQL Database client" "File and Print Server"
     yum -y install iptables-services
     systemctl mask firewalld.service
     systemctl enable iptables.service
-elif [ "$CentOS_RHEL_version" == '6' ]; then
+elif [ "${CentOS_RHEL_version}" == '6' ]; then
     yum -y groupremove "FTP Server" "PostgreSQL Database client" "PostgreSQL Database server" "MySQL Database server" "MySQL Database client" "Web Server" "Office Suite and Productivity" "E-mail server" "Ruby Support" "Printing client"
-elif [ "$CentOS_RHEL_version" == '5' ]; then
+elif [ "${CentOS_RHEL_version}" == '5' ]; then
     yum -y groupremove "FTP Server" "Windows File Server" "PostgreSQL Database" "News Server" "MySQL Database" "DNS Name Server" "Web Server" "Dialup Networking Support" "Mail Server" "Ruby" "Office/Productivity" "Sound and Video" "Printing Support" "OpenFabrics Enterprise Distribution"
 fi
 
@@ -29,7 +29,7 @@ yum check-update
 # Install needed packages
 for Package in deltarpm gcc gcc-c++ make cmake autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel libaio readline-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5-devel libidn libidn-devel openssl openssl-devel libxslt-devel libicu-devel libevent-devel libtool libtool-ltdl bison gd-devel vim-enhanced pcre-devel zip unzip ntpdate sysstat patch bc expect rsync git lsof lrzsz wget
 do
-    yum -y install $Package
+    yum -y install ${Package}
 done
 
 yum -y update bash openssl glibc
@@ -41,10 +41,10 @@ if [ -n "`gcc --version | head -n1 | grep '4\.1\.'`" ]; then
 fi
 
 # closed Unnecessary services and remove obsolete rpm package
-[ "$CentOS_RHEL_version" == '7' ] && [ "`systemctl is-active NetworkManager.service`" == 'active' ] && NM_flag=1
-for Service in `chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis|NetworkManager'`;do chkconfig --level 3 $Service off;done
-[ "$NM_flag" == '1' ] && systemctl enable NetworkManager.service
-for Service in sshd network crond iptables messagebus irqbalance syslog rsyslog;do chkconfig --level 3 $Service on;done
+[ "${CentOS_RHEL_version}" == '7' ] && [ "`systemctl is-active NetworkManager.service`" == 'active' ] && NM_flag=1
+for Service in `chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis|NetworkManager'`;do chkconfig --level 3 ${Service} off;done
+[ "${NM_flag}" == '1' ] && systemctl enable NetworkManager.service
+for Service in sshd network crond iptables messagebus irqbalance syslog rsyslog;do chkconfig --level 3 ${Service} on;done
 
 # Close SELINUX
 setenforce 0
@@ -134,15 +134,15 @@ net.netfilter.nf_conntrack_tcp_timeout_established = 3600
 EOF
 sysctl -p
 
-if [ "$CentOS_RHEL_version" == '5' ]; then
+if [ "${CentOS_RHEL_version}" == '5' ]; then
     sed -i 's@^[3-6]:2345:respawn@#&@g' /etc/inittab
     sed -i 's@^ca::ctrlaltdel@#&@' /etc/inittab
     sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
-elif [ "$CentOS_RHEL_version" == '6' ]; then
+elif [ "${CentOS_RHEL_version}" == '6' ]; then
     sed -i 's@^ACTIVE_CONSOLES.*@ACTIVE_CONSOLES=/dev/tty[1-2]@' /etc/sysconfig/init
     sed -i 's@^start@#start@' /etc/init/control-alt-delete.conf
     sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
-elif [ "$CentOS_RHEL_version" == '7' ]; then
+elif [ "${CentOS_RHEL_version}" == '7' ]; then
     sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/locale.conf
 fi
 
@@ -157,8 +157,8 @@ else
     IPTABLES_STATUS=no
 fi
 
-if [ "$IPTABLES_STATUS" == 'no' ]; then
-    [ -e '/etc/sysconfig/iptables' ] && /bin/mv /etc/sysconfig/iptables{,_bk}
+if [ "$IPTABLES_STATUS" == "no" ]; then
+    [ -e "/etc/sysconfig/iptables" ] && /bin/mv /etc/sysconfig/iptables{,_bk}
     cat > /etc/sysconfig/iptables << EOF
 # Firewall configuration written by system-config-securitylevel
 # Manual customization of this file is not recommended.
@@ -182,8 +182,8 @@ COMMIT
 EOF
 fi
 
-FW_PORT_FLAG=`grep -ow "dport $SSH_PORT" /etc/sysconfig/iptables`
-[ -z "$FW_PORT_FLAG" -a "$SSH_PORT" != '22' ] && sed -i "s@dport 22 -j ACCEPT@&\n-A INPUT -p tcp -m state --state NEW -m tcp --dport $SSH_PORT -j ACCEPT@" /etc/sysconfig/iptables
+FW_PORT_FLAG=`grep -ow "dport ${SSH_PORT}" /etc/sysconfig/iptables`
+[ -z "${FW_PORT_FLAG}" -a "${SSH_PORT}" != "22" ] && sed -i "s@dport 22 -j ACCEPT@&\n-A INPUT -p tcp -m state --state NEW -m tcp --dport ${SSH_PORT} -j ACCEPT@" /etc/sysconfig/iptables
 service iptables restart
 service sshd restart
 
@@ -202,7 +202,7 @@ if [ ! -e "`which tmux`" ]; then
     make -j ${THREAD} && make install
     cd ../../
 
-    if [ "$OS_BIT" == '64' ]; then
+    if [ "${OS_BIT}" == "64" ]; then
         ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib64/libevent-2.0.so.5
     else
         ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib/libevent-2.0.so.5

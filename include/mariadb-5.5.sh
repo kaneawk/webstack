@@ -17,26 +17,26 @@ Install_MariaDB-5-5() {
   [ ! -d "${mariadb_install_dir}" ] && mkdir -p ${mariadb_install_dir}
   mkdir -p ${mariadb_data_dir};chown mysql.mysql -R ${mariadb_data_dir}
 
-  if [ "${dbInstallMethods}" == "1" ]; then
+  if [ "${dbInstallMethods}" == '1' ]; then
     tar zxf mariadb-${mariadb_5_5_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
     mv mariadb-${mariadb_5_5_version}-*-${SYS_BIT_b}/* ${mariadb_install_dir}
 
-    if [ "${je_tc_malloc}" == "1" ]; then
+    if [ "${je_tc_malloc}" == '1' ]; then
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libjemalloc.so@' ${mariadb_install_dir}/bin/mysqld_safe
-    elif [ "${je_tc_malloc}" == "2" ]; then
+    elif [ "${je_tc_malloc}" == '2' ]; then
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libtcmalloc.so@' ${mariadb_install_dir}/bin/mysqld_safe
     fi
-  elif [ "${dbInstallMethods}" == "2" ]; then
+  elif [ "${dbInstallMethods}" == '2' ]; then
     tar xvf mariadb-${mariadb_5_5_version}.tar.gz
     pushd mariadb-${mariadb_5_5_version}
 
-    if [ "${je_tc_malloc}" == "1" ]; then
+    if [ "${je_tc_malloc}" == '1' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ljemalloc'"
-    elif [ "${je_tc_malloc}" == "2" ]; then
+    elif [ "${je_tc_malloc}" == '2' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ltcmalloc'"
     fi
 
-    if [ "${armPlatform}" == "y" ]; then
+    if [ "${armPlatform}" == 'y' ]; then
       patch -p1 < ../mysql-5.5-fix-arm-client_plugin.patch
     fi
 
@@ -63,9 +63,9 @@ Install_MariaDB-5-5() {
 
   if [ -d "${mariadb_install_dir}/support-files" ]; then
     echo "${CSUCCESS}MariaDB installed successfully! ${CEND}"
-    if [ "${dbInstallMethods}" == "1" ]; then
+    if [ "${dbInstallMethods}" == '1' ]; then
       rm -rf mariadb-${mariadb_5_5_version}-*-${SYS_BIT_b}
-    elif [ "${dbInstallMethods}" == "2" ]; then
+    elif [ "${dbInstallMethods}" == '2' ]; then
       rm -rf mariadb-${mariadb_5_5_version}
     fi
   else
