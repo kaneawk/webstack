@@ -22,7 +22,7 @@ printf "
 . ./include/color.sh
 
 # Check if user is root
-[ $(id -u) != "0" ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
+[ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
 
 [ ! -d "${pureftpd_install_dir}" ] && { echo "${CFAILURE}FTP server does not exist! ${CEND}"; exit 1; }
 
@@ -83,7 +83,7 @@ What Are You Doing?
 \t${CMSG}q${CEND}. Exit
 "
   read -p "Please input the correct option: " Number
-  if [[ ! ${Number} =~ ^[1-6,q]$ ]]; then
+  if [[ ! "${Number}" =~ ^[1-6,q]$ ]]; then
     echo "${CFAILURE}input error! Please only input 1 ~ 6 and q${CEND}"
   else
     case "${Number}" in

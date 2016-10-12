@@ -48,7 +48,7 @@ IGNRFLAG="noignr"
 SSHTIMEOUT=100
 SCPTIMEOUT=2000
 BWLIMIT=1024000
-[ ! -e 'logs' ] && mkdir logs
+[ ! -e "logs" ] && mkdir logs
 
 TEMP=`getopt -o hvVl:c:t:T:L:n --long help,version,iplist:,config:,sshtimeout:,fttimeout:,bwlimit:,log:,ignore -- "$@" 2>/dev/null`
 

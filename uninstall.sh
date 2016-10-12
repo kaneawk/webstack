@@ -24,7 +24,7 @@ printf "
 . ./include/check_dir.sh
 
 # Check if user is root
-[ $(id -u) != "0" ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
+[ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
 
 
 Usage(){
@@ -63,8 +63,8 @@ Print_web() {
   [ -d "${nginx_install_dir}" ] && echo "${nginx_install_dir}"
   [ -d "${tengine_install_dir}" ] && echo "${tengine_install_dir}"
   [ -d "${openresty_install_dir}" ] && echo "${openresty_install_dir}"
-  [ -e "/etc/init.d/nginx" ] && echo '/etc/init.d/nginx'
-  [ -e "/etc/logrotate.d/nginx" ] && echo '/etc/logrotate.d/nginx'
+  [ -e "/etc/init.d/nginx" ] && echo "/etc/init.d/nginx"
+  [ -e "/etc/logrotate.d/nginx" ] && echo "/etc/logrotate.d/nginx"
 
   [ -d "${apache_install_dir}" ] && echo "${apache_install_dir}"
   [ -e "/etc/init.d/httpd" ] && echo "/etc/init.d/httpd"
@@ -73,8 +73,8 @@ Print_web() {
   [ -d "${tomcat_install_dir}" ] && echo "${tomcat_install_dir}"
   [ -e "/etc/init.d/tomcat" ] && echo "/etc/init.d/tomcat"
   [ -e "/etc/logrotate.d/tomcat" ] && echo "/etc/logrotate.d/tomcat"
-  [ -d "/usr/java" ] && echo '/usr/java'
-  [ -d "/usr/local/apr" ] && echo '/usr/local/apr'
+  [ -d "/usr/java" ] && echo "/usr/java"
+  [ -d "/usr/local/apr" ] && echo "/usr/local/apr"
 }
 
 Uninstall_Web() {
@@ -110,7 +110,7 @@ Print_PHP() {
   [ -e "${php_install_dir}" ] && echo "${php_install_dir}"
   [ -e "/etc/init.d/php-fpm" ] && echo "/etc/init.d/php-fpm"
   [ -e "/usr/local/imagemagick" ] && echo "/usr/local/imagemagick"
-  [ -e "/usr/local/graphicsmagick" ] && echo '/usr/local/graphicsmagick'
+  [ -e "/usr/local/graphicsmagick" ] && echo "/usr/local/graphicsmagick"
 }
 
 Uninstall_PHP() {

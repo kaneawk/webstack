@@ -235,7 +235,7 @@ EOF
     #[ "${Web_yn}" == 'n' ] && sed -i "s@^listen =.*@listen = $IPADDR:9000@" ${php_install_dir}/etc/php-fpm.conf
     service php-fpm start
 
-  elif [[ ${Apache_version} =~ ^[1-2]$ ]] || [ -e "${apache_install_dir}/bin/apxs" ]; then
+  elif [[ "${Apache_version}" =~ ^[1-2]$ ]] || [ -e "${apache_install_dir}/bin/apxs" ]; then
     service httpd restart
   fi
   cd ..

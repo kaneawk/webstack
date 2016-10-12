@@ -26,7 +26,7 @@ cd src
 . ../include/download.sh
 
 # Check if user is root
-[ $(id -u) != "0" ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
+[ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
 
 PUBLIC_IPADDR=`../include/get_public_ipaddr.py`
 
@@ -87,14 +87,14 @@ Iptables_set() {
 }
 
 Def_parameter() {
-  if [ "${OS}" == 'CentOS' ]; then
+  if [ "${OS}" == "CentOS" ]; then
     while :; do echo
-      echo 'Please select Shadowsocks server version:'
+      echo "Please select Shadowsocks server version:"
       echo -e "\t${CMSG}1${CEND}. Install Shadowsocks-libev"
       echo -e "\t${CMSG}2${CEND}. Install Shadowsocks-python"
       read -p "Please input a number:(Default 1 press Enter) " SS_version
       [ -z "${SS_version}" ] && SS_version=1
-      if [[ ! ${SS_version} =~ ^[1-2]$ ]]; then
+      if [[ ! "${SS_version}" =~ ^[1-2]$ ]]; then
         echo "${CWARNING}input error! Please only input number 1,2${CEND}"
       else
         break
@@ -106,7 +106,7 @@ Def_parameter() {
     do
       yum -y install ${Package}
     done
-  elif [[ ${OS} =~ ^Ubuntu$|^Debian$ ]]; then
+  elif [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]]; then
     SS_version=2
     AddUser_shadowsocks
     Iptables_set
@@ -122,7 +122,7 @@ Install_shadowsocks-python() {
   src_url=http://mirrors.linuxeye.com/oneinstack/src/ez_setup.py && Download_src
 
   which pip > /dev/null 2>&1
-  [ $? -ne 0 ] && [ "${OS}" == 'CentOS' ] && { python ez_setup.py install; sleep 1; easy_install pip; }
+  [ $? -ne 0 ] && [ "${OS}" == "CentOS" ] && { python ez_setup.py install; sleep 1; easy_install pip; }
 
   if [ -f /usr/bin/pip ]; then
     pip install M2Crypto
@@ -132,8 +132,8 @@ Install_shadowsocks-python() {
     if [ -f /usr/bin/ssserver -o -f /usr/local/bin/ssserver ]; then
       /bin/cp ../init.d/Shadowsocks-python-init /etc/init.d/shadowsocks
       chmod +x /etc/init.d/shadowsocks
-      [ "${OS}" == 'CentOS' ] && { chkconfig --add shadowsocks; chkconfig shadowsocks on; }
-      [[ ${OS} =~ ^Ubuntu$|^Debian$ ]] && update-rc.d shadowsocks defaults
+      [ "${OS}" == "CentOS" ] && { chkconfig --add shadowsocks; chkconfig shadowsocks on; }
+      [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && update-rc.d shadowsocks defaults
       [ ! -e /usr/bin/ssserver -a -e /usr/local/bin/ssserver ] && sed -i 's@Shadowsocks_bin=.*@Shadowsocks_bin=/usr/local/bin/ssserver@' /etc/init.d/shadowsocks
     else
       echo
@@ -152,7 +152,7 @@ Install_shadowsocks-libev() {
   if [ -f  /usr/local/bin/ss-server ]; then
     /bin/cp ../init.d/Shadowsocks-libev-init /etc/init.d/shadowsocks
     chmod +x /etc/init.d/shadowsocks
-    [ "${OS}" == 'CentOS' ] && { chkconfig --add shadowsocks; chkconfig shadowsocks on; }
+    [ "${OS}" == "CentOS" ] && { chkconfig --add shadowsocks; chkconfig shadowsocks on; }
   else
     echo
     echo "${CQUESTION}Shadowsocks-libev install failed! Please visit https://oneinstack.com${CEND}"
@@ -164,7 +164,7 @@ Install_shadowsocks-libev() {
 Uninstall_shadowsocks(){
   while :; do echo
     read -p "Do you want to uninstall Shadowsocks? [y/n]: " Shadowsocks_yn
-    if [[ ! ${Shadowsocks_yn} =~ ^[y,n]$ ]]; then
+    if [[ ! "${Shadowsocks_yn}" =~ ^[y,n]$ ]]; then
       echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
     else
       break
@@ -173,8 +173,8 @@ Uninstall_shadowsocks(){
 
   if [ "${Shadowsocks_yn}" == 'y' ]; then
     [ -n "`ps -ef | grep -v grep | grep -iE "ssserver|ss-server"`" ] && /etc/init.d/shadowsocks stop
-    [ "${OS}" == 'CentOS' ] && chkconfig --del shadowsocks
-    [[ ${OS} =~ ^Ubuntu$|^Debian$ ]] && update-rc.d -f shadowsocks remove
+    [ "${OS}" == "CentOS" ] && chkconfig --del shadowsocks
+    [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && update-rc.d -f shadowsocks remove
     rm -rf /etc/shadowsocks /var/run/shadowsocks.pid /etc/init.d/shadowsocks
     if [ "${SS_version}" == '1' ]; then
       rm -f /usr/local/bin/ss-local
@@ -211,7 +211,7 @@ Uninstall_shadowsocks(){
 }
 
 Config_shadowsocks(){
-  [ ! -d '/etc/shadowsocks' ] && mkdir /etc/shadowsocks
+  [ ! -d "/etc/shadowsocks" ] && mkdir /etc/shadowsocks
   [ "${SS_version}" == '1' ] && cat > /etc/shadowsocks/config.json << EOF
 {
     "server":"0.0.0.0",

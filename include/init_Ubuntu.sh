@@ -71,7 +71,7 @@ sed -i 's@^"syntax on@syntax on@' /etc/vim/vimrc
 
 # /etc/security/limits.conf
 [ -e /etc/security/limits.d/*nproc.conf ] && rename nproc.conf nproc.conf_bk /etc/security/limits.d/*nproc.conf
-[ -z "`grep 'session required pam_limits.so' /etc/pam.d/common-session`" ] && echo 'session required pam_limits.so' >> /etc/pam.d/common-session
+[ -z "`grep 'session required pam_limits.so' /etc/pam.d/common-session`" ] && echo "session required pam_limits.so" >> /etc/pam.d/common-session
 sed -i '/^# End of file/,$d' /etc/security/limits.conf
 cat >> /etc/security/limits.conf <<EOF
 # End of file

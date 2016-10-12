@@ -165,7 +165,7 @@ while :; do echo
     if [ "${DB_yn}" == 'y' ]; then
       [ -d "${db_install_dir}/support-files" ] && { echo "${CWARNING}Database already installed! ${CEND}"; DB_yn=Other; break; }
       while :; do echo
-        echo 'Please select a version of the Database:'
+        echo "Please select a version of the Database:"
         echo -e "\t${CMSG}1${CEND}. Install MySQL-5.7"
         echo -e "\t${CMSG}2${CEND}. Install MySQL-5.6"
         echo -e "\t${CMSG}3${CEND}. Install MySQL-5.5"
@@ -233,7 +233,7 @@ while :; do echo
               echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
             else
               if [ "${PHP_cache_yn}" == 'y' ]; then
-                if [ ${PHP_version} == '1' ]; then
+                if [ "${PHP_version}" == '1' ]; then
                   while :; do
                     echo "Please select a opcode cache of the PHP:"
                     echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
@@ -450,7 +450,7 @@ while :; do echo
   else
     if [ "${HHVM_yn}" == 'y' ]; then
       [ -e "/usr/bin/hhvm" ] && { echo "${CWARNING}HHVM already installed! ${CEND}"; HHVM_yn=Other; break; }
-      if [ "${OS}" == 'CentOS' -a "${OS_BIT}" == '64' ] && [ -n "`grep -E ' 7\.| 6\.[5-9]' /etc/redhat-release`" ]; then
+      if [ "${OS}" == "CentOS" -a "${OS_BIT}" == "64" ] && [ -n "`grep -E ' 7\.| 6\.[5-9]' /etc/redhat-release`" ]; then
         break
       else
         echo
@@ -477,12 +477,12 @@ checkDownload 2>&1 | tee ${oneinstack_dir}/install.log
 
 # init
 . ./include/memory.sh
-if [ "${OS}" == 'CentOS' ]; then
+if [ "${OS}" == "CentOS" ]; then
   . include/init_CentOS.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
   [ -n "`gcc --version | head -n1 | grep '4\.1\.'`" ] && export CC="gcc44" CXX="g++44"
-elif [ "${OS}" == 'Debian' ]; then
+elif [ "${OS}" == "Debian" ]; then
   . include/init_Debian.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${OS}" == 'Ubuntu' ]; then
+elif [ "${OS}" == "Ubuntu" ]; then
   . include/init_Ubuntu.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
 fi
 

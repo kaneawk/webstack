@@ -18,7 +18,7 @@ installBoost() {
   fi
   if [ -e "/usr/local/lib/libboost_system.so" ]; then
     echo "${CSUCCESS}Boost installed successfully! ${CEND}"
-    echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
+    echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
     ldconfig
   else
     echo "${CFAILURE}Boost installed failed, Please contact the author! ${CEND}"

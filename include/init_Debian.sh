@@ -51,7 +51,7 @@ sed -i 's@^"syntax on@syntax on@' /etc/vim/vimrc
 
 # /etc/security/limits.conf
 [ -e /etc/security/limits.d/*nproc.conf ] && rename nproc.conf nproc.conf_bk /etc/security/limits.d/*nproc.conf
-[ -z "`grep 'session required pam_limits.so' /etc/pam.d/common-session`" ] && echo 'session required pam_limits.so' >> /etc/pam.d/common-session
+[ -z "`grep 'session required pam_limits.so' /etc/pam.d/common-session`" ] && echo "session required pam_limits.so" >> /etc/pam.d/common-session
 sed -i '/^# End of file/,$d' /etc/security/limits.conf
 cat >> /etc/security/limits.conf <<EOF
 # End of file
@@ -108,14 +108,14 @@ ntpdate pool.ntp.org
 [ ! -e "/var/spool/cron/crontabs/root" -o -z "`grep ntpdate /var/spool/cron/crontabs/root 2>/dev/null`" ] && { echo "*/20 * * * * `which ntpdate` pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/crontabs/root;chmod 600 /var/spool/cron/crontabs/root; }
 
 # iptables
-if [ -e '/etc/iptables.up.rules' ] && [ -n "`grep '^:INPUT DROP' /etc/iptables.up.rules`" -a -n "`grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/iptables.up.rules`" -a -n "`grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/iptables.up.rules`" ]; then
+if [ -e "/etc/iptables.up.rules" ] && [ -n "`grep '^:INPUT DROP' /etc/iptables.up.rules`" -a -n "`grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/iptables.up.rules`" -a -n "`grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/iptables.up.rules`" ]; then
     IPTABLES_STATUS=yes
 else
     IPTABLES_STATUS=no
 fi
 
 if [ "${IPTABLES_STATUS}" == "no" ]; then
-    [ -e '/etc/iptables.up.rules' ] && /bin/mv /etc/iptables.up.rules{,_bk}
+    [ -e "/etc/iptables.up.rules" ] && /bin/mv /etc/iptables.up.rules{,_bk}
     cat > /etc/iptables.up.rules << EOF
 # Firewall configuration written by system-config-securitylevel
 # Manual customization of this file is not recommended.

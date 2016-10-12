@@ -26,7 +26,7 @@ printf "
 [ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
 
 while :; do echo
-  echo 'Please select your backup destination:'
+  echo "Please select your backup destination:"
   echo -e "\t${CMSG}1${CEND}. Only Localhost"
   echo -e "\t${CMSG}2${CEND}. Only Remote host"
   echo -e "\t${CMSG}3${CEND}. Localhost and Remote host"
@@ -44,13 +44,13 @@ done
 [ "${DESC_BK}" == '3' ] && sed -i 's@^backup_destination=.*@backup_destination=local,remote@' ./options.conf
 
 while :; do echo
-  echo 'Please select your backup content:'
+  echo "Please select your backup content:"
   echo -e "\t${CMSG}1${CEND}. Only Database"
   echo -e "\t${CMSG}2${CEND}. Only Website"
   echo -e "\t${CMSG}3${CEND}. Database and Website"
   read -p "Please input a number:(Default 1 press Enter) " CONTENT_BK
   [ -z "${CONTENT_BK}" ] && CONTENT_BK=1
-  if [[ ! ${CONTENT_BK} =~ ^[1-3]$ ]]; then
+  if [[ ! "${CONTENT_BK}" =~ ^[1-3]$ ]]; then
     echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
   else
     break

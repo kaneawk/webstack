@@ -81,7 +81,7 @@ Install_php-memcached() {
     # php memcached extension
     tar xzf libmemcached-${libmemcached_version}.tar.gz
     pushd libmemcached-${libmemcached_version}
-    [ "${OS}" == 'CentOS' ] && yum -y install cyrus-sasl-devel
+    [ "${OS}" == "CentOS" ] && yum -y install cyrus-sasl-devel
     [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && sed -i "s@lthread -pthread -pthreads@lthread -lpthread -pthreads@" ./configure
     ./configure --with-memcached=${memcached_install_dir}
     make -j ${THREAD} && make install

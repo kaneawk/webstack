@@ -129,7 +129,7 @@ EOF
 
 Uninstall_letsencrypt() {
   rm -rf /usr/local/bin/cerbot-auto /etc/letsencrypt /var/log/letsencrypt
-  [ "${OS}" == 'CentOS' ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
+  [ "${OS}" == "CentOS" ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
   sed -i '/certbot-auto/d' ${Cron_file}
   echo; echo "${CMSG}Let's Encrypt client uninstall completed${CEND}";
 }
@@ -137,7 +137,7 @@ Uninstall_letsencrypt() {
 ACTION_FUN() {
   while :; do
     echo
-    echo 'Please select an action:'
+    echo "Please select an action:"
     echo -e "\t${CMSG}1${CEND}. install"
     echo -e "\t${CMSG}2${CEND}. uninstall"
     read -p "Please input a number:(Default 1 press Enter) " ACTION
@@ -170,7 +170,7 @@ What Are You Doing?
       1)
         ACTION_FUN
         while :; do echo
-          echo 'Please select a opcode cache of the PHP:'
+          echo "Please select a opcode cache of the PHP:"
           echo -e "\t${CMSG}1${CEND}. Zend OPcache"
           echo -e "\t${CMSG}2${CEND}. XCache"
           echo -e "\t${CMSG}3${CEND}. APCU"
@@ -187,7 +187,7 @@ What Are You Doing?
             break
           fi
         done
-        if [ ${ACTION} = 1 ]; then
+        if [ "${ACTION}" = '1' ]; then
           Check_PHP_Extension
           if [ -e ${php_install_dir}/etc/php.d/ext-ZendGuardLoader.ini ]; then
             echo; echo "${CWARNING}You have to install ZendGuardLoader, You need to uninstall it before install ${PHP_extension}! ${CEND}"; echo; exit 1
@@ -197,17 +197,17 @@ What Are You Doing?
                 if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]]; then
                   src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
                   Install_ZendOPcache
-                elif [ "${PHP_main_version}" == '5.5' ]; then
+                elif [ "${PHP_main_version}" == "5.5" ]; then
                   src_url=http://www.php.net/distributions/php-${php_5_version}.tar.gz && Download_src
                   tar xzf php-${php_5_version}.tar.gz
                   cd php-${php_5_version}/ext/opcache
                   Install_opcache
-                elif [ "${PHP_main_version}" == '5.6' ]; then
+                elif [ "${PHP_main_version}" == "5.6" ]; then
                   src_url=http://www.php.net/distributions/php-${php_6_version}.tar.gz && Download_src
                   tar xzf php-${php_6_version}.tar.gz
                   cd php-${php_6_version}/ext/opcache
                   Install_opcache
-                elif [ "${PHP_main_version}" == '7.0' ]; then
+                elif [ "${PHP_main_version}" == "7.0" ]; then
                   src_url=http://www.php.net/distributions/php-${php_7_version}.tar.gz && Download_src
                   tar xzf php-${php_7_version}.tar.gz
                   cd php-${php_7_version}/ext/opcache
@@ -238,11 +238,11 @@ What Are You Doing?
                 echo "${CWARNING}Your php does not support APCU! ${CEND}"; exit 1
               fi
             elif [ "${PHP_cache}" = '4' ]; then
-              if [ "${PHP_main_version}" == '5.3' ]; then
+              if [ "${PHP_main_version}" == "5.3" ]; then
                 PHP_version='1' && checkDownload
                 Install_eAccelerator-0-9
                 Check_succ
-              elif [ "${PHP_main_version}" == '5.4' ]; then
+              elif [ "${PHP_main_version}" == "5.4" ]; then
                 PHP_version='2' && checkDownload
                 Install_eAccelerator-1-0-dev
                 Check_succ
@@ -301,7 +301,7 @@ What Are You Doing?
       3)
         ACTION_FUN
         while :; do echo
-          echo 'Please select ImageMagick/GraphicsMagick:'
+          echo "Please select ImageMagick/GraphicsMagick:"
           echo -e "\t${CMSG}1${CEND}. ImageMagick"
           echo -e "\t${CMSG}2${CEND}. GraphicsMagick"
           read -p "Please input a number:(Default 1 press Enter) " Magick
@@ -344,7 +344,7 @@ What Are You Doing?
           ${php_install_dir}/bin/phpize
           ./configure --with-php-config=${php_install_dir}/bin/php-config
           make -j ${THREAD} && make install
-          echo 'extension=fileinfo.so' > ${php_install_dir}/etc/php.d/ext-fileinfo.ini
+          echo "extension=fileinfo.so" > ${php_install_dir}/etc/php.d/ext-fileinfo.ini
           Check_succ
         else
           Uninstall_succ
@@ -353,7 +353,7 @@ What Are You Doing?
       5)
         ACTION_FUN
         while :; do echo
-          echo 'Please select memcache/memcached PHP Extension:'
+          echo "Please select memcache/memcached PHP Extension:"
           echo -e "\t${CMSG}1${CEND}. memcache PHP Extension"
           echo -e "\t${CMSG}2${CEND}. memcached PHP Extension"
           echo -e "\t${CMSG}3${CEND}. memcache/memcached PHP Extension"

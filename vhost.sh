@@ -24,7 +24,7 @@ printf "
 . ./include/get_char.sh
 
 # Check if user is root
-[ $(id -u) != "0" ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
+[ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
 
 Usage() {
   printf "
@@ -39,7 +39,7 @@ Choose_env() {
   if [ -e "${php_install_dir}/bin/phpize" -a -e "${tomcat_install_dir}/conf/server.xml" -a -e "/usr/bin/hhvm" ]; then
     Number=111
     while :; do echo
-      echo 'Please choose to use environment:'
+      echo "Please choose to use environment:"
       echo -e "\t${CMSG}1${CEND}. Use php"
       echo -e "\t${CMSG}2${CEND}. Use java"
       echo -e "\t${CMSG}3${CEND}. Use hhvm"
@@ -57,7 +57,7 @@ Choose_env() {
   elif [ -e "${php_install_dir}/bin/phpize" -a -e "${tomcat_install_dir}/conf/server.xml" -a ! -e "/usr/bin/hhvm" ]; then
     Number=110
     while :; do echo
-      echo 'Please choose to use environment:'
+      echo "Please choose to use environment:"
       echo -e "\t${CMSG}1${CEND}. Use php"
       echo -e "\t${CMSG}2${CEND}. Use java"
       read -p "Please input a number:(Default 1 press Enter) " Choose_number
@@ -76,7 +76,7 @@ Choose_env() {
   elif [ -e "${php_install_dir}/bin/phpize" -a ! -e "${tomcat_install_dir}/conf/server.xml" -a -e "/usr/bin/hhvm" ]; then
     Number=101
     while :; do echo
-      echo 'Please choose to use environment:'
+      echo "Please choose to use environment:"
       echo -e "\t${CMSG}1${CEND}. Use php"
       echo -e "\t${CMSG}2${CEND}. Use hhvm"
       read -p "Please input a number:(Default 1 press Enter) " Choose_number
@@ -92,7 +92,7 @@ Choose_env() {
   elif [ ! -e "${php_install_dir}/bin/phpize" -a -e "${tomcat_install_dir}/conf/server.xml" -a -e "/usr/bin/hhvm" ]; then
     Number=011
     while :; do echo
-      echo 'Please choose to use environment:'
+      echo "Please choose to use environment:"
       echo -e "\t${CMSG}1${CEND}. Use java"
       echo -e "\t${CMSG}2${CEND}. Use hhvm"
       read -p "Please input a number:(Default 1 press Enter) " Choose_number
@@ -116,11 +116,11 @@ Choose_env() {
     NGX_FLAG=php
   fi
 
-  if [ "${NGX_FLAG}" == 'php' ]; then
+  if [ "${NGX_FLAG}" == "php" ]; then
     NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n  #fastcgi_pass remote_php_ip:9000;\n  fastcgi_pass unix:/dev/shm/php-cgi.sock;\n  fastcgi_index index.php;\n  include fastcgi.conf;\n}")
-  elif [ "${NGX_FLAG}" == 'java' ]; then
+  elif [ "${NGX_FLAG}" == "java" ]; then
     NGX_CONF=$(echo -e "location ~ {\n  proxy_pass http://127.0.0.1:8080;\n  include proxy.conf;\n}")
-  elif [ "${NGX_FLAG}" == 'hhvm' ]; then
+  elif [ "${NGX_FLAG}" == "hhvm" ]; then
     NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n  fastcgi_pass unix:/var/log/hhvm/sock;\n  fastcgi_index index.php;\n  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n  include fastcgi_params;\n}")
   fi
 }
@@ -137,23 +137,23 @@ If you enter '.', the field will be left blank.
 
   echo
   read -p "Country Name (2 letter code) [CN]: " SELFSIGNEDSSL_C
-  [ -z "${SELFSIGNEDSSL_C}" ] && SELFSIGNEDSSL_C=CN
+  [ -z "${SELFSIGNEDSSL_C}" ] && SELFSIGNEDSSL_C="CN"
 
   echo
   read -p "State or Province Name (full name) [Shanghai]: " SELFSIGNEDSSL_ST
-  [ -z "${SELFSIGNEDSSL_ST}" ] && SELFSIGNEDSSL_ST=Shanghai
+  [ -z "${SELFSIGNEDSSL_ST}" ] && SELFSIGNEDSSL_ST="Shanghai"
 
   echo
   read -p "Locality Name (eg, city) [Shanghai]: " SELFSIGNEDSSL_L
-  [ -z "${SELFSIGNEDSSL_L}" ] && SELFSIGNEDSSL_L=Shanghai
+  [ -z "${SELFSIGNEDSSL_L}" ] && SELFSIGNEDSSL_L="Shanghai"
 
   echo
   read -p "Organization Name (eg, company) [Example Inc.]: " SELFSIGNEDSSL_O
-  [ -z "${SELFSIGNEDSSL_O}" ] && SELFSIGNEDSSL_O='Example Inc.'
+  [ -z "${SELFSIGNEDSSL_O}" ] && SELFSIGNEDSSL_O="Example Inc."
 
   echo
   read -p "Organizational Unit Name (eg, section) [IT Dept.]: " SELFSIGNEDSSL_OU
-  [ -z "${SELFSIGNEDSSL_O}U" ] && SELFSIGNEDSSL_OU='IT Dept.'
+  [ -z "${SELFSIGNEDSSL_O}U" ] && SELFSIGNEDSSL_OU="IT Dept."
 
   openssl req -new -newkey rsa:2048 -sha256 -nodes -out ${PATH_SSL}/${domain}.csr -keyout ${PATH_SSL}/${domain}.key -subj "/C=${SELFSIGNEDSSL_C}/ST=${SELFSIGNEDSSL_ST}/L=${SELFSIGNEDSSL_L}/O=${SELFSIGNEDSSL_O}/OU=${SELFSIGNEDSSL_OU}/CN=${domain}" > /dev/null 2>&1
   /bin/cp ${PATH_SSL}/${domain}.csr{,_bk.`date +%Y-%m-%d_%H%M`}
@@ -200,13 +200,13 @@ Create_SSL() {
         ln -s /etc/letsencrypt/live/${domain}/fullchain.pem ${PATH_SSL}/${domain}.crt
         ln -s /etc/letsencrypt/live/${domain}/privkey.pem ${PATH_SSL}/${domain}.key
         if [ -e "${web_install_dir}/sbin/nginx" -a -e "${apache_install_dir}/conf/httpd.conf" ]; then
-          Cron_Command='/etc/init.d/nginx reload;/etc/init.d/httpd graceful'
+          Cron_Command="/etc/init.d/nginx reload;/etc/init.d/httpd graceful"
         elif [ -e "${web_install_dir}/sbin/nginx" -a ! -e "${apache_install_dir}/conf/httpd.conf" ]; then
-          Cron_Command='/etc/init.d/nginx reload'
+          Cron_Command="/etc/init.d/nginx reload"
         elif [ ! -e "${web_install_dir}/sbin/nginx" -a -e "${apache_install_dir}/conf/httpd.conf" ]; then
-          Cron_Command='/etc/init.d/httpd graceful'
+          Cron_Command="/etc/init.d/httpd graceful"
         fi
-        [ "${OS}" == 'CentOS' ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
+        [ "${OS}" == "CentOS" ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
         [ -z "`grep "${domain} ${moredomainame_D}" ${Cron_file}`" ] && echo "0 10 * * 1 /usr/local/bin/certbot-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=${wwwroot_dir}/${domain} -d ${domain} ${moredomainame_D};${Cron_Command}" >> $Cron_file
       else
         echo "${CFAILURE}Error: Let's Encrypt SSL certificate installation failed${CEND}"
@@ -322,9 +322,9 @@ Input_Add_domain() {
     done
 
     if [[ "$(${web_install_dir}/sbin/nginx -V 2>&1 | grep -Eo 'with-http_v2_module')" = 'with-http_v2_module' ]]; then
-      LISTENOPT='443 ssl http2'
+      LISTENOPT="443 ssl http2"
     else
-      LISTENOPT='443 ssl spdy'
+      LISTENOPT="443 ssl spdy"
     fi
     Create_SSL
     Nginx_conf=$(echo -e "listen 80;\n  listen ${LISTENOPT};\n  ssl_certificate ${PATH_SSL}/${domain}.crt;\n  ssl_certificate_key ${PATH_SSL}/${domain}.key;\n  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;\n  ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;\n  ssl_prefer_server_ciphers on;\n  ssl_session_timeout 10m;\n  ssl_session_cache builtin:1000 shared:SSL:10m;\n  ssl_buffer_size 1400;\n  add_header Strict-Transport-Security max-age=15768000;\n  ssl_stapling on;\n  ssl_stapling_verify on;\n")
@@ -335,7 +335,7 @@ Input_Add_domain() {
     [ -z "`grep 'Listen 443' ${apache_install_dir}/conf/httpd.conf`" ] && sed -i "s@Listen 80@&\nListen 443@" ${apache_install_dir}/conf/httpd.conf
     [ -z "`grep 'ServerName 0.0.0.0:443' ${apache_install_dir}/conf/httpd.conf`" ] && sed -i "s@ServerName 0.0.0.0:80@&\nServerName 0.0.0.0:443@" ${apache_install_dir}/conf/httpd.conf
   else
-    Nginx_conf='listen 80;'
+    Nginx_conf="listen 80;"
   fi
 
   while :; do echo
@@ -704,7 +704,7 @@ EOF
   fi
 
   # Apache
-  [ "`${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}'`" == '4' ] && R_TMP='Require all granted' || R_TMP=
+  [ "`${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}'`" == '4' ] && R_TMP="Require all granted" || R_TMP=
   [ ! -d ${apache_install_dir}/conf/vhost ] && mkdir ${apache_install_dir}/conf/vhost
   cat > ${apache_install_dir}/conf/vhost/${domain}.conf << EOF
 <VirtualHost *:88>
@@ -756,7 +756,7 @@ Add_Vhost() {
     Choose_env
     Input_Add_domain
     Nginx_anti_hotlinking
-    if [ "${NGX_FLAG}" == 'java' ]; then
+    if [ "${NGX_FLAG}" == "java" ]; then
       Nginx_log
       Create_nginx_tomcat_conf
     else
@@ -777,14 +777,14 @@ Add_Vhost() {
     Choose_env
     Input_Add_domain
     Nginx_anti_hotlinking
-    if [ "${NGX_FLAG}" == 'java' ]; then
+    if [ "${NGX_FLAG}" == "java" ]; then
       Nginx_log
       Create_nginx_tomcat_conf
-    elif [ "${NGX_FLAG}" == 'hhvm' ]; then
+    elif [ "${NGX_FLAG}" == "hhvm" ]; then
       Nginx_rewrite
       Nginx_log
       Create_nginx_php-fpm_hhvm_conf
-    elif [ "${NGX_FLAG}" == 'php' ]; then
+    elif [ "${NGX_FLAG}" == "php" ]; then
       #Nginx_rewrite
       Nginx_log
       Apache_log
