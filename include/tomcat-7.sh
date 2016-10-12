@@ -40,9 +40,10 @@ Install_tomcat-7() {
     ./configure --with-apr=/usr/bin/apr-1-config
     make -j ${THREAD} && make install
     if [ -d "/usr/local/apr/lib" ]; then
-      [ ${Mem} -le 768 ] && Xms_Mem=`expr ${Mem} / 3` || Xms_Mem=256
+      [ ${Mem} -le 768 ] && let Xms_Mem="${Mem}/3" || Xms_Mem=256
+      let XmxMem="${Mem}/2"
       cat > ${tomcat_install_dir}/bin/setenv.sh << EOF
-JAVA_OPTS='-Djava.security.egd=file:/dev/./urandom -server -Xms${Xms_Mem}m -Xmx`expr ${Mem} / 2`m -Dfile.encoding=UTF-8'
+JAVA_OPTS='-Djava.security.egd=file:/dev/./urandom -server -Xms${Xms_Mem}m -Xmx${XmxMem}m -Dfile.encoding=UTF-8'
 CATALINA_OPTS="-Djava.library.path=/usr/local/apr/lib"
 # -Djava.rmi.server.hostname=$IPADDR
 # -Dcom.sun.management.jmxremote.password.file=\$CATALINA_BASE/conf/jmxremote.password

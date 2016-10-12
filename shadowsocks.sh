@@ -53,7 +53,7 @@ Iptables_set() {
   fi
 
   if [ -n "${Shadowsocks_Already_port}" ]; then
-    Shadowsocks_Default_port=`expr ${Shadowsocks_Already_port} + 1`
+    let Shadowsocks_Default_port="${Shadowsocks_Already_port}+1"
   else
     Shadowsocks_Default_port=9001
   fi
