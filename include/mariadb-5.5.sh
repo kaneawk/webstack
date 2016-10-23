@@ -61,16 +61,12 @@ Install_MariaDB-5-5() {
     popd
   fi
 
-  if [ -d "${mariadb_install_dir}/support-files" ]; then
-    echo "${CSUCCESS}MariaDB installed successfully! ${CEND}"
-    if [ "${dbInstallMethods}" == '1' ]; then
-      rm -rf mariadb-${mariadb_5_5_version}-*-${SYS_BIT_b}
-    elif [ "${dbInstallMethods}" == '2' ]; then
-      rm -rf mariadb-${mariadb_5_5_version}
-    fi
-  else
+  # Clean up
+  rm -rf mariadb-${mariadb_5_5_version}-*-${SYS_BIT_b}
+  rm -rf mariadb-${mariadb_5_5_version}
+
+  if [ ! -d "${mariadb_install_dir}/support-files" ]; then
     rm -rf ${mariadb_install_dir}
-    rm -rf mariadb-${mariadb_5_5_version}
     echo "${CFAILURE}MariaDB install failed, Please contact the author! ${CEND}"
     kill -9 $$
   fi
@@ -229,4 +225,6 @@ EOF
   echo "${mariadb_install_dir}/lib" > /etc/ld.so.conf.d/mariadb.conf
   ldconfig
   service mysqld stop
+
+  echo "${CSUCCESS}MariaDB installed successfully! ${CEND}"
 }

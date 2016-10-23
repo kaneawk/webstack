@@ -58,16 +58,12 @@ Install_Percona-5-7() {
     popd
   fi
 
-  if [ -d "${percona_install_dir}/support-files" ]; then
-    echo "${CSUCCESS}Percona installed successfully! ${CEND}"
-    if [ "${dbInstallMethods}" == '1' ]; then
-      rm -rf Percona-Server-${percona_5_7_version}-Linux.${SYS_BIT_b}.${sslLibVer}
-    elif [ "${dbInstallMethods}" == '2' ]; then
-    rm -rf percona-server-${percona_5_7_version}
-    fi
-  else
+  # Clean up
+  rm -rf Percona-Server-${percona_5_7_version}-Linux.${SYS_BIT_b}.${sslLibVer}
+  rm -rf percona-server-${percona_5_7_version}
+
+  if [ ! -d "${percona_install_dir}/support-files" ]; then
     rm -rf ${percona_install_dir}
-    rm -rf percona-server-${percona_5_7_version}
     echo "${CFAILURE}Percona install failed, Please contact the author! ${CEND}"
     kill -9 $$
   fi
@@ -227,4 +223,6 @@ EOF
   echo "${percona_install_dir}/lib" > /etc/ld.so.conf.d/mysql.conf
   ldconfig
   service mysqld stop
+
+  echo "${CSUCCESS}Percona installed successfully! ${CEND}"
 }

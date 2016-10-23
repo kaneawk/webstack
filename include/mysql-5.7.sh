@@ -56,16 +56,12 @@ Install_MySQL-5-7() {
     popd
   fi
 
-  if [ -d "${mysql_install_dir}/support-files" ]; then
-    echo "${CSUCCESS}MySQL installed successfully! ${CEND}"
-    if [ "${dbInstallMethods}" == '1' ]; then
-      rm -rf mysql-${mysql_5_7_version}-*-${SYS_BIT_b}
-    elif [ "${dbInstallMethods}" == '2' ]; then
-      rm -rf mysql-${mysql_5_7_version}
-    fi
-  else
+  # Clean up
+  rm -rf mysql-${mysql_5_7_version}-*-${SYS_BIT_b}
+  rm -rf mysql-${mysql_5_7_version}
+
+  if [ ! -d "${mysql_install_dir}/support-files" ]; then
     rm -rf ${mysql_install_dir}
-    rm -rf mysql-${mysql_5_7_version}
     echo "${CFAILURE}MySQL install failed, Please contact the author! ${CEND}"
     kill -9 $$
   fi
@@ -226,4 +222,6 @@ EOF
   echo "${mysql_install_dir}/lib" > /etc/ld.so.conf.d/mysql.conf
   ldconfig
   service mysqld stop
+
+  echo "${CSUCCESS}MySQL installed successfully! ${CEND}"
 }
