@@ -9,21 +9,23 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_Apache-2-2() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
 
   tar xzf httpd-${apache_2_version}.tar.gz
-  cd httpd-${apache_2_version}
+  pushd httpd-${apache_2_version}
   [ ! -d "${apache_install_dir}" ] && mkdir -p ${apache_install_dir}
   [ "${ZendGuardLoader_yn}" == 'y' -o "${ionCube_yn}" == 'y' ] && MPM=prefork || MPM=worker
   ./configure --prefix=${apache_install_dir} --enable-headers --enable-deflate --enable-mime-magic --enable-so --enable-rewrite --enable-ssl --with-ssl --enable-expires --enable-static-support --enable-suexec --disable-userdir --with-included-apr --with-mpm=${MPM} --disable-userdir
   make -j ${THREAD} && make install
+  popd
+  # Clean up
+  rm -rf httpd-${apache_2_version}
+
   if [ -e "${apache_install_dir}/conf/httpd.conf" ]; then
     echo "${CSUCCESS}Apache installed successfully! ${CEND}"
-    cd ..
-    rm -rf httpd-${apache_2_version}
   else
     rm -rf ${apache_install_dir}
     echo "${CFAILURE}Apache install failed, Please contact the author! ${CEND}"
@@ -40,6 +42,7 @@ Install_Apache-2-2() {
   chmod +x /etc/init.d/httpd
   [ "${OS}" == "CentOS" ] && { chkconfig --add httpd; chkconfig httpd on; }
   [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && update-rc.d httpd defaults
+  popd
 
   sed -i "s@^User daemon@User ${run_user}@" ${apache_install_dir}/conf/httpd.conf
   sed -i "s@^Group daemon@Group ${run_user}@" ${apache_install_dir}/conf/httpd.conf
@@ -129,5 +132,4 @@ EOF
   fi
   ldconfig
   service httpd start
-  cd ..
 }
