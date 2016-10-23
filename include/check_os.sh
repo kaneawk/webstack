@@ -66,16 +66,18 @@ CPU=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
 THREAD=${CPU}
 
 # Percona
-if [ -f "/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0" ]; then
+if [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]]; then
   if [ "${Debian_version}" == '6' ]; then
     sslLibVer=ssl098
   else
     sslLibVer=ssl100
   fi
-elif [ -f "/usr/lib64/libssl.so.10" ]; then
+elif [ "${OS}" == "CentOS" ]; then
   if [ "${CentOS_RHEL_version}" == '5' ]; then
     sslLibVer=ssl098e
   else
     sslLibVer=ssl101
   fi
+else
+  sslLibVer=unknown
 fi
