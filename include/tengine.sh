@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_Tengine() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
@@ -17,7 +17,7 @@ Install_Tengine() {
   tar xzf pcre-${pcre_version}.tar.gz
   tar xzf tengine-${tengine_version}.tar.gz
   tar xzf openssl-${openssl_version}.tar.gz
-  cd tengine-${tengine_version}
+  pushd tengine-${tengine_version}
   # Modify Tengine version
   #sed -i 's@TENGINE "/" TENGINE_VERSION@"Tengine/unknown"@' src/core/nginx.h
 
@@ -25,7 +25,7 @@ Install_Tengine() {
   sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc
 
   if [ "${je_tc_malloc}" == '1' ]; then
-    malloc_module='--with-jemalloc'
+    malloc_module="--with-jemalloc"
   elif [ "${je_tc_malloc}" == '2' ]; then
     malloc_module="--with-google_perftools_module"
     mkdir /tmp/tcmalloc
@@ -35,9 +35,13 @@ Install_Tengine() {
   [ ! -d "${tengine_install_dir}" ] && mkdir -p ${tengine_install_dir}
   ./configure --prefix=${tengine_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_spdy_module --with-http_ssl_module --with-ipv6 --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-http_concat_module=shared --with-http_sysguard_module=shared --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module}
   make -j ${THREAD} && make install
+  popd
+  # Clean up
+  rm -rf pcre-${pcre_version}
+  rm -rf openssl-${openssl_version}
+  rm -rf tengine-${tengine_version}
+
   if [ -e "${tengine_install_dir}/conf/nginx.conf" ]; then
-    cd ..
-    rm -rf tengine-${tengine_version}
     echo "${CSUCCESS}Tengine installed successfully! ${CEND}"
   else
     rm -rf ${tengine_install_dir}

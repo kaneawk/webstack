@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_Nginx() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
@@ -17,7 +17,7 @@ Install_Nginx() {
   tar xzf pcre-${pcre_version}.tar.gz
   tar xzf nginx-${nginx_version}.tar.gz
   tar xzf openssl-${openssl_version}.tar.gz
-  cd nginx-${nginx_version}
+  pushd nginx-${nginx_version}
   # Modify Nginx version
   #sed -i 's@#define NGINX_VERSION.*$@#define NGINX_VERSION      "1.2"@' src/core/nginx.h
   #sed -i 's@#define NGINX_VER.*NGINX_VERSION$@#define NGINX_VER          "Linuxeye/" NGINX_VERSION@' src/core/nginx.h
@@ -37,9 +37,13 @@ Install_Nginx() {
   [ ! -d "${nginx_install_dir}" ] && mkdir -p ${nginx_install_dir}
   ./configure --prefix=${nginx_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_v2_module --with-http_ssl_module --with-ipv6 --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module}
   make -j ${THREAD} && make install
+  popd
+  # Clean up
+  rm -rf pcre-${pcre_version}
+  rm -rf openssl-${openssl_version}
+  rm -rf nginx-${nginx_version}
+
   if [ -e "${nginx_install_dir}/conf/nginx.conf" ]; then
-    cd ..
-    rm -rf nginx-${nginx_version}
     echo "${CSUCCESS}Nginx installed successfully! ${CEND}"
   else
     rm -rf ${nginx_install_dir}
@@ -51,9 +55,9 @@ Install_Nginx() {
   [ -n "`grep ^'export PATH=' /etc/profile`" -a -z "`grep ${nginx_install_dir} /etc/profile`" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${nginx_install_dir}/sbin:\1@" /etc/profile
   . /etc/profile
 
-  [ "${OS}" == "CentOS" ] && { /bin/cp ../init.d/Nginx-init-CentOS /etc/init.d/nginx; chkconfig --add nginx; chkconfig nginx on; }
-  [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && { /bin/cp ../init.d/Nginx-init-Ubuntu /etc/init.d/nginx; update-rc.d nginx defaults; }
-  cd ..
+  [ "${OS}" == "CentOS" ] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-CentOS /etc/init.d/nginx; chkconfig --add nginx; chkconfig nginx on; }
+  [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-Ubuntu /etc/init.d/nginx; update-rc.d nginx defaults; }
+  popd
 
   sed -i "s@/usr/local/nginx@${nginx_install_dir}@g" /etc/init.d/nginx
 

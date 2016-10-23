@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_OpenResty() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
@@ -17,7 +17,7 @@ Install_OpenResty() {
   tar xzf pcre-${pcre_version}.tar.gz
   tar xzf openresty-${openresty_version}.tar.gz
   tar xzf openssl-${openssl_version}.tar.gz
-  cd openresty-${openresty_version}
+  pushd openresty-${openresty_version}
 
   # close debug
   openresty_version_tmp=${openresty_version%.*}
@@ -34,9 +34,13 @@ Install_OpenResty() {
   [ ! -d "${openresty_install_dir}" ] && mkdir -p ${openresty_install_dir}
   ./configure --prefix=${openresty_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_v2_module --with-http_ssl_module --with-ipv6 --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module}
   make -j ${THREAD} && make install
+  popd
+  # Clean up
+  rm -rf pcre-${pcre_version}
+  rm -rf openssl-${openssl_version}
+  rm -rf openresty-${openresty_version}
+
   if [ -e "${openresty_install_dir}/nginx/conf/nginx.conf" ]; then
-    cd ..
-    rm -rf openresty-${openresty_version}
     echo "${CSUCCESS}OpenResty installed successfully! ${CEND}"
   else
     rm -rf ${openresty_install_dir}
@@ -48,9 +52,9 @@ Install_OpenResty() {
   [ -n "`grep ^'export PATH=' /etc/profile`" -a -z "`grep ${openresty_install_dir} /etc/profile`" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${openresty_install_dir}/nginx/sbin:\1@" /etc/profile
   . /etc/profile
 
-  [ "${OS}" == "CentOS" ] && { /bin/cp ../init.d/Nginx-init-CentOS /etc/init.d/nginx; chkconfig --add nginx; chkconfig nginx on; }
-  [[ ${OS} =~ ^Ubuntu$|^Debian$ ]] && { /bin/cp ../init.d/Nginx-init-Ubuntu /etc/init.d/nginx; update-rc.d nginx defaults; }
-  cd ..
+  [ "${OS}" == "CentOS" ] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-CentOS /etc/init.d/nginx; chkconfig --add nginx; chkconfig nginx on; }
+  [[ ${OS} =~ ^Ubuntu$|^Debian$ ]] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-Ubuntu /etc/init.d/nginx; update-rc.d nginx defaults; }
+  popd
 
   sed -i "s@/usr/local/nginx@${openresty_install_dir}/nginx@g" /etc/init.d/nginx
 

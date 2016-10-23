@@ -9,39 +9,40 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_PHP-5-5() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
 
   tar xzf libiconv-${libiconv_version}.tar.gz
   patch -d libiconv-${libiconv_version} -p0 < libiconv-glibc-2.16.patch
-  cd libiconv-${libiconv_version}
+  pushd libiconv-${libiconv_version}
   ./configure --prefix=/usr/local
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf libiconv-${libiconv_version}
 
   tar xzf curl-${curl_version}.tar.gz
-  cd curl-${curl_version}
+  pushd curl-${curl_version}
   ./configure --prefix=/usr/local
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf curl-${curl_version}
 
   tar xzf libmcrypt-${libmcrypt_version}.tar.gz
-  cd libmcrypt-${libmcrypt_version}
+  pushd libmcrypt-${libmcrypt_version}
   ./configure
   make -j ${THREAD} && make install
   ldconfig
-  cd libltdl
+  pushd libltdl
   ./configure --enable-ltdl-install
   make -j ${THREAD} && make install
-  cd ../../
+  popd
+  popd
   rm -rf libmcrypt-${libmcrypt_version}
 
   tar xzf mhash-${mhash_version}.tar.gz
-  cd mhash-${mhash_version}
+  pushd mhash-${mhash_version}
   ./configure
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf mhash-${mhash_version}
 
   echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
@@ -49,19 +50,18 @@ Install_PHP-5-5() {
   [ "${OS}" == "CentOS" ] && { ln -s /usr/local/bin/libmcrypt-config /usr/bin/libmcrypt-config; [ "${OS_BIT}" == "64" ] && ln -s /lib64/libpcre.so.0.0.1 /lib64/libpcre.so.1 || ln -s /lib/libpcre.so.0.0.1 /lib/libpcre.so.1; }
 
   tar xzf mcrypt-${mcrypt_version}.tar.gz
-  cd mcrypt-${mcrypt_version}
+  pushd mcrypt-${mcrypt_version}
   ldconfig
   ./configure
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf mcrypt-${mcrypt_version}
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
   tar xzf php-${php_5_version}.tar.gz
   patch -d php-${php_5_version} -p0 < fpm-race-condition.patch
-  cd php-${php_5_version}
-  make clean
+  pushd php-${php_5_version}
   [ ! -d "${php_install_dir}" ] && mkdir -p ${php_install_dir}
   [ "${PHP_cache}" == '1' ] && PHP_cache_tmp="--enable-opcache" || PHP_cache_tmp="--disable-opcache"
   if [[ "${Apache_version}" =~ ^[1-2]$ ]] || [ -e "${apache_install_dir}/bin/apxs" ]; then
@@ -94,6 +94,7 @@ Install_PHP-5-5() {
     echo "${CSUCCESS}PHP installed successfully! ${CEND}"
   else
     rm -rf ${php_install_dir}
+    rm -rf php-${php_5_version}
     echo "${CFAILURE}PHP install failed, Please Contact the author! ${CEND}"
     kill -9 $$
   fi
@@ -125,7 +126,7 @@ Install_PHP-5-5() {
 [opcache]
 zend_extension=opcache.so
 opcache.enable=1
-opcache.memory_consumption=$Memory_limit
+opcache.memory_consumption=${Memory_limit}
 opcache.interned_strings_buffer=8
 opcache.max_accelerated_files=4000
 opcache.revalidate_freq=60
@@ -227,13 +228,13 @@ EOF
       sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 80@" ${php_install_dir}/etc/php-fpm.conf
     fi
 
-    #[ "${Web_yn}" == 'n' ] && sed -i "s@^listen =.*@listen = $IPADDR:9000@" ${php_install_dir}/etc/php-fpm.conf
+    #[ "${Web_yn}" == 'n' ] && sed -i "s@^listen =.*@listen = ${IPADDR}:9000@" ${php_install_dir}/etc/php-fpm.conf
     service php-fpm start
 
   elif [[ "${Apache_version}" =~ ^[1-2]$ ]] || [ -e "${apache_install_dir}/bin/apxs" ]; then
     service httpd restart
   fi
-  cd ..
-  [ -e "${php_install_dir}/bin/phpize" ] && rm -rf php-${php_5_version}
-  cd ..
+  popd
+  rm -rf php-${php_5_version}
+  popd
 }

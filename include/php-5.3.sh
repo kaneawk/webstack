@@ -9,24 +9,24 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_PHP-5-3() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
 
   tar xzf libiconv-${libiconv_version}.tar.gz
   patch -d libiconv-${libiconv_version} -p0 < libiconv-glibc-2.16.patch
-  cd libiconv-${libiconv_version}
+  pushd libiconv-${libiconv_version}
   ./configure --prefix=/usr/local
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf libiconv-${libiconv_version}
 
   # Problem building php-5.3 with openssl
   if [ "${Debian_version}" == '8' -o "${Ubuntu_version}" == "16" ]; then
     if [ ! -e "/usr/local/openssl/lib/libcrypto.a" ]; then
       tar xzf openssl-1.0.0s.tar.gz
-      cd openssl-1.0.0s
+      pushd openssl-1.0.0s
       ./config --prefix=/usr/local/openssl -fPIC shared zlib
       make -j ${THREAD} && make install
-      cd ..
+      popd
       rm -rf openssl-1.0.0s
     fi
     OpenSSL_args="--with-openssl=/usr/local/openssl"
@@ -35,32 +35,33 @@ Install_PHP-5-3() {
   fi
 
   tar xzf curl-${curl_version}.tar.gz
-  cd curl-${curl_version}
+  pushd curl-${curl_version}
   if [ "${Debian_version}" == '8' -o "${Ubuntu_version}" == "16" ]; then
     LDFLAGS="-Wl,-rpath=/usr/local/openssl/lib" ./configure --prefix=/usr/local --with-ssl=/usr/local/openssl
   else
     ./configure --prefix=/usr/local
   fi
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf curl-${curl_version}
 
   tar xzf libmcrypt-${libmcrypt_version}.tar.gz
-  cd libmcrypt-${libmcrypt_version}
+  pushd libmcrypt-${libmcrypt_version}
   ./configure
   make -j ${THREAD} && make install
   ldconfig
-  cd libltdl
+  pushd libltdl
   ./configure --enable-ltdl-install
   make -j ${THREAD} && make install
-  cd ../../
+  popd
+  popd
   rm -rf libmcrypt-${libmcrypt_version}
 
   tar xzf mhash-${mhash_version}.tar.gz
-  cd mhash-${mhash_version}
+  pushd mhash-${mhash_version}
   ./configure
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf mhash-${mhash_version}
 
   echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
@@ -70,11 +71,11 @@ Install_PHP-5-3() {
   [ ! -e "/usr/include/freetype2/freetype" ] &&  ln -s /usr/include/freetype2 /usr/include/freetype2/freetype
 
   tar xzf mcrypt-${mcrypt_version}.tar.gz
-  cd mcrypt-${mcrypt_version}
+  pushd mcrypt-${mcrypt_version}
   ldconfig
   ./configure
   make -j ${THREAD} && make install
-  cd ..
+  popd
   rm -rf mcrypt-${mcrypt_version}
 
   id -u ${run_user} >/dev/null 2>&1
@@ -82,10 +83,9 @@ Install_PHP-5-3() {
 
   tar xzf php-${php_3_version}.tar.gz
   patch -d php-${php_3_version} -p0 < fpm-race-condition.patch
-  cd php-${php_3_version}
+  pushd php-${php_3_version}
   patch -p1 < ../php5.3patch
   patch -p1 < ../debian_patches_disable_SSLv2_for_openssl_1_0_0.patch
-  make clean
   [ ! -d "${php_install_dir}" ] && mkdir -p ${php_install_dir}
   if [[ "${Apache_version}" =~ ^[1-2]$ ]] || [ -e "${apache_install_dir}/bin/apxs" ]; then
     ./configure --prefix=${php_install_dir} --with-config-file-path=${php_install_dir}/etc \
@@ -118,6 +118,7 @@ Install_PHP-5-3() {
     echo "${CSUCCESS}PHP installed successfully! ${CEND}"
   else
     rm -rf ${php_install_dir}
+    rm -rf php-${php_3_version}
     echo "${CFAILURE}PHP install failed, Please Contact the author! ${CEND}"
     kill -9 $$
   fi
@@ -237,13 +238,13 @@ EOF
       sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 80@" ${php_install_dir}/etc/php-fpm.conf
     fi
 
-    #[ "${Web_yn}" == 'n' ] && sed -i "s@^listen =.*@listen = $IPADDR:9000@" ${php_install_dir}/etc/php-fpm.conf
+    #[ "${Web_yn}" == 'n' ] && sed -i "s@^listen =.*@listen = ${IPADDR}:9000@" ${php_install_dir}/etc/php-fpm.conf
     service php-fpm start
 
   elif [[ "${Apache_version}" =~ ^[1-2]$ ]] || [ -e "${apache_install_dir}/bin/apxs" ]; then
     service httpd restart
   fi
-  cd ..
-  [ -e "${php_install_dir}/bin/phpize" ] && rm -rf php-${php_3_version}
-  cd ..
+  popd
+  rm -rf php-${php_3_version}
+  popd
 }
