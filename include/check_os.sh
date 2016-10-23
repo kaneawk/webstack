@@ -59,7 +59,7 @@ if uname -m | grep -Eqi "arm"; then
 fi
 
 CPU=$(grep "processor" /proc/cpuinfo | sort -u | wc -l)
-let THREAD=${CPU}*2
+THREAD=${CPU}
 
 # Percona
 if [ -f "/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0" ]; then
