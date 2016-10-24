@@ -8,12 +8,23 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_eAccelerator-1-0-dev() {
+Install_eAccelerator() {
   pushd ${oneinstack_dir}/src
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
-  /bin/mv master eaccelerator-eaccelerator-42067ac.tar.gz
-  tar xzf eaccelerator-eaccelerator-42067ac.tar.gz
-  pushd eaccelerator-eaccelerator-42067ac
+  case "${PHP_version}" in
+    1)
+      tar jxf eaccelerator-${eaccelerator_version}.tar.bz2
+      pushd eaccelerator-${eaccelerator_version}
+      ;;
+    2)
+      /bin/mv master eaccelerator-eaccelerator-42067ac.tar.gz
+      tar xzf eaccelerator-eaccelerator-42067ac.tar.gz
+      pushd eaccelerator-eaccelerator-42067ac
+      ;;
+    *)
+      echo "Your php version does not support eAccelerator!"
+      kill -9 $$
+  esac
   ${php_install_dir}/bin/phpize
   ./configure --enable-eaccelerator=shared --with-php-config=${php_install_dir}/bin/php-config
   make -j ${THREAD} && make install
@@ -47,7 +58,8 @@ EOF
   else
     echo "${CFAILURE}Accelerator module install failed, Please contact the author! ${CEND}"
   fi
-  # Cleanup
+  # Clean up
+  rm -rf eaccelerator-${eaccelerator_version}
   rm -rf eaccelerator-eaccelerator-42067ac
   popd
 }

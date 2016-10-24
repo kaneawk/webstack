@@ -33,8 +33,7 @@ sed -i "s@^oneinstack_dir.*@oneinstack_dir=`pwd`@" ./options.conf
 . ./include/zendopcache.sh
 . ./include/xcache.sh
 . ./include/apcu.sh
-. ./include/eaccelerator-0.9.sh
-. ./include/eaccelerator-1.0-dev.sh
+. ./include/eaccelerator.sh
 
 . ./include/ZendGuardLoader.sh
 . ./include/ioncube.sh
@@ -215,11 +214,11 @@ What Are You Doing?
             elif [ "${PHP_cache}" = '4' ]; then
               if [ "${PHP_main_version}" == "5.3" ]; then
                 PHP_version='1' && checkDownload
-                Install_eAccelerator-0-9
+                Install_eAccelerator
                 Check_succ
               elif [ "${PHP_main_version}" == "5.4" ]; then
                 PHP_version='2' && checkDownload
-                Install_eAccelerator-1-0-dev
+                Install_eAccelerator
                 Check_succ
               else
                 echo "${CWARNING}Your php does not support eAccelerator! ${CEND}"; exit 1

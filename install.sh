@@ -610,12 +610,9 @@ elif [ "${PHP_cache}" == '2' ]; then
 elif [ "${PHP_cache}" == '3' ]; then
   . include/apcu.sh
   Install_APCU 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_cache}" == '4' -a "${PHP_version}" == '2' ]; then
-  . include/eaccelerator-1.0-dev.sh
-  Install_eAccelerator-1-0-dev 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_cache}" == '4' -a "${PHP_version}" == '1' ]; then
-  . include/eaccelerator-0.9.sh
-  Install_eAccelerator-0-9 2>&1 | tee -a ${oneinstack_dir}/install.log
+elif [ "${PHP_cache}" == '4' ] && [[ "${PHP_version}" =~ ^[1,2]$ ]]; then
+  . include/eaccelerator.sh
+  Install_eAccelerator 2>&1 | tee -a ${oneinstack_dir}/install.log
 fi
 
 # ZendGuardLoader (php <= 5.6)
