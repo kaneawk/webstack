@@ -790,6 +790,8 @@ Add_Vhost() {
       Apache_log
       Create_nginx_apache_mod-php_conf
     fi
+  else
+    echo "Error! ${CFAILURE}Web server${CEND} not found!"
   fi
 }
 
