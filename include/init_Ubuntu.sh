@@ -8,42 +8,6 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-for Package in apache2 apache2-doc apache2-utils apache2.2-common apache2.2-bin apache2-mpm-prefork apache2-doc apache2-mpm-worker mysql-client mysql-server mysql-common libmysqlclient18 php5 php5-common php5-cgi php5-mysql php5-curl php5-gd libmysql* mysql-*
-do
-    apt-get -y remove --purge ${Package}
-done
-dpkg -l | grep ^rc | awk '{print $2}' | xargs dpkg -P
-
-apt-get -y update
-
-# critical security updates
-grep security /etc/apt/sources.list > /tmp/security.sources.list
-apt-get -y upgrade -o Dir::Etc::SourceList=/tmp/security.sources.list
-
-# Install needed packages
-for Package in gcc g++ make cmake autoconf libjpeg8 libjpeg8-dev libpng12-0 libpng12-dev libpng3 libfreetype6 libfreetype6-dev libxml2 libxml2-dev zlib1g zlib1g-dev libc6 libc6-dev libglib2.0-0 libglib2.0-dev bzip2 libzip-dev libbz2-1.0 libncurses5 libncurses5-dev libaio1 libaio-dev libreadline-dev curl libcurl3 libcurl4-openssl-dev e2fsprogs libkrb5-3 libkrb5-dev libltdl-dev libidn11 libidn11-dev openssl libssl-dev libtool libevent-dev re2c libsasl2-dev libxslt1-dev libicu-dev patch vim zip unzip tmux htop bc expect rsync git lsof lrzsz ntpdate wget
-do
-    apt-get -y install ${Package}
-done
-
-if [[ "$Ubuntu_version" =~ ^14$|^15$ ]]; then
-    apt-get -y install libcloog-ppl1
-    apt-get -y remove bison
-    cd src
-    tar xzf bison-${bison_version}.tar.gz
-    cd bison-${bison_version}
-    ./configure
-    make -j ${THREAD} && make install
-    cd ..
-    rm -rf bison-${bison_version}
-    cd ..
-    ln -sf /usr/include/freetype2 /usr/include/freetype2/freetype
-elif [ "$Ubuntu_version" == "13" ]; then
-    apt-get -y install bison libcloog-ppl1
-elif [ "$Ubuntu_version" == "12" ]; then
-    apt-get -y install bison libcloog-ppl0
-fi
-
 # Custom profile
 cat > /etc/profile.d/oneinstack.sh << EOF
 HISTSIZE=10000

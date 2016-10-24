@@ -471,9 +471,15 @@ IPADDR_COUNTRY_ISP=`./include/get_ipaddr_state.py $PUBLIC_IPADDR`
 IPADDR_COUNTRY=`echo ${IPADDR_COUNTRY_ISP} | awk '{print $1}'`
 [ "`echo ${IPADDR_COUNTRY_ISP} | awk '{print $2}'`"x == '1000323'x ] && IPADDR_ISP=aliyun
 
-# check download src
-. ./include/check_download.sh
-checkDownload 2>&1 | tee ${oneinstack_dir}/install.log
+# Check binary dependencies packages
+. ./include/check_sw.sh
+if [ "${OS}" == "CentOS" ]; then
+  installDepsCentOS 2>&1 | tee ${oneinstack_dir}/install.log
+elif [ "${OS}" == "Debian" ]; then
+  installDepsDebian 2>&1 | tee ${oneinstack_dir}/install.log
+elif [ "${OS}" == "Ubuntu" ]; then
+  installDepsUbuntu 2>&1 | tee ${oneinstack_dir}/install.log
+fi
 
 # init
 . ./include/memory.sh
@@ -485,6 +491,14 @@ elif [ "${OS}" == "Debian" ]; then
 elif [ "${OS}" == "Ubuntu" ]; then
   . include/init_Ubuntu.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
 fi
+
+# Check download source packages
+. ./include/check_download.sh
+downloadDepsSrc=1
+checkDownload 2>&1 | tee -a ${oneinstack_dir}/install.log
+
+# Install dependencies from source package
+installDepsBySrc 2>&1 | tee -a ${oneinstack_dir}/install.log
 
 # jemalloc or tcmalloc
 if [ "${je_tc_malloc_yn}" == 'y' -a "${je_tc_malloc}" == '1' -a ! -e "/usr/local/lib/libjemalloc.so" ]; then

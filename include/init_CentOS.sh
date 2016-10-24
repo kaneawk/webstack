@@ -7,39 +7,7 @@
 # Project home page:
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
-
-sed -i 's@^exclude@#exclude@' /etc/yum.conf
-yum clean all
-
-yum makecache
-
-if [ "${CentOS_RHEL_version}" == '7' ]; then
-    yum -y groupremove "Basic Web Server" "MySQL Database server" "MySQL Database client" "File and Print Server"
-    yum -y install iptables-services
-    systemctl mask firewalld.service
-    systemctl enable iptables.service
-elif [ "${CentOS_RHEL_version}" == '6' ]; then
-    yum -y groupremove "FTP Server" "PostgreSQL Database client" "PostgreSQL Database server" "MySQL Database server" "MySQL Database client" "Web Server" "Office Suite and Productivity" "E-mail server" "Ruby Support" "Printing client"
-elif [ "${CentOS_RHEL_version}" == '5' ]; then
-    yum -y groupremove "FTP Server" "Windows File Server" "PostgreSQL Database" "News Server" "MySQL Database" "DNS Name Server" "Web Server" "Dialup Networking Support" "Mail Server" "Ruby" "Office/Productivity" "Sound and Video" "Printing Support" "OpenFabrics Enterprise Distribution"
-fi
-
-yum check-update
-
-# Install needed packages
-for Package in deltarpm gcc gcc-c++ make cmake autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel libaio readline-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5-devel libidn libidn-devel openssl openssl-devel libxslt-devel libicu-devel libevent-devel libtool libtool-ltdl bison gd-devel vim-enhanced pcre-devel zip unzip ntpdate sysstat patch bc expect rsync git lsof lrzsz numactl-libs wget
-do
-    yum -y install ${Package}
-done
-
-yum -y update bash openssl glibc
-
-# use gcc-4.4
-if [ -n "`gcc --version | head -n1 | grep '4\.1\.'`" ]; then
-    yum -y install gcc44 gcc44-c++ libstdc++44-devel
-    export CC="gcc44" CXX="g++44"
-fi
-
+  
 # closed Unnecessary services and remove obsolete rpm package
 [ "${CentOS_RHEL_version}" == '7' ] && [ "`systemctl is-active NetworkManager.service`" == 'active' ] && NM_flag=1
 for Service in `chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis|NetworkManager'`;do chkconfig --level 3 ${Service} off;done
@@ -186,37 +154,5 @@ FW_PORT_FLAG=`grep -ow "dport ${SSH_PORT}" /etc/sysconfig/iptables`
 [ -z "${FW_PORT_FLAG}" -a "${SSH_PORT}" != "22" ] && sed -i "s@dport 22 -j ACCEPT@&\n-A INPUT -p tcp -m state --state NEW -m tcp --dport ${SSH_PORT} -j ACCEPT@" /etc/sysconfig/iptables
 service iptables restart
 service sshd restart
-
-# install tmux
-if [ ! -e "`which tmux`" ]; then
-    cd src
-    tar xzf libevent-${libevent_version}.tar.gz
-    cd libevent-${libevent_version}
-    ./configure
-    make -j ${THREAD} && make install
-    cd ..
-
-    tar xzf tmux-${tmux_version}.tar.gz
-    cd tmux-${tmux_version}
-    CFLAGS="-I/usr/local/include" LDFLAGS="-L//usr/local/lib" ./configure
-    make -j ${THREAD} && make install
-    cd ../../
-
-    if [ "${OS_BIT}" == "64" ]; then
-        ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib64/libevent-2.0.so.5
-    else
-        ln -s /usr/local/lib/libevent-2.0.so.5 /usr/lib/libevent-2.0.so.5
-    fi
-fi
-
-# install htop
-if [ ! -e "`which htop`" ]; then
-    cd src
-    tar xzf htop-${htop_version}.tar.gz
-    cd htop-${htop_version}
-    ./configure
-    make -j ${THREAD} && make install
-    cd ../../
-fi
 
 . /etc/profile

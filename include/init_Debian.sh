@@ -8,24 +8,6 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-for Package in apache2 apache2-doc apache2-utils apache2.2-common apache2.2-bin apache2-mpm-prefork apache2-doc apache2-mpm-worker mysql-client mysql-server mysql-common libmysqlclient18 php5 php5-common php5-cgi php5-mysql php5-curl php5-gd libmysql* mysql-*
-do
-    apt-get -y remove --purge ${Package}
-done
-dpkg -l | grep ^rc | awk '{print $2}' | xargs dpkg -P
-
-apt-get -y update
-
-# critical security updates
-grep security /etc/apt/sources.list > /tmp/security.sources.list
-apt-get -y upgrade -o Dir::Etc::SourceList=/tmp/security.sources.list
-
-# Install needed packages
-for Package in gcc g++ make cmake autoconf libjpeg8 libjpeg8-dev libjpeg-dev libpng12-0 libpng12-dev libpng3 libfreetype6 libfreetype6-dev libxml2 libxml2-dev zlib1g zlib1g-dev libc6 libc6-dev libglib2.0-0 libglib2.0-dev bzip2 libzip-dev libbz2-1.0 libncurses5 libncurses5-dev libaio1 libaio-dev libreadline-dev curl libcurl3 libcurl4-openssl-dev libcurl4-gnutls-dev e2fsprogs libkrb5-3 libkrb5-dev libltdl-dev libidn11 libidn11-dev openssl libssl-dev libtool libevent-dev bison re2c libsasl2-dev libxslt1-dev libicu-dev locales libcloog-ppl0 patch vim zip unzip tmux htop bc expect rsync git lsof lrzsz cron logrotate ntpdate psmisc wget
-do
-    apt-get -y install ${Package}
-done
-
 # Custom profile
 cat > /etc/profile.d/oneinstack.sh << EOF
 HISTSIZE=10000

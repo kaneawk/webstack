@@ -645,18 +645,20 @@ checkDownload(){
   fi
 
   # others
-  if [ "${OS}" == "CentOS" ]; then
-    echo "Download tmux for CentOS..."
-    src_url=${mirrorLink}/libevent-${libevent_version}.tar.gz && Download_src
-    src_url=https://github.com/tmux/tmux/releases/download/${tmux_version}/tmux-${tmux_version}.tar.gz && Download_src
+  if [ "${downloadDepsSrc}" == '1' ]; then
+    if [ "${OS}" == "CentOS" ]; then
+      echo "Download tmux for CentOS..."
+      src_url=${mirrorLink}/libevent-${libevent_version}.tar.gz && Download_src
+      src_url=https://github.com/tmux/tmux/releases/download/${tmux_version}/tmux-${tmux_version}.tar.gz && Download_src
 
-    echo "Download htop for CentOS..."
-    src_url=http://hisham.hm/htop/releases/${htop_version}/htop-${htop_version}.tar.gz && Download_src
-  fi
+      echo "Download htop for CentOS..."
+      src_url=http://hisham.hm/htop/releases/${htop_version}/htop-${htop_version}.tar.gz && Download_src
+    fi
 
-  if [[ "${Ubuntu_version}" =~ ^14$|^15$ ]]; then
-    echo "Download bison for Ubuntu..."
-    src_url=http://ftp.gnu.org/gnu/bison/bison-${bison_version}.tar.gz && Download_src
+    if [[ "${Ubuntu_version}" =~ ^14$|^15$ ]]; then
+      echo "Download bison for Ubuntu..."
+      src_url=http://ftp.gnu.org/gnu/bison/bison-${bison_version}.tar.gz && Download_src
+    fi
   fi
 
   popd
