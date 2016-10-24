@@ -51,9 +51,12 @@ sed -i "s@^oneinstack_dir.*@oneinstack_dir=`pwd`@" ./options.conf
 
 # Check PHP
 if [ -e "${php_install_dir}/bin/phpize" ]; then
-  PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
+  PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
   PHP_main_version=${PHP_detail_version%.*}
+else
+  echo "${CFAILURE}Couldn't find phpize!${CEND}"
+  kill -9 $$
 fi
 
 # Check PHP Extensions
@@ -74,26 +77,6 @@ Check_succ() {
 # Uninstall succ
 Uninstall_succ() {
   [ -e "${php_install_dir}/etc/php.d/ext-${PHP_extension}.ini" ] && { rm -rf ${php_install_dir}/etc/php.d/ext-${PHP_extension}.ini; Restart_PHP; echo; echo "${CMSG}PHP ${PHP_extension} module uninstall completed${CEND}"; } || { echo; echo "${CWARNING}${PHP_extension} module does not exist! ${CEND}"; }
-}
-
-# PHP 5.5,5,6,7.0 install opcache
-Install_opcache() {
-  ${php_install_dir}/bin/phpize
-  ./configure --with-php-config=${php_install_dir}/bin/php-config
-  make -j ${THREAD} && make install
-  cat > ${php_install_dir}/etc/php.d/ext-opcache.ini << EOF
-[opcache]
-zend_extension=opcache.so
-opcache.enable=1
-opcache.memory_consumption=${Memory_limit}
-opcache.interned_strings_buffer=8
-opcache.max_accelerated_files=4000
-opcache.revalidate_freq=60
-opcache.save_comments=0
-opcache.fast_shutdown=1
-opcache.enable_cli=1
-;opcache.optimization_level=0
-EOF
 }
 
 Install_letsencrypt() {
@@ -201,21 +184,9 @@ What Are You Doing?
                 if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]]; then
                   src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
                   Install_ZendOPcache
-                elif [ "${PHP_main_version}" == "5.5" ]; then
-                  src_url=http://www.php.net/distributions/php-${php_5_version}.tar.gz && Download_src
-                  tar xzf php-${php_5_version}.tar.gz
-                  cd php-${php_5_version}/ext/opcache
-                  Install_opcache
-                elif [ "${PHP_main_version}" == "5.6" ]; then
-                  src_url=http://www.php.net/distributions/php-${php_6_version}.tar.gz && Download_src
-                  tar xzf php-${php_6_version}.tar.gz
-                  cd php-${php_6_version}/ext/opcache
-                  Install_opcache
-                elif [ "${PHP_main_version}" == "7.0" ]; then
-                  src_url=http://www.php.net/distributions/php-${php_7_version}.tar.gz && Download_src
-                  tar xzf php-${php_7_version}.tar.gz
-                  cd php-${php_7_version}/ext/opcache
-                  Install_opcache
+                else
+                  src_url=http://www.php.net/distributions/php-${PHP_detail_version}.tar.gz && Download_src
+                  Install_ZendOPcache
                 fi
                 Check_succ
             elif [ "${PHP_cache}" = '2' ]; then

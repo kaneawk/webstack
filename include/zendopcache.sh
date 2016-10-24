@@ -11,8 +11,16 @@
 Install_ZendOPcache() {
   pushd ${oneinstack_dir}/src
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
-  tar xzf zendopcache-${zendopcache_version}.tgz
-  pushd zendopcache-${zendopcache_version}
+  PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
+  PHP_main_version=${PHP_detail_version%.*}
+  if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]] then
+    tar xvf zendopcache-${zendopcache_version}.tgz
+    pushd zendopcache-${zendopcache_version}
+  else
+    tar xvf php-${PHP_detail_version}.tar.gz
+    pushd php-${PHP_detail_version}/ext/opcache
+  fi
+
   ${php_install_dir}/bin/phpize
   ./configure --with-php-config=${php_install_dir}/bin/php-config
   make -j ${THREAD} && make install
@@ -38,5 +46,6 @@ EOF
   fi
   # Clean up
   rm -rf zendopcache-${zendopcache_version}
+  rm -rf php-${PHP_detail_version}
   popd
 }
