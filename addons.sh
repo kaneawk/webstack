@@ -101,15 +101,16 @@ gpgcheck=0
 EOF
   fi
 
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
   src_url=https://dl.eff.org/certbot-auto && Download_src
   /bin/mv certbot-auto /usr/local/bin/
   chmod +x /usr/local/bin/certbot-auto
   certbot-auto -n
+  popd
   if [ -e "/root/.local/share/letsencrypt/bin/letsencrypt" ] && certbot-auto -h | grep '\-\-standalone' > /dev/null ; then
     echo; echo "${CSUCCESS}Let's Encrypt client installed successfully! ${CEND}"
   else
-    echo; echo "${CSUCCESS}Let's Encrypt client install failed, Please install again! ${CEND}"
+    echo; echo "${CSUCCESS}Let's Encrypt client install failed, Please try again! ${CEND}"
   fi
 }
 
@@ -179,7 +180,7 @@ What Are You Doing?
             echo; echo "${CWARNING}You have to install ZendGuardLoader, You need to uninstall it before install ${PHP_extension}! ${CEND}"; echo; exit 1
           else
             if [ "${PHP_cache}" = '1' ]; then
-                cd ${oneinstack_dir}/src
+                pushd ${oneinstack_dir}/src
                 if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]]; then
                   src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
                   Install_ZendOPcache
@@ -187,6 +188,7 @@ What Are You Doing?
                   src_url=http://www.php.net/distributions/php-${PHP_detail_version}.tar.gz && Download_src
                   Install_ZendOPcache
                 fi
+                popd
                 Check_succ
             elif [ "${PHP_cache}" = '2' ]; then
               if [[ ${PHP_main_version} =~ ^5.[3-6]$ ]]; then
@@ -232,7 +234,7 @@ What Are You Doing?
       2)
         ACTION_FUN
         while :; do echo
-          echo 'Please select ZendGuardLoader/ionCube:'
+          echo "Please select ZendGuardLoader/ionCube:"
           echo -e "\t${CMSG}1${CEND}. ZendGuardLoader"
           echo -e "\t${CMSG}2${CEND}. ionCube Loader"
           read -p "Please input a number:(Default 1 press Enter) " Loader
@@ -311,13 +313,15 @@ What Are You Doing?
         PHP_extension=fileinfo
         if [ "${ACTION}" = '1' ]; then
           Check_PHP_Extension
-          cd ${oneinstack_dir}/src
+          pushd ${oneinstack_dir}/src
           src_url=http://www.php.net/distributions/php-${PHP_detail_version}.tar.gz && Download_src
           tar xzf php-${PHP_detail_version}.tar.gz
-          cd php-${PHP_detail_version}/ext/fileinfo
+          popd
+          pushd php-${PHP_detail_version}/ext/fileinfo
           ${php_install_dir}/bin/phpize
           ./configure --with-php-config=${php_install_dir}/bin/php-config
           make -j ${THREAD} && make install
+          popd
           echo "extension=fileinfo.so" > ${php_install_dir}/etc/php.d/ext-fileinfo.ini
           Check_succ
         else

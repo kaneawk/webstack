@@ -193,20 +193,20 @@ Uninstall_shadowsocks(){
       rm -f /usr/local/share/man/man1/ss-redir.1
       rm -f /usr/local/share/man/man8/shadowsocks.8
       if [ $? -eq 0 ]; then
-        echo "${CSUCCESS}Shadowsocks-libev uninstall success! ${CEND}"
+        echo "${CSUCCESS}Shadowsocks-libev uninstall successful! ${CEND}"
       else
         echo "${CFAILURE}Shadowsocks-libev uninstall failed! ${CEND}"
       fi
     elif [ "${SS_version}" == '2' ]; then
       pip uninstall -y shadowsocks
       if [ $? -eq 0 ]; then
-        echo "${CSUCCESS}Shadowsocks-python uninstall success! ${CEND}"
+        echo "${CSUCCESS}Shadowsocks-python uninstall successful! ${CEND}"
       else
         echo "${CFAILURE}Shadowsocks-python uninstall failed! ${CEND}"
       fi
     fi
   else
-    echo "${CMSG}Shadowsocks uninstall cancelled! ${CEND}"
+    echo "${CMSG}Unknown Shadowsocks version, uninstall failed! ${CEND}"
   fi
 }
 

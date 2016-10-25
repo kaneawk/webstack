@@ -19,8 +19,7 @@ DB_Local_BK() {
 }
 
 DB_Remote_BK() {
-  for D in $(echo ${db_name} | tr ',' ' ')
-  do
+  for D in $(echo ${db_name} | tr ',' ' '); do
     ./db_bk.sh ${D}
     DB_GREP="DB_${D}_$(date +%Y)"
     DB_FILE=$(ls -lrt ${backup_dir} | grep ${DB_GREP} | tail -1 | awk '{print $NF}')
@@ -30,15 +29,13 @@ DB_Remote_BK() {
 }
 
 WEB_Local_BK() {
-  for W in $(echo ${website_name} | tr ',' ' ')
-  do
+  for W in $(echo ${website_name} | tr ',' ' '); do
     ./website_bk.sh ${W}
   done
 }
 
 WEB_Remote_BK() {
-  for W in $(echo ${website_name} | tr ',' ' ')
-  do
+  for W in $(echo ${website_name} | tr ',' ' '); do
     if [ $(du -sm "${wwwroot_dir}/${WebSite}" | awk '{print $1}') -lt 1024 ]; then
       ./website_bk.sh ${W}
       Web_GREP="Web_${W}_$(date +%Y)"

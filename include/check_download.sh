@@ -118,14 +118,23 @@ checkDownload(){
         echo "Download mysql 5.7 source package..."
         FILE_NAME=mysql-${mysql_5_7_version}.tar.gz
       fi
+      # start download
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
-      do
-        wget -4c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
-        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
+      # verifying download
+      tryDlCount=0
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ]; do
+        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        let "tryDlCount++"
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
       done
+      if [ "${tryDlCount}" == '6' ]; then
+        echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
+        kill -9 $$
+      else
+        echo "[${CMSG}${FILE_NAME}${CEND}] found."
+      fi
     fi
 
     if [ "${DB_version}" == '2' ]; then
@@ -159,11 +168,18 @@ checkDownload(){
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
-      do
-        wget -4c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
-        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
+      tryDlCount=0
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ]; do
+        wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
+        let "tryDlCount++"
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
       done
+      if [ "${tryDlCount}" == '6' ]; then
+        echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
+        kill -9 $$
+      else
+        echo "[${CMSG}${FILE_NAME}${CEND}] found."
+      fi
     fi
 
     if [ "${DB_version}" == '3' ]; then
@@ -198,12 +214,18 @@ checkDownload(){
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}
       wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5
       MYSQL_TAR_MD5=$(awk '{print $1}' ${FILE_NAME}.md5)
-
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ];
-      do
+      tryDlCount=0
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MYSQL_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_MYSQL_BK}/${FILE_NAME};sleep 1
-        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" ] && break || continue
+        let "tryDlCount++"
+        [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MYSQL_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
       done
+      if [ "${tryDlCount}" == '6' ]; then
+        echo "${CFAILURE}${FILE_NAME} download failed, Please contact the author! ${CEND}"
+         kill -9 $$
+      else
+        echo "[${CMSG}${FILE_NAME}${CEND}] found."
+      fi
     fi
 
     if [ "${DB_version}" == '4' ]; then
@@ -232,8 +254,7 @@ checkDownload(){
         fi
       fi
       tryDlCount=0
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ];
-      do
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
@@ -272,8 +293,7 @@ checkDownload(){
         fi
       fi
       tryDlCount=0
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ];
-      do
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
@@ -311,8 +331,7 @@ checkDownload(){
         fi
       fi
       tryDlCount=0
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ];
-      do
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${MARAIDB_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_MARIADB}/${FILE_NAME};sleep 1
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${MARAIDB_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
@@ -346,8 +365,7 @@ checkDownload(){
         fi
       fi
       tryDlCount=0
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${PERCONA_TAR_MD5}" ];
-      do
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${PERCONA_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME};sleep 1
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${PERCONA_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
@@ -382,8 +400,7 @@ checkDownload(){
         fi
       fi
       tryDlCount=0
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${PERCONA_TAR_MD5}" ];
-      do
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${PERCONA_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME};sleep 1
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${PERCONA_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
@@ -418,8 +435,7 @@ checkDownload(){
         fi
       fi
       tryDlCount=0
-      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${PERCONA_TAR_MD5}" ];
-      do
+      while [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" != "${PERCONA_TAR_MD5}" ]; do
         wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME};sleep 1
         let "tryDlCount++"
         [ "$(md5sum ${FILE_NAME} | awk '{print $1}')" == "${PERCONA_TAR_MD5}" -o "${tryDlCount}" == '6' ] && break || continue
@@ -445,27 +461,26 @@ checkDownload(){
     src_url=http://downloads.sourceforge.net/project/mcrypt/MCrypt/${mcrypt_version}/mcrypt-${mcrypt_version}.tar.gz && Download_src
     src_url=${mirrorLink}/libiconv-glibc-2.16.patch && Download_src
 
-    if [[ "${PHP_version}" =~ ^[1-3]$ ]]; then
-      # php 5.3 5.4 5.5
-      src_url=${mirrorLink}/fpm-race-condition.patch && Download_src
-    fi
-
     if [ "${PHP_version}" == '1' ]; then
       # php 5.3
       src_url=${mirrorLink}/debian_patches_disable_SSLv2_for_openssl_1_0_0.patch && Download_src
       src_url=${mirrorLink}/php5.3patch && Download_src
+      # Use the special ssl for php5.3
       if [ "${Debian_version}" == '8' -o "${Ubuntu_version}" == "16" ]; then
         if [ ! -e "/usr/local/openssl/lib/libcrypto.a" ]; then
           src_url=${mirrorLink}/openssl-1.0.0s.tar.gz && Download_src
         fi
       fi
       src_url=http://www.php.net/distributions/php-${php_3_version}.tar.gz && Download_src
+      src_url=${mirrorLink}/fpm-race-condition.patch && Download_src
     fi
     if [ "${PHP_version}" == '2' ]; then
       src_url=http://www.php.net/distributions/php-${php_4_version}.tar.gz && Download_src
+      src_url=${mirrorLink}/fpm-race-condition.patch && Download_src
     fi
     if [ "${PHP_version}" == '3' ]; then
       src_url=http://www.php.net/distributions/php-${php_5_version}.tar.gz && Download_src
+      src_url=${mirrorLink}/fpm-race-condition.patch && Download_src
     fi
     if [ "${PHP_version}" == '4' ]; then
       src_url=http://www.php.net/distributions/php-${php_6_version}.tar.gz && Download_src

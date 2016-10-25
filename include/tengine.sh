@@ -55,7 +55,7 @@ Install_Tengine() {
 
   [ "${OS}" == "CentOS" ] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-CentOS /etc/init.d/nginx; chkconfig --add nginx; chkconfig nginx on; }
   [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-Ubuntu /etc/init.d/nginx; update-rc.d nginx defaults; }
-  cd ..
+  popd
 
   sed -i "s@/usr/local/nginx@${tengine_install_dir}@g" /etc/init.d/nginx
 

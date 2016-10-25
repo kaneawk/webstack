@@ -85,7 +85,7 @@ sysctl -p
 
 sed -i 's@^ACTIVE_CONSOLES.*@ACTIVE_CONSOLES="/dev/tty[1-2]"@' /etc/default/console-setup
 sed -i 's@^@#@g' /etc/init/tty[3-6].conf
-echo 'en_US.UTF-8 UTF-8' > /var/lib/locales/supported.d/local
+echo "en_US.UTF-8 UTF-8" > /var/lib/locales/supported.d/local
 sed -i 's@^@#@g' /etc/init/control-alt-delete.conf
 
 # Update time

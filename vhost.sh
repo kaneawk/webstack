@@ -922,7 +922,7 @@ Del_Tomcat_Vhost() {
               if [ "${Del_Vhost_wwwroot_yn}" == 'y' ]; then
                 echo "Press Ctrl+c to cancel or Press any key to continue..."
                 char=$(get_char)
-                rm -rf $Directory
+                rm -rf ${Directory}
               fi
               echo "${CSUCCESS}Domain: ${domain} has been deleted.${CEND}"
             else

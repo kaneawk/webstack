@@ -267,7 +267,7 @@ while :; do echo
                 fi
                 if [ "${PHP_version}" == '3' ]; then
                   while :; do
-                    echo 'Please select a opcode cache of the PHP:'
+                    echo "Please select a opcode cache of the PHP:"
                     echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
                     echo -e "\t${CMSG}2${CEND}. Install XCache"
                     echo -e "\t${CMSG}3${CEND}. Install APCU"
@@ -730,7 +730,7 @@ echo "####################Congratulations########################"
 while :; do echo
   echo "${CMSG}Please restart the server and see if the services start up fine.${CEND}"
   read -p "Do you want to restart OS ? [y/n]: " restart_yn
-  if [[ ! ${restart_yn} =~ ^[y,n]$ ]]; then
+  if [[ ! "${restart_yn}" =~ ^[y,n]$ ]]; then
     echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
   else
     break

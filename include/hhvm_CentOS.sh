@@ -9,7 +9,6 @@
 #       https://github.com/lj2007331/oneinstack
 
 Install_hhvm_CentOS() {
-  cd ${oneinstack_dir}/src
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
@@ -45,12 +44,12 @@ failovermethod=priority
 enabled=1
 gpgcheck=0
 EOF
-
-    for Package in libmcrypt-devel glog-devel jemalloc-devel tbb-devel libdwarf-devel libxml2-devel libicu-devel pcre-devel gd-devel boost-devel sqlite-devel pam-devel bzip2-devel oniguruma-devel openldap-devel readline-devel libc-client-devel libcap-devel libevent-devel libcurl-devel libmemcached-devel lcms2 inotify-tools
-    do
+    # Install needed packages
+    pkgList="libmcrypt-devel glog-devel jemalloc-devel tbb-devel libdwarf-devel libxml2-devel libicu-devel pcre-devel gd-devel boost-devel sqlite-devel pam-devel bzip2-devel oniguruma-devel openldap-devel readline-devel libc-client-devel libcap-devel libevent-devel libcurl-devel libmemcached-devel lcms2 inotify-tools"
+    for Package in ${pkgList}; do
       yum -y install ${Package}
     done
-
+    # Uninstall the conflicting packages
     yum -y remove libwebp boost-system boost-filesystem
 
     cat > /etc/yum.repos.d/hhvm.repo << EOF
@@ -152,9 +151,8 @@ autostart=true ; start at supervisord start (default: true)
 autorestart=unexpected ; whether/when to restart (default: unexpected)
 stopwaitsecs=10 ; max num secs to wait b4 SIGKILL (default 10)
 EOF
-  /bin/cp ../init.d/Supervisor-init-CentOS /etc/init.d/supervisord
+  /bin/cp ${oneinstack_dir}/init.d/Supervisor-init-CentOS /etc/init.d/supervisord
   chmod +x /etc/init.d/supervisord
   chkconfig supervisord on
   service supervisord start
-  cd ..
 }
