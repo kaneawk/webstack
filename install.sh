@@ -107,47 +107,51 @@ while :; do echo
             echo "${CWARNING}input error! Please only input number 1,2,3,4${CEND}"
           else
             [ "${Tomcat_version}" != '4' -a -e "${tomcat_install_dir}/conf/server.xml" ] && { echo "${CWARNING}Tomcat already installed! ${CEND}" ; Tomcat_version=Other; }
-            if [ "${Tomcat_version}" == '1' ]; then
-              while :; do echo
-                echo "Please select JDK version:"
-                echo -e "\t${CMSG}1${CEND}. Install JDK-1.8"
-                echo -e "\t${CMSG}2${CEND}. Install JDK-1.7"
-                read -p "Please input a number:(Default 2 press Enter) " JDK_version
-                [ -z "${JDK_version}" ] && JDK_version=2
-                if [[ ! "${JDK_version}" =~ ^[1-2]$ ]]; then
-                  echo "${CWARNING}input error! Please only input number 1,2${CEND}"
-                else
-                  break
-                fi
-              done
-            elif [ "${Tomcat_version}" == '2' ]; then
-              while :; do echo
-                echo "Please select JDK version:"
-                echo -e "\t${CMSG}1${CEND}. Install JDK-1.8"
-                echo -e "\t${CMSG}2${CEND}. Install JDK-1.7"
-                echo -e "\t${CMSG}3${CEND}. Install JDK-1.6"
-                read -p "Please input a number:(Default 2 press Enter) " JDK_version
-                [ -z "${JDK_version}" ] && JDK_version=2
-                if [[ ! ${JDK_version} =~ ^[1-3]$ ]]; then
-                  echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
-                else
-                  break
-                fi
-              done
-            elif [ "${Tomcat_version}" == '3' ]; then
-              while :; do echo
-                echo "Please select JDK version:"
-                echo -e "\t${CMSG}2${CEND}. Install JDK-1.7"
-                echo -e "\t${CMSG}3${CEND}. Install JDK-1.6"
-                read -p "Please input a number:(Default 2 press Enter) " JDK_version
-                [ -z "${JDK_version}" ] && JDK_version=2
-                if [[ ! "${JDK_version}" =~ ^[2-3]$ ]]; then
-                  echo "${CWARNING}input error! Please only input number 2,3${CEND}"
-                else
-                  break
-                fi
-              done
-            fi
+            case "${Tomcat_version}" in
+              1)
+                while :; do echo
+                  echo "Please select JDK version:"
+                  echo -e "\t${CMSG}1${CEND}. Install JDK-1.8"
+                  echo -e "\t${CMSG}2${CEND}. Install JDK-1.7"
+                  read -p "Please input a number:(Default 2 press Enter) " JDK_version
+                  [ -z "${JDK_version}" ] && JDK_version=2
+                  if [[ ! "${JDK_version}" =~ ^[1-2]$ ]]; then
+                    echo "${CWARNING}input error! Please only input number 1,2${CEND}"
+                  else
+                    break
+                  fi
+                done
+                ;;
+              2)
+                while :; do echo
+                  echo "Please select JDK version:"
+                  echo -e "\t${CMSG}1${CEND}. Install JDK-1.8"
+                  echo -e "\t${CMSG}2${CEND}. Install JDK-1.7"
+                  echo -e "\t${CMSG}3${CEND}. Install JDK-1.6"
+                  read -p "Please input a number:(Default 2 press Enter) " JDK_version
+                  [ -z "${JDK_version}" ] && JDK_version=2
+                  if [[ ! ${JDK_version} =~ ^[1-3]$ ]]; then
+                    echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
+                  else
+                    break
+                  fi
+                done
+                ;;
+              3)
+                while :; do echo
+                  echo "Please select JDK version:"
+                  echo -e "\t${CMSG}2${CEND}. Install JDK-1.7"
+                  echo -e "\t${CMSG}3${CEND}. Install JDK-1.6"
+                  read -p "Please input a number:(Default 2 press Enter) " JDK_version
+                  [ -z "${JDK_version}" ] && JDK_version=2
+                  if [[ ! "${JDK_version}" =~ ^[2-3]$ ]]; then
+                    echo "${CWARNING}input error! Please only input number 2,3${CEND}"
+                  else
+                    break
+                  fi
+                done
+                ;;
+            esac
             break
           fi
         done
@@ -233,82 +237,84 @@ while :; do echo
               echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
             else
               if [ "${PHP_cache_yn}" == 'y' ]; then
-                if [ "${PHP_version}" == '1' ]; then
-                  while :; do
-                    echo "Please select a opcode cache of the PHP:"
-                    echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
-                    echo -e "\t${CMSG}2${CEND}. Install XCache"
-                    echo -e "\t${CMSG}3${CEND}. Install APCU"
-                    echo -e "\t${CMSG}4${CEND}. Install eAccelerator-0.9"
-                    read -p "Please input a number:(Default 1 press Enter) " PHP_cache
-                    [ -z "${PHP_cache}" ] && PHP_cache=1
-                    if [[ ! "${PHP_cache}" =~ ^[1-4]$ ]]; then
-                      echo "${CWARNING}input error! Please only input number 1,2,3,4${CEND}"
-                    else
-                      break
-                    fi
-                  done
-                fi
-                if [ "${PHP_version}" == '2' ]; then
-                  while :; do
-                    echo "Please select a opcode cache of the PHP:"
-                    echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
-                    echo -e "\t${CMSG}2${CEND}. Install XCache"
-                    echo -e "\t${CMSG}3${CEND}. Install APCU"
-                    echo -e "\t${CMSG}4${CEND}. Install eAccelerator-1.0-dev"
-                    read -p "Please input a number:(Default 1 press Enter) " PHP_cache
-                    [ -z "${PHP_cache}" ] && PHP_cache=1
-                    if [[ ! "${PHP_cache}" =~ ^[1-4]$ ]]; then
-                      echo "${CWARNING}input error! Please only input number 1,2,3,4${CEND}"
-                    else
-                      break
-                    fi
-                  done
-                fi
-                if [ "${PHP_version}" == '3' ]; then
-                  while :; do
-                    echo "Please select a opcode cache of the PHP:"
-                    echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
-                    echo -e "\t${CMSG}2${CEND}. Install XCache"
-                    echo -e "\t${CMSG}3${CEND}. Install APCU"
-                    read -p "Please input a number:(Default 1 press Enter) " PHP_cache
-                    [ -z "${PHP_cache}" ] && PHP_cache=1
-                    if [[ ! "${PHP_cache}" =~ ^[1-3]$ ]]; then
-                      echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
-                    else
-                      break
-                    fi
-                  done
-                fi
-                if [ "${PHP_version}" == '4' ]; then
-                  while :; do
-                    echo "Please select a opcode cache of the PHP:"
-                    echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
-                    echo -e "\t${CMSG}2${CEND}. Install XCache"
-                    echo -e "\t${CMSG}3${CEND}. Install APCU"
-                    read -p "Please input a number:(Default 1 press Enter) " PHP_cache
-                    [ -z "${PHP_cache}" ] && PHP_cache=1
-                    if [[ ! "${PHP_cache}" =~ ^[1-3]$ ]]; then
-                      echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
-                    else
-                      break
-                    fi
-                  done
-                fi
-                if [ "${PHP_version}" == '5' ]; then
-                  while :; do
-                    echo "Please select a opcode cache of the PHP:"
-                    echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
-                    echo -e "\t${CMSG}3${CEND}. Install APCU"
-                    read -p "Please input a number:(Default 1 press Enter) " PHP_cache
-                    [ -z "${PHP_cache}" ] && PHP_cache=1
-                    if [[ ! "${PHP_cache}" =~ ^[1,3]$ ]]; then
-                      echo "${CWARNING}input error! Please only input number 1,3${CEND}"
-                    else
-                      break
-                    fi
-                  done
-                fi
+                case "${PHP_version}" in
+                  1)
+                    while :; do
+                      echo "Please select a opcode cache of the PHP:"
+                      echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                      echo -e "\t${CMSG}2${CEND}. Install XCache"
+                      echo -e "\t${CMSG}3${CEND}. Install APCU"
+                      echo -e "\t${CMSG}4${CEND}. Install eAccelerator-0.9"
+                      read -p "Please input a number:(Default 1 press Enter) " PHP_cache
+                      [ -z "${PHP_cache}" ] && PHP_cache=1
+                      if [[ ! "${PHP_cache}" =~ ^[1-4]$ ]]; then
+                        echo "${CWARNING}input error! Please only input number 1,2,3,4${CEND}"
+                      else
+                        break
+                      fi
+                    done
+                    ;;
+                  2)
+                    while :; do
+                      echo "Please select a opcode cache of the PHP:"
+                      echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                      echo -e "\t${CMSG}2${CEND}. Install XCache"
+                      echo -e "\t${CMSG}3${CEND}. Install APCU"
+                      echo -e "\t${CMSG}4${CEND}. Install eAccelerator-1.0-dev"
+                      read -p "Please input a number:(Default 1 press Enter) " PHP_cache
+                      [ -z "${PHP_cache}" ] && PHP_cache=1
+                      if [[ ! "${PHP_cache}" =~ ^[1-4]$ ]]; then
+                        echo "${CWARNING}input error! Please only input number 1,2,3,4${CEND}"
+                      else
+                        break
+                      fi
+                    done
+                    ;;
+                  3)
+                    while :; do
+                      echo "Please select a opcode cache of the PHP:"
+                      echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                      echo -e "\t${CMSG}2${CEND}. Install XCache"
+                      echo -e "\t${CMSG}3${CEND}. Install APCU"
+                      read -p "Please input a number:(Default 1 press Enter) " PHP_cache
+                      [ -z "${PHP_cache}" ] && PHP_cache=1
+                      if [[ ! "${PHP_cache}" =~ ^[1-3]$ ]]; then
+                        echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
+                      else
+                        break
+                      fi
+                    done
+                    ;;
+                  4)
+                    while :; do
+                      echo "Please select a opcode cache of the PHP:"
+                      echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                      echo -e "\t${CMSG}2${CEND}. Install XCache"
+                      echo -e "\t${CMSG}3${CEND}. Install APCU"
+                      read -p "Please input a number:(Default 1 press Enter) " PHP_cache
+                      [ -z "${PHP_cache}" ] && PHP_cache=1
+                      if [[ ! "${PHP_cache}" =~ ^[1-3]$ ]]; then
+                        echo "${CWARNING}input error! Please only input number 1,2,3${CEND}"
+                      else
+                        break
+                      fi
+                    done
+                    ;;
+                  5)
+                    while :; do
+                      echo "Please select a opcode cache of the PHP:"
+                      echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                      echo -e "\t${CMSG}3${CEND}. Install APCU"
+                      read -p "Please input a number:(Default 1 press Enter) " PHP_cache
+                      [ -z "${PHP_cache}" ] && PHP_cache=1
+                      if [[ ! "${PHP_cache}" =~ ^[1,3]$ ]]; then
+                        echo "${CWARNING}input error! Please only input number 1,3${CEND}"
+                      else
+                        break
+                      fi
+                    done
+                    ;;
+                esac
               fi
               break
             fi
@@ -473,24 +479,32 @@ IPADDR_COUNTRY=$(echo ${IPADDR_COUNTRY_ISP} | awk '{print $1}')
 
 # Check binary dependencies packages
 . ./include/check_sw.sh
-if [ "${OS}" == "CentOS" ]; then
-  installDepsCentOS 2>&1 | tee ${oneinstack_dir}/install.log
-elif [ "${OS}" == "Debian" ]; then
-  installDepsDebian 2>&1 | tee ${oneinstack_dir}/install.log
-elif [ "${OS}" == "Ubuntu" ]; then
-  installDepsUbuntu 2>&1 | tee ${oneinstack_dir}/install.log
-fi
+case "${OS}" in
+  "CentOS")
+    installDepsCentOS 2>&1 | tee ${oneinstack_dir}/install.log
+    ;;
+  "Debian")
+    installDepsDebian 2>&1 | tee ${oneinstack_dir}/install.log
+    ;;
+  "Ubuntu")
+    installDepsUbuntu 2>&1 | tee ${oneinstack_dir}/install.log
+    ;;
+esac
 
 # init
 . ./include/memory.sh
-if [ "${OS}" == "CentOS" ]; then
-  . include/init_CentOS.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
-  [ -n "$(gcc --version | head -n1 | grep '4\.1\.')" ] && export CC="gcc44" CXX="g++44"
-elif [ "${OS}" == "Debian" ]; then
-  . include/init_Debian.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${OS}" == "Ubuntu" ]; then
-  . include/init_Ubuntu.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${OS}" in
+  "CentOS")
+    . include/init_CentOS.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
+    [ -n "$(gcc --version | head -n1 | grep '4\.1\.')" ] && export CC="gcc44" CXX="g++44"
+    ;;
+  "Debian")
+    . include/init_Debian.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  "Ubuntu")
+    . include/init_Ubuntu.sh 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+esac
 
 # Check download source packages
 . ./include/check_download.sh
@@ -515,46 +529,56 @@ if [ "${je_tc_malloc_yn}" == 'y' -a "${je_tc_malloc}" == '2' -a ! -e "/usr/local
 fi
 
 # Database
-if [ "${DB_version}" == '1' ]; then
-  if [ "${dbInstallMethods}" == "2" ]; then
-    . include/boost.sh
-    installBoost 2>&1 | tee -a ${oneinstack_dir}/install.log
-  fi
-  . include/mysql-5.7.sh
-  Install_MySQL-5-7 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '2' ]; then
-  . include/mysql-5.6.sh
-  Install_MySQL-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '3' ]; then
-  . include/mysql-5.5.sh
-  Install_MySQL-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '4' ]; then
-  if [ "${dbInstallMethods}" == "2" ]; then
-    . include/boost.sh
-    installBoost 2>&1 | tee -a ${oneinstack_dir}/install.log
-  fi
-  . include/mariadb-10.1.sh
-  Install_MariaDB-10-1 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '5' ]; then
-  . include/mariadb-10.0.sh
-  Install_MariaDB-10-0 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '6' ]; then
-  . include/mariadb-5.5.sh
-  Install_MariaDB-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '7' ]; then
-  if [ "${dbInstallMethods}" == "2" ]; then
-    . include/boost.sh
-    installBoost 2>&1 | tee -a ${oneinstack_dir}/install.log
-  fi
-  . include/percona-5.7.sh
-  Install_Percona-5-7 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '8' ]; then
-  . include/percona-5.6.sh
-  Install_Percona-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${DB_version}" == '9' ]; then
-  . include/percona-5.5.sh
-  Install_Percona-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${DB_version}" in
+  1)
+    if [ "${dbInstallMethods}" == "2" ]; then
+      . include/boost.sh
+      installBoost 2>&1 | tee -a ${oneinstack_dir}/install.log
+    fi
+    . include/mysql-5.7.sh
+    Install_MySQL-5-7 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  2)
+    . include/mysql-5.6.sh
+    Install_MySQL-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  3)
+    . include/mysql-5.5.sh
+    Install_MySQL-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  4)
+    if [ "${dbInstallMethods}" == "2" ]; then
+      . include/boost.sh
+      installBoost 2>&1 | tee -a ${oneinstack_dir}/install.log
+    fi
+    . include/mariadb-10.1.sh
+    Install_MariaDB-10-1 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  5)
+    . include/mariadb-10.0.sh
+    Install_MariaDB-10-0 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  6)
+    . include/mariadb-5.5.sh
+    Install_MariaDB-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  7)
+    if [ "${dbInstallMethods}" == "2" ]; then
+      . include/boost.sh
+      installBoost 2>&1 | tee -a ${oneinstack_dir}/install.log
+    fi
+    . include/percona-5.7.sh
+    Install_Percona-5-7 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  8)
+    . include/percona-5.6.sh
+    Install_Percona-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  9)
+    . include/percona-5.5.sh
+    Install_Percona-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+esac
 
 # Apache
 if [ "${Apache_version}" == '1' ]; then
@@ -566,22 +590,28 @@ elif [ "${Apache_version}" == '2' ]; then
 fi
 
 # PHP
-if [ "${PHP_version}" == '1' ]; then
-  . include/php-5.3.sh
-  Install_PHP-5-3 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_version}" == '2' ]; then
-  . include/php-5.4.sh
-  Install_PHP-5-4 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_version}" == '3' ]; then
-  . include/php-5.5.sh
-  Install_PHP-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_version}" == '4' ]; then
-  . include/php-5.6.sh
-  Install_PHP-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_version}" == '5' ]; then
-  . include/php-7.0.sh
-  Install_PHP-7-0 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${PHP_version}" in
+  1)
+    . include/php-5.3.sh
+    Install_PHP-5-3 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  2)
+    . include/php-5.4.sh
+    Install_PHP-5-4 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  3)
+    . include/php-5.5.sh
+    Install_PHP-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  4)
+    . include/php-5.6.sh
+    Install_PHP-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  5)
+    . include/php-7.0.sh
+    Install_PHP-7-0 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+esac
 
 # ImageMagick or GraphicsMagick
 if [ "${Magick}" == '1' ]; then
@@ -601,19 +631,28 @@ if [ "${ionCube_yn}" == 'y' ]; then
 fi
 
 # PHP opcode cache
-if [ "${PHP_cache}" == '1' ] && [[ "${PHP_version}" =~ ^[1,2]$ ]]; then
-  . include/zendopcache.sh
-  Install_ZendOPcache 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_cache}" == '2' ]; then
-  . include/xcache.sh
-  Install_XCache 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_cache}" == '3' ]; then
-  . include/apcu.sh
-  Install_APCU 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${PHP_cache}" == '4' ] && [[ "${PHP_version}" =~ ^[1,2]$ ]]; then
-  . include/eaccelerator.sh
-  Install_eAccelerator 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${PHP_cache}" in
+  1)
+    if [[ "${PHP_version}" =~ ^[1,2]$ ]]; then
+      . include/zendopcache.sh
+      Install_ZendOPcache 2>&1 | tee -a ${oneinstack_dir}/install.log
+    fi
+    ;;
+  2)
+    . include/xcache.sh
+    Install_XCache 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  3)
+    . include/apcu.sh
+    Install_APCU 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  4)
+    if [[ "${PHP_version}" =~ ^[1,2]$ ]]; then
+      . include/eaccelerator.sh
+      Install_eAccelerator 2>&1 | tee -a ${oneinstack_dir}/install.log
+    fi
+    ;;
+esac
 
 # ZendGuardLoader (php <= 5.6)
 if [ "${ZendGuardLoader_yn}" == 'y' ]; then
@@ -622,39 +661,51 @@ if [ "${ZendGuardLoader_yn}" == 'y' ]; then
 fi
 
 # Web server
-if [ "${Nginx_version}" == '1' ]; then
-  . include/nginx.sh
-  Install_Nginx 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${Nginx_version}" == '2' ]; then
-  . include/tengine.sh
-  Install_Tengine 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${Nginx_version}" == '3' ]; then
-  . include/openresty.sh
-  Install_OpenResty 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${Nginx_version}" in
+  1)
+    . include/nginx.sh
+    Install_Nginx 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  2)
+    . include/tengine.sh
+    Install_Tengine 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  3)
+    . include/openresty.sh
+    Install_OpenResty 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+esac
 
 # JDK
-if [ "${JDK_version}" == '1' ]; then
-  . include/jdk-1.8.sh
-  Install-JDK-1-8 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${JDK_version}" == '2' ]; then
-  . include/jdk-1.7.sh
-  Install-JDK-1-7 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${JDK_version}" == '3' ]; then
-  . include/jdk-1.6.sh
-  Install-JDK-1-6 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${JDK_version}" in
+  1)
+    . include/jdk-1.8.sh
+    Install-JDK-1-8 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  2)
+    . include/jdk-1.7.sh
+    Install-JDK-1-7 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  3)
+    . include/jdk-1.6.sh
+    Install-JDK-1-6 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+esac
 
-if [ "${Tomcat_version}" == '1' ]; then
-  . include/tomcat-8.sh
-  Install_tomcat-8 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${Tomcat_version}" == '2' ]; then
-  . include/tomcat-7.sh
-  Install_tomcat-7 2>&1 | tee -a ${oneinstack_dir}/install.log
-elif [ "${Tomcat_version}" == '3' ]; then
-  . include/tomcat-6.sh
-  Install_tomcat-6 2>&1 | tee -a ${oneinstack_dir}/install.log
-fi
+case "${Tomcat_version}" in
+  1)
+    . include/tomcat-8.sh
+    Install_tomcat-8 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  2)
+    . include/tomcat-7.sh
+    Install_tomcat-7 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  3)
+    . include/tomcat-6.sh
+    Install_tomcat-6 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+esac
 
 # Pure-FTPd
 if [ "${FTP_yn}" == 'y' ]; then

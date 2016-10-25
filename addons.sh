@@ -167,10 +167,20 @@ What Are You Doing?
           if [[ ! "${PHP_cache}" =~ ^[1-4]$ ]]; then
             echo "${CWARNING}input error! Please only input number 1,2,3,4${CEND}"
           else
-            [ "${PHP_cache}" = '1' ] && PHP_extension=opcache
-            [ "${PHP_cache}" = '2' ] && PHP_extension=xcache
-            [ "${PHP_cache}" = '3' ] && PHP_extension=apcu
-            [ "${PHP_cache}" = '4' ] && PHP_extension=eaccelerator
+            case "${PHP_cache}" in
+              1)
+                PHP_extension=opcache
+                ;;
+              2)
+                PHP_extension=xcache
+                ;;
+              3)
+                PHP_extension=apcu
+                ;;
+              4)
+                PHP_extension=eaccelerator
+                ;;
+            esac
             break
           fi
         done
@@ -179,7 +189,8 @@ What Are You Doing?
           if [ -e ${php_install_dir}/etc/php.d/ext-ZendGuardLoader.ini ]; then
             echo; echo "${CWARNING}You have to install ZendGuardLoader, You need to uninstall it before install ${PHP_extension}! ${CEND}"; echo; exit 1
           else
-            if [ "${PHP_cache}" = '1' ]; then
+            case "${PHP_cache}" in
+              1)
                 pushd ${oneinstack_dir}/src
                 if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]]; then
                   src_url=https://pecl.php.net/get/zendopcache-${zendopcache_version}.tgz && Download_src
@@ -190,42 +201,46 @@ What Are You Doing?
                 fi
                 popd
                 Check_succ
-            elif [ "${PHP_cache}" = '2' ]; then
-              if [[ ${PHP_main_version} =~ ^5.[3-6]$ ]]; then
-                while :; do
-                  read -p "Please input xcache admin password: " xcache_admin_pass
-                  (( ${#xcache_admin_pass} >= 5 )) && { xcache_admin_md5_pass=$(echo -n "${xcache_admin_pass}" | md5sum | awk '{print $1}') ; break ; } || echo "${CFAILURE}xcache admin password least 5 characters! ${CEND}"
-                done
-                checkDownload
-                Install_XCache
-                Check_succ
-              else
-                echo "${CWARNING}Your php does not support XCache! ${CEND}"; exit 1
-              fi
-            elif [ "${PHP_cache}" = '3' ]; then
-              if [[ "${PHP_main_version}" =~ ^5.[3-6]$|^7.[0-1]$ ]]; then
-                if [[ "${PHP_main_version}" =~ ^7.[0-1]$ ]]; then
-                  PHP_version='5'
+                ;;
+              2)
+                if [[ ${PHP_main_version} =~ ^5.[3-6]$ ]]; then
+                  while :; do
+                    read -p "Please input xcache admin password: " xcache_admin_pass
+                    (( ${#xcache_admin_pass} >= 5 )) && { xcache_admin_md5_pass=$(echo -n "${xcache_admin_pass}" | md5sum | awk '{print $1}') ; break ; } || echo "${CFAILURE}xcache admin password least 5 characters! ${CEND}"
+                  done
+                  checkDownload
+                  Install_XCache
+                  Check_succ
+                else
+                  echo "${CWARNING}Your php does not support XCache! ${CEND}"; exit 1
                 fi
-                checkDownload
-                Install_APCU
-                Check_succ
-              else
-                echo "${CWARNING}Your php does not support APCU! ${CEND}"; exit 1
-              fi
-            elif [ "${PHP_cache}" = '4' ]; then
-              if [ "${PHP_main_version}" == "5.3" ]; then
-                PHP_version='1' && checkDownload
-                Install_eAccelerator
-                Check_succ
-              elif [ "${PHP_main_version}" == "5.4" ]; then
-                PHP_version='2' && checkDownload
-                Install_eAccelerator
-                Check_succ
-              else
-                echo "${CWARNING}Your php does not support eAccelerator! ${CEND}"; exit 1
-              fi
-            fi
+                ;;
+              3)
+                if [[ "${PHP_main_version}" =~ ^5.[3-6]$|^7.[0-1]$ ]]; then
+                  if [[ "${PHP_main_version}" =~ ^7.[0-1]$ ]]; then
+                    PHP_version='5'
+                  fi
+                  checkDownload
+                  Install_APCU
+                  Check_succ
+                else
+                  echo "${CWARNING}Your php does not support APCU! ${CEND}"; exit 1
+                fi
+                ;;
+              4)
+                if [ "${PHP_main_version}" == "5.3" ]; then
+                  PHP_version='1' && checkDownload
+                  Install_eAccelerator
+                  Check_succ
+                elif [ "${PHP_main_version}" == "5.4" ]; then
+                  PHP_version='2' && checkDownload
+                  Install_eAccelerator
+                  Check_succ
+                else
+                  echo "${CWARNING}Your php does not support eAccelerator! ${CEND}"; exit 1
+                fi
+                ;;
+            esac
           fi
         else
           Uninstall_succ
@@ -347,24 +362,28 @@ What Are You Doing?
         done
         if [ "${ACTION}" = '1' ]; then
           memcached_yn=y && checkDownload
-          if [ "${Memcache}" = '1' ]; then
-            [ ! -d "${memcached_install_dir}/include/memcached" ] && Install_memcached
-            Check_PHP_Extension
-            Install_php-memcache
-            Check_succ
-          elif [ "${Memcache}" = '2' ]; then
-            [ ! -d "${memcached_install_dir}/include/memcached" ] && Install_memcached
-            Check_PHP_Extension
-            Install_php-memcached
-            Check_succ
-          elif [ "${Memcache}" = '3' ]; then
-            [ ! -d "${memcached_install_dir}/include/memcached" ] && Install_memcached
-            PHP_extension=memcache && Check_PHP_Extension
-            Install_php-memcache
-            PHP_extension=memcached && Check_PHP_Extension
-            Install_php-memcached
-            [ -f "${phpExtensionDir}/memcache.so" -a "${phpExtensionDir}/memcached.so" ] && { Restart_PHP; echo;echo "${CSUCCESS}PHP memcache/memcached module installed successfully! ${CEND}"; }
-          fi
+          case "${Memcache}" in
+            1)
+              [ ! -d "${memcached_install_dir}/include/memcached" ] && Install_memcached
+              Check_PHP_Extension
+              Install_php-memcache
+              Check_succ
+              ;;
+            2)
+              [ ! -d "${memcached_install_dir}/include/memcached" ] && Install_memcached
+              Check_PHP_Extension
+              Install_php-memcached
+              Check_succ
+              ;;
+            3)
+              [ ! -d "${memcached_install_dir}/include/memcached" ] && Install_memcached
+              PHP_extension=memcache && Check_PHP_Extension
+              Install_php-memcache
+              PHP_extension=memcached && Check_PHP_Extension
+              Install_php-memcached
+              [ -f "${phpExtensionDir}/memcache.so" -a "${phpExtensionDir}/memcached.so" ] && { Restart_PHP; echo;echo "${CSUCCESS}PHP memcache/memcached module installed successfully! ${CEND}"; }
+              ;;
+          esac
         else
           PHP_extension=memcache && Uninstall_succ
           PHP_extension=memcached && Uninstall_succ

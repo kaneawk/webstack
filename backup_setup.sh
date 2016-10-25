@@ -39,9 +39,17 @@ while :; do echo
   fi
 done
 
-[ "${DESC_BK}" == '1' ] && sed -i 's@^backup_destination=.*@backup_destination=local@' ./options.conf
-[ "${DESC_BK}" == '2' ] && sed -i 's@^backup_destination=.*@backup_destination=remote@' ./options.conf
-[ "${DESC_BK}" == '3' ] && sed -i 's@^backup_destination=.*@backup_destination=local,remote@' ./options.conf
+case "${DESC_BK}" in
+  1)
+    sed -i 's@^backup_destination=.*@backup_destination=local@' ./options.conf
+    ;;
+  2)
+    sed -i 's@^backup_destination=.*@backup_destination=remote@' ./options.conf
+    ;;
+  3)
+    sed -i 's@^backup_destination=.*@backup_destination=local,remote@' ./options.conf
+    ;;
+esac
 
 while :; do echo
   echo "Please select your backup content:"
@@ -57,9 +65,17 @@ while :; do echo
   fi
 done
 
-[ "${CONTENT_BK}" == '1' ] && sed -i 's@^backup_content=.*@backup_content=db@' ./options.conf
-[ "${CONTENT_BK}" == '2' ] && sed -i 's@^backup_content=.*@backup_content=web@' ./options.conf
-[ "${CONTENT_BK}" == '3' ] && sed -i 's@^backup_content=.*@backup_content=db,web@' ./options.conf
+case "${CONTENT_BK}" in
+  1)
+    sed -i 's@^backup_content=.*@backup_content=db@' ./options.conf
+    ;;
+  2)
+    sed -i 's@^backup_content=.*@backup_content=web@' ./options.conf
+    ;;
+  3)
+    sed -i 's@^backup_content=.*@backup_content=db,web@' ./options.conf
+    ;;
+esac
 
 while :; do echo
   echo "Please enter the directory for save the backup file: "

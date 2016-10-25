@@ -51,9 +51,17 @@ Choose_env() {
         break
       fi
     done
-    [ "${Choose_number}" == '1' ] && NGX_FLAG=php
-    [ "${Choose_number}" == '2' ] && NGX_FLAG=java
-    [ "${Choose_number}" == '3' ] && NGX_FLAG=hhvm
+    case "${Choose_number}" in
+      1)
+        NGX_FLAG=php
+        ;;
+      2)
+        NGX_FLAG=java
+        ;;
+      3)
+        NGX_FLAG=hhvm
+        ;;
+    esac
   elif [ -e "${php_install_dir}/bin/phpize" -a -e "${tomcat_install_dir}/conf/server.xml" -a ! -e "/usr/bin/hhvm" ]; then
     Number=110
     while :; do echo
@@ -116,13 +124,17 @@ Choose_env() {
     NGX_FLAG=php
   fi
 
-  if [ "${NGX_FLAG}" == "php" ]; then
-    NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n  #fastcgi_pass remote_php_ip:9000;\n  fastcgi_pass unix:/dev/shm/php-cgi.sock;\n  fastcgi_index index.php;\n  include fastcgi.conf;\n}")
-  elif [ "${NGX_FLAG}" == "java" ]; then
-    NGX_CONF=$(echo -e "location ~ {\n  proxy_pass http://127.0.0.1:8080;\n  include proxy.conf;\n}")
-  elif [ "${NGX_FLAG}" == "hhvm" ]; then
-    NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n  fastcgi_pass unix:/var/log/hhvm/sock;\n  fastcgi_index index.php;\n  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n  include fastcgi_params;\n}")
-  fi
+  case "${NGX_FLAG}" in
+    "php")
+      NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n  #fastcgi_pass remote_php_ip:9000;\n  fastcgi_pass unix:/dev/shm/php-cgi.sock;\n  fastcgi_index index.php;\n  include fastcgi.conf;\n}")
+      ;;
+    "java")
+      NGX_CONF=$(echo -e "location ~ {\n  proxy_pass http://127.0.0.1:8080;\n  include proxy.conf;\n}")
+      ;;
+    "hhvm")
+      NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n  fastcgi_pass unix:/var/log/hhvm/sock;\n  fastcgi_index index.php;\n  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n  include fastcgi_params;\n}")
+      ;;
+  esac
 }
 
 Create_self_SSL() {
