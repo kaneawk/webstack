@@ -13,7 +13,7 @@ Install_tomcat-6() {
   . /etc/profile
 
   id -u ${run_user} >/dev/null 2>&1
-  [ $? -ne 0 ] && useradd -M -s /bin/bash ${run_user} || { [ -z "`grep ^${run_user} /etc/passwd | grep '/bin/bash'`" ] && usermod -s /bin/bash ${run_user}; }
+  [ $? -ne 0 ] && useradd -M -s /bin/bash ${run_user} || { [ -z "$(grep ^${run_user} /etc/passwd | grep '/bin/bash')" ] && usermod -s /bin/bash ${run_user}; }
 
   tar xzf apache-tomcat-${tomcat_6_version}.tar.gz
   [ ! -d "${tomcat_install_dir}" ] && mkdir -p ${tomcat_install_dir}
@@ -33,7 +33,7 @@ Install_tomcat-6() {
   jar xf ../catalina.jar
   sed -i 's@^server.info=.*@server.info=Tomcat@' org/apache/catalina/util/ServerInfo.properties
   sed -i 's@^server.number=.*@server.number=6@' org/apache/catalina/util/ServerInfo.properties
-  sed -i "s@^server.built=.*@server.built=`date`@" org/apache/catalina/util/ServerInfo.properties
+  sed -i "s@^server.built=.*@server.built=$(date)@" org/apache/catalina/util/ServerInfo.properties
   jar cf ../catalina.jar ./*
   popd
   rm -rf ${tomcat_install_dir}/lib/catalina
@@ -68,12 +68,12 @@ EOF
     sed -i /ThreadLocalLeakPreventionListener/d ${tomcat_install_dir}/conf/server.xml
     if [ ! -e "${nginx_install_dir}/sbin/nginx" -a ! -e "${tengine_install_dir}/sbin/nginx" -a ! -e "${apache_install_dir}/conf/httpd.conf" ]; then
       if [ "${OS}" == "CentOS" ]; then
-        if [ -z "`grep -w '8080' /etc/sysconfig/iptables`" ]; then
+        if [ -z "$(grep -w '8080' /etc/sysconfig/iptables)" ]; then
           iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT
           service iptables save
         fi
       elif [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]]; then
-        if [ -z "`grep -w '8080' /etc/iptables.up.rules`" ]; then
+        if [ -z "$(grep -w '8080' /etc/iptables.up.rules)" ]; then
           iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT
           iptables-save > /etc/iptables.up.rules
         fi
@@ -100,7 +100,7 @@ ${tomcat_install_dir}/logs/catalina.out {
   copytruncate
 }
 EOF
-    [ -z "`grep '<user username="admin" password=' ${tomcat_install_dir}/conf/tomcat-users.xml`" ] && sed -i "s@^</tomcat-users>@<role rolename=\"admin-gui\"/>\n<role rolename=\"admin-script\"/>\n<role rolename=\"manager-gui\"/>\n<role rolename=\"manager-script\"/>\n<user username=\"admin\" password=\"`cat /dev/urandom | head -1 | md5sum | head -c 10`\" roles=\"admin-gui,admin-script,manager-gui,manager-script\"/>\n</tomcat-users>@" ${tomcat_install_dir}/conf/tomcat-users.xml
+    [ -z "$(grep '<user username="admin" password=' ${tomcat_install_dir}/conf/tomcat-users.xml)" ] && sed -i "s@^</tomcat-users>@<role rolename=\"admin-gui\"/>\n<role rolename=\"admin-script\"/>\n<role rolename=\"manager-gui\"/>\n<role rolename=\"manager-script\"/>\n<user username=\"admin\" password=\"$(cat /dev/urandom | head -1 | md5sum | head -c 10)\" roles=\"admin-gui,admin-script,manager-gui,manager-script\"/>\n</tomcat-users>@" ${tomcat_install_dir}/conf/tomcat-users.xml
     cat > ${tomcat_install_dir}/conf/jmxremote.access << EOF
 monitorRole   readonly
 controlRole   readwrite \
@@ -108,7 +108,7 @@ controlRole   readwrite \
               unregister
 EOF
     cat > ${tomcat_install_dir}/conf/jmxremote.password << EOF
-monitorRole  `cat /dev/urandom | head -1 | md5sum | head -c 8`
+monitorRole  $(cat /dev/urandom | head -1 | md5sum | head -c 8)
 # controlRole   R&D
 EOF
     chown -R ${run_user}.${run_user} ${tomcat_install_dir}

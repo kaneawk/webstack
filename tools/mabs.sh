@@ -32,14 +32,14 @@ show_version() {
 }
 
 show_usage() {
-  echo -e "`printf %-16s "Usage: $0"` [-h|--help]"
-  echo -e "`printf %-16s ` [-v|-V|--version]"
-  echo -e "`printf %-16s ` [-l|--iplist ... ]"
-  echo -e "`printf %-16s ` [-c|--config ... ]"
-  echo -e "`printf %-16s ` [-t|--sshtimeout ... ]"
-  echo -e "`printf %-16s ` [-T|--fttimeout ... ]"
-  echo -e "`printf %-16s ` [-L|--bwlimit ... ]"
-  echo -e "`printf %-16s ` [-n|--ignore]"
+  echo -e "$(printf %-16s "Usage: $0") [-h|--help]"
+  echo -e "$(printf %-16s ) [-v|-V|--version]"
+  echo -e "$(printf %-16s ) [-l|--iplist ... ]"
+  echo -e "$(printf %-16s ) [-c|--config ... ]"
+  echo -e "$(printf %-16s ) [-t|--sshtimeout ... ]"
+  echo -e "$(printf %-16s ) [-T|--fttimeout ... ]"
+  echo -e "$(printf %-16s ) [-L|--bwlimit ... ]"
+  echo -e "$(printf %-16s ) [-n|--ignore]"
 }
 
 IPLIST="iplist.txt"
@@ -50,7 +50,7 @@ SCPTIMEOUT=2000
 BWLIMIT=1024000
 [ ! -e "logs" ] && mkdir logs
 
-TEMP=`getopt -o hvVl:c:t:T:L:n --long help,version,iplist:,config:,sshtimeout:,fttimeout:,bwlimit:,log:,ignore -- "$@" 2>/dev/null`
+TEMP=$(getopt -o hvVl:c:t:T:L:n --long help,version,iplist:,config:,sshtimeout:,fttimeout:,bwlimit:,log:,ignore -- "$@" 2>/dev/null)
 
 [ $? != 0 ] && echo -e "\033[31mERROR: unknown argument! \033[0m\n" && show_usage && exit 1
 
@@ -96,7 +96,7 @@ while :; do
 done
 
 ################  main  #######################
-BEGINDATETIME=`date "+%F %T"`
+BEGINDATETIME=$(date "+%F %T")
 [ ! -f ${IPLIST} ] && echo -e "\033[31mERROR: iplist \"$IPLIST\" not exists, please check! \033[0m\n" && exit 1
 
 [ ! -f ${CONFIG_FILE} ] && echo -e "\033[31mERROR: config \"$CONFIG_FILE\" not exists, please check! \033[0m\n" && exit 1
@@ -112,10 +112,10 @@ do
   while read IP PORT USER PASSWD PASSWD_2ND PASSWD_3RD PASSWD_4TH OTHERS
     # while read Line
   do
-    [ -z "`echo ${IP} | grep -E '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|CNS'`" ] && continue
-    if [ "`python ./ckssh.py ${IP} ${PORT}`" == 'no' ]; then
+    [ -z "$(echo ${IP} | grep -E '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|CNS')" ] && continue
+    if [ "$(python ./ckssh.py ${IP} ${PORT})" == 'no' ]; then
     [ ! -e ipnologin.txt ] && > ipnologin.txt
-    [ -z "`grep ${IP} ipnologin.txt | grep $(date +%F)`" ] && echo "`date +%F_%H%M` ${IP}" >> ipnologin.txt
+    [ -z "$(grep ${IP} ipnologin.txt | grep $(date +%F))" ] && echo "$(date +%F_%H%M) ${IP}" >> ipnologin.txt
     continue
     fi
 
@@ -160,7 +160,7 @@ do
   IP_init=$(expr ${IP_init} + 50)
 done
 
-ENDDATETIME=`date "+%F %T"`
+ENDDATETIME=$(date "+%F %T")
 
 echo "${BEGINDATETIME} -- ${ENDDATETIME}"
 echo "$0 $* --excutes over!"

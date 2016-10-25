@@ -28,7 +28,7 @@ cd src
 # Check if user is root
 [ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
 
-PUBLIC_IPADDR=`../include/get_public_ipaddr.py`
+PUBLIC_IPADDR=$(../include/get_public_ipaddr.py)
 
 [ "${CentOS_RHEL_version}" == '5' ] && { echo "${CWARNING}Shadowsocks only support CentOS6,7 or Debian or Ubuntu! ${CEND}"; exit 1; }
 
@@ -40,16 +40,16 @@ Check_shadowsocks() {
 AddUser_shadowsocks() {
   while :; do echo
     read -p "Please input password for shadowsocks: " Shadowsocks_password
-    [ -n "`echo ${Shadowsocks_password} | grep '[+|&]'`" ] && { echo "${CWARNING}input error,not contain a plus sign (+) and & ${CEND}"; continue; }
+    [ -n "$(echo ${Shadowsocks_password} | grep '[+|&]')" ] && { echo "${CWARNING}input error,not contain a plus sign (+) and & ${CEND}"; continue; }
     (( ${#Shadowsocks_password} >= 5 )) && break || echo "${CWARNING}Shadowsocks password least 5 characters! ${CEND}"
   done
 }
 
 Iptables_set() {
   if [ -e '/etc/sysconfig/iptables' ]; then
-    Shadowsocks_Already_port=`grep -oE '9[0-9][0-9][0-9]' /etc/sysconfig/iptables | head -n 1`
+    Shadowsocks_Already_port=$(grep -oE '9[0-9][0-9][0-9]' /etc/sysconfig/iptables | head -n 1)
   elif [ -e '/etc/iptables.up.rules' ]; then
-    Shadowsocks_Already_port=`grep -oE '9[0-9][0-9][0-9]' /etc/iptables.up.rules | head -n 1`
+    Shadowsocks_Already_port=$(grep -oE '9[0-9][0-9][0-9]' /etc/iptables.up.rules | head -n 1)
   fi
 
   if [ -n "${Shadowsocks_Already_port}" ]; then
@@ -62,20 +62,20 @@ Iptables_set() {
     read -p "Please input Shadowsocks port(Default: ${Shadowsocks_Default_port}): " Shadowsocks_port
     [ -z "${Shadowsocks_port}" ] && Shadowsocks_port=${Shadowsocks_Default_port}
     if [ ${Shadowsocks_port} -ge 1 >/dev/null 2>&1 -a ${Shadowsocks_port} -le 65535 >/dev/null 2>&1 ]; then
-      [ -z "`netstat -an | grep :${Shadowsocks_port}`" ] && break || echo "${CWARNING}This port is already used! ${CEND}"
+      [ -z "$(netstat -an | grep :${Shadowsocks_port})" ] && break || echo "${CWARNING}This port is already used! ${CEND}"
     else
       echo "${CWARNING}input error! Input range: 1~65535${CEND}"
     fi
   done
 
   if [ "${OS}" == 'CentOS' ]; then
-    if [ -z "`grep -E ${Shadowsocks_port} /etc/sysconfig/iptables`" ]; then
+    if [ -z "$(grep -E ${Shadowsocks_port} /etc/sysconfig/iptables)" ]; then
       iptables -I INPUT 4 -p udp -m state --state NEW -m udp --dport ${Shadowsocks_port} -j ACCEPT
       iptables -I INPUT 4 -p tcp -m state --state NEW -m tcp --dport ${Shadowsocks_port} -j ACCEPT
       service iptables save
     fi
   elif [[ ${OS} =~ ^Ubuntu$|^Debian$ ]]; then
-    if [ -z "`grep -E ${Shadowsocks_port} /etc/iptables.up.rules`" ]; then
+    if [ -z "$(grep -E ${Shadowsocks_port} /etc/iptables.up.rules)" ]; then
       iptables -I INPUT 4 -p udp -m state --state NEW -m udp --dport ${Shadowsocks_port} -j ACCEPT
       iptables -I INPUT 4 -p tcp -m state --state NEW -m tcp --dport ${Shadowsocks_port} -j ACCEPT
       iptables-save > /etc/iptables.up.rules
@@ -102,8 +102,8 @@ Def_parameter() {
     done
     AddUser_shadowsocks
     Iptables_set
-    for Package in wget unzip openssl-devel gcc swig python python-devel python-setuptools autoconf libtool libevent automake make curl curl-devel zlib-devel perl perl-devel cpio expat-devel gettext-devel git asciidoc xmlto
-    do
+    pkgList="wget unzip openssl-devel gcc swig python python-devel python-setuptools autoconf libtool libevent automake make curl curl-devel zlib-devel perl perl-devel cpio expat-devel gettext-devel git asciidoc xmlto"
+    for Package in ${pkgList}; do
       yum -y install ${Package}
     done
   elif [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]]; then
@@ -111,8 +111,8 @@ Def_parameter() {
     AddUser_shadowsocks
     Iptables_set
     apt-get -y update
-    for Package in python-dev python-pip curl wget unzip gcc swig automake make perl cpio git
-    do
+    pkgList="python-dev python-pip curl wget unzip gcc swig automake make perl cpio git"
+    for Package in ${pkgList}; do
       apt-get -y install $Package
     done
   fi
@@ -172,7 +172,7 @@ Uninstall_shadowsocks(){
   done
 
   if [ "${Shadowsocks_yn}" == 'y' ]; then
-    [ -n "`ps -ef | grep -v grep | grep -iE "ssserver|ss-server"`" ] && /etc/init.d/shadowsocks stop
+    [ -n "$(ps -ef | grep -v grep | grep -iE "ssserver|ss-server")" ] && /etc/init.d/shadowsocks stop
     [ "${OS}" == "CentOS" ] && chkconfig --del shadowsocks
     [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && update-rc.d -f shadowsocks remove
     rm -rf /etc/shadowsocks /var/run/shadowsocks.pid /etc/init.d/shadowsocks
@@ -241,7 +241,7 @@ EOF
 
 AddUser_Config_shadowsocks(){
   [ ! -e /etc/shadowsocks/config.json ] && { echo "${CFAILURE}Shadowsocks is not installed! ${CEND}"; exit 1; }
-  [ -z "`grep \"${Shadowsocks_port}\" /etc/shadowsocks/config.json`" ] && sed -i "s@\"port_password\":{@\"port_password\":{\n\t\"${Shadowsocks_port}\":\"${Shadowsocks_password}\",@" /etc/shadowsocks/config.json || { echo "${CWARNING}This port is already in /etc/shadowsocks/config.json${CEND}"; exit 1; }
+  [ -z "$(grep \"${Shadowsocks_port}\" /etc/shadowsocks/config.json)" ] && sed -i "s@\"port_password\":{@\"port_password\":{\n\t\"${Shadowsocks_port}\":\"${Shadowsocks_password}\",@" /etc/shadowsocks/config.json || { echo "${CWARNING}This port is already in /etc/shadowsocks/config.json${CEND}"; exit 1; }
 }
 
 Print_User_shadowsocks(){
@@ -287,7 +287,7 @@ uninstall)
   ;;
 *)
   echo
-  echo $"Usage: ${CMSG}$0${CEND} { ${CMSG}install${CEND} | ${CMSG}adduser${CEND} | ${CMSG}uninstall${CEND} }"
+  echo "Usage: ${CMSG}$0${CEND} { ${CMSG}install${CEND} | ${CMSG}adduser${CEND} | ${CMSG}uninstall${CEND} }"
   echo
   exit 1
 esac

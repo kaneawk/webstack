@@ -31,14 +31,14 @@ pure_config=/usr/local/pureftpd/etc/pure-ftpd.conf
 
 
 start() {
-  echo -n $"Starting $prog: "
+  echo -n "Starting $prog: "
   $fullpath $pure_config --daemonize
   RETVAL=$?
   [ $RETVAL = 0 ] && touch /var/lock/subsys/$prog
   echo
 }
 stop() {
-  echo -n $"Stopping $prog: "
+  echo -n "Stopping $prog: "
   kill $(cat /var/run/pure-ftpd.pid)
   RETVAL=$?
   [ $RETVAL = 0 ] && rm -f /var/lock/subsys/$prog
@@ -73,7 +73,7 @@ case "$1" in
     fi
     ;;
   *)
-    echo $"Usage: $prog {start|stop|restart|condrestart|status}"
+    echo "Usage: $prog {start|stop|restart|condrestart|status}"
     RETVAL=1
 esac
 exit $RETVAL

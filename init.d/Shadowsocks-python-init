@@ -24,7 +24,7 @@ Shadowsocks_USAGE="Usage: $0 {\e[00;32mstart\e[00m|\e[00;31mstop\e[00m|\e[00;32m
 SHUTDOWN_WAIT=20
 
 Shadowsocks_pid(){
-  echo `ps -ef | grep $Shadowsocks_bin | grep -v grep | tr -s " "|cut -d" " -f2`
+  echo $(ps -ef | grep $Shadowsocks_bin | grep -v grep | tr -s " "|cut -d" " -f2)
 }
 
 start() {
@@ -60,7 +60,7 @@ stop(){
     $Shadowsocks_bin -c $Shadowsocks_conf -d stop
     let kwait=$SHUTDOWN_WAIT
     count=0;
-    until [ `ps -p $pid | grep -c $pid` = '0' ] || [ $count -gt $kwait ]
+    until [ $(ps -p $pid | grep -c $pid) = '0' ] || [ $count -gt $kwait ]
     do
       echo -n -e "\e[00;31mwaiting for processes to exit\e[00m\n";
       sleep 1

@@ -99,8 +99,8 @@ Install_PHP-5-5() {
     kill -9 $$
   fi
 
-  [ -z "`grep ^'export PATH=' /etc/profile`" ] && echo "export PATH=${php_install_dir}/bin:\$PATH" >> /etc/profile
-  [ -n "`grep ^'export PATH=' /etc/profile`" -a -z "`grep ${php_install_dir} /etc/profile`" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${php_install_dir}/bin:\1@" /etc/profile
+  [ -z "$(grep ^'export PATH=' /etc/profile)" ] && echo "export PATH=${php_install_dir}/bin:\$PATH" >> /etc/profile
+  [ -n "$(grep ^'export PATH=' /etc/profile)" -a -z "$(grep ${php_install_dir} /etc/profile)" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${php_install_dir}/bin:\1@" /etc/profile
   . /etc/profile
 
   # wget -c http://pear.php.net/go-pear.phar

@@ -8,8 +8,8 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Mem=`free -m | awk '/Mem:/{print $2}'`
-Swap=`free -m | awk '/Swap:/{print $2}'`
+Mem=$(free -m | awk '/Mem:/{print $2}')
+Swap=$(free -m | awk '/Swap:/{print $2}')
 
 if [ ${Mem} -le 640 ]; then
   Mem_level=512M
@@ -39,7 +39,7 @@ Make-swapfile() {
   mkswap /swapfile
   swapon /swapfile
   chmod 600 /swapfile
-  [ -z "`grep swapfile /etc/fstab`" ] && cat >> /etc/fstab << EOF
+  [ -z "$(grep swapfile /etc/fstab)" ] && cat >> /etc/fstab << EOF
 /swapfile    swap    swap    defaults    0 0
 EOF
 

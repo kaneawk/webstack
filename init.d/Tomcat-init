@@ -31,7 +31,7 @@ TOMCAT_USAGE="Usage: $0 {\e[00;32mstart\e[00m|\e[00;31mstop\e[00m|\e[00;32mstatu
 SHUTDOWN_WAIT=20
 
 tomcat_pid() {
-  echo `ps -ef | grep $CATALINA_HOME/ | grep -v grep | tr -s " "|cut -d" " -f2`
+  echo $(ps -ef | grep $CATALINA_HOME/ | grep -v grep | tr -s " "|cut -d" " -f2)
 }
 
 start() {
@@ -40,7 +40,7 @@ start() {
     echo -e "\e[00;31mTomcat is already running (pid: $pid)\e[00m"
   else
     echo -e "\e[00;32mStarting tomcat\e[00m"
-    if [ `user_exists $TOMCAT_USER` = "1" ]; then
+    if [ $(user_exists $TOMCAT_USER) = "1" ]; then
       su $TOMCAT_USER -c $CATALINA_HOME/bin/startup.sh
     else
       $CATALINA_HOME/bin/startup.sh
@@ -67,7 +67,7 @@ stop() {
 
     let kwait=$SHUTDOWN_WAIT
     count=0;
-    until [ `ps -p $pid | grep -c $pid` = '0' ] || [ $count -gt $kwait ]
+    until [ $(ps -p $pid | grep -c $pid) = '0' ] || [ $count -gt $kwait ]
     do
       echo -n -e "\e[00;31mwaiting for processes to exit\e[00m\n";
       sleep 1

@@ -130,7 +130,7 @@ EOF
 
   if [ -e "${web_install_dir}/sbin/nginx" -a -e "/usr/bin/hhvm" -a ! -e "${php_install_dir}" ]; then
     sed -i 's@/dev/shm/php-cgi.sock@/var/log/hhvm/sock@' ${web_install_dir}/conf/nginx.conf
-    [ -z "`grep 'fastcgi_param SCRIPT_FILENAME' ${web_install_dir}/conf/nginx.conf`" ] && sed -i "s@fastcgi_index index.php;@&\n\t\tfastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;@" ${web_install_dir}/conf/nginx.conf
+    [ -z "$(grep 'fastcgi_param SCRIPT_FILENAME' ${web_install_dir}/conf/nginx.conf)" ] && sed -i "s@fastcgi_index index.php;@&\n\t\tfastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;@" ${web_install_dir}/conf/nginx.conf
     sed -i 's@include fastcgi.conf;@include fastcgi_params;@' ${web_install_dir}/conf/nginx.conf
     service nginx reload
   fi
@@ -143,7 +143,7 @@ EOF
   easy_install supervisor
   echo_supervisord_conf > /etc/supervisord.conf
   sed -i 's@pidfile=/tmp/supervisord.pid@pidfile=/var/run/supervisord.pid@' /etc/supervisord.conf
-  [ -z "`grep 'program:hhvm' /etc/supervisord.conf`" ] && cat >> /etc/supervisord.conf << EOF
+  [ -z "$(grep 'program:hhvm' /etc/supervisord.conf)" ] && cat >> /etc/supervisord.conf << EOF
 [program:hhvm]
 command=/usr/bin/hhvm --mode server --user ${run_user} --config /etc/hhvm/server.ini --config /etc/hhvm/php.ini --config /etc/hhvm/config.hdf
 numprocs=1 ; number of processes copies to start (def 1)

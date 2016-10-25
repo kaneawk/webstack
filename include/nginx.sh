@@ -51,8 +51,8 @@ Install_Nginx() {
     kill -9 $$
   fi
 
-  [ -z "`grep ^'export PATH=' /etc/profile`" ] && echo "export PATH=${nginx_install_dir}/sbin:\$PATH" >> /etc/profile
-  [ -n "`grep ^'export PATH=' /etc/profile`" -a -z "`grep ${nginx_install_dir} /etc/profile`" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${nginx_install_dir}/sbin:\1@" /etc/profile
+  [ -z "$(grep ^'export PATH=' /etc/profile)" ] && echo "export PATH=${nginx_install_dir}/sbin:\$PATH" >> /etc/profile
+  [ -n "$(grep ^'export PATH=' /etc/profile)" -a -z "$(grep ${nginx_install_dir} /etc/profile)" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${nginx_install_dir}/sbin:\1@" /etc/profile
   . /etc/profile
 
   [ "${OS}" == "CentOS" ] && { /bin/cp ${oneinstack_dir}/init.d/Nginx-init-CentOS /etc/init.d/nginx; chkconfig --add nginx; chkconfig nginx on; }
@@ -62,13 +62,13 @@ Install_Nginx() {
   sed -i "s@/usr/local/nginx@${nginx_install_dir}@g" /etc/init.d/nginx
 
   mv ${nginx_install_dir}/conf/nginx.conf{,_bk}
-  if [[ ${Apache_version} =~ ^[1-2]$ ]]; then
+  if [[ "${Apache_version}" =~ ^[1-2]$ ]]; then
     /bin/cp config/nginx_apache.conf ${nginx_install_dir}/conf/nginx.conf
-  elif [[ ${Tomcat_version} =~ ^[1-2]$ ]] && [ ! -e "${php_install_dir}/bin/php" ]; then
+  elif [[ "${Tomcat_version}" =~ ^[1-2]$ ]] && [ ! -e "${php_install_dir}/bin/php" ]; then
     /bin/cp config/nginx_tomcat.conf ${nginx_install_dir}/conf/nginx.conf
   else
     /bin/cp config/nginx.conf ${nginx_install_dir}/conf/nginx.conf
-    [ "${PHP_yn}" == 'y' ] && [ -z "`grep '/php-fpm_status' ${nginx_install_dir}/conf/nginx.conf`" ] &&  sed -i "s@index index.html index.php;@index index.html index.php;\n    location ~ /php-fpm_status {\n        #fastcgi_pass remote_php_ip:9000;\n        fastcgi_pass unix:/dev/shm/php-cgi.sock;\n        fastcgi_index index.php;\n        include fastcgi.conf;\n        allow 127.0.0.1;\n        deny all;\n        }@" ${nginx_install_dir}/conf/nginx.conf
+    [ "${PHP_yn}" == 'y' ] && [ -z "$(grep '/php-fpm_status' ${nginx_install_dir}/conf/nginx.conf)" ] &&  sed -i "s@index index.html index.php;@index index.html index.php;\n    location ~ /php-fpm_status {\n        #fastcgi_pass remote_php_ip:9000;\n        fastcgi_pass unix:/dev/shm/php-cgi.sock;\n        fastcgi_index index.php;\n        include fastcgi.conf;\n        allow 127.0.0.1;\n        deny all;\n        }@" ${nginx_install_dir}/conf/nginx.conf
   fi
   cat > ${nginx_install_dir}/conf/proxy.conf << EOF
 proxy_connect_timeout 300s;
@@ -102,8 +102,8 @@ ${wwwlogs_dir}/*nginx.log {
   notifempty
   sharedscripts
   postrotate
-  [ -e /var/run/nginx.pid ] && kill -USR1 \`cat /var/run/nginx.pid\`
-endscript
+  [ -e /var/run/nginx.pid ] && kill -USR1 \$\(cat /var/run/nginx.pid\)
+  endscript
 }
 EOF
 

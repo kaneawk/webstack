@@ -32,7 +32,7 @@ start_instance() {
   RETVAL=$?
   echo
   [ $RETVAL -eq 0 ] && touch /var/lock/memcached.$1
-  PORT=`expr $PORT + 1`
+  let PORT="$PORT+1"
 }
 
 stop_instance() {
@@ -48,7 +48,7 @@ stop_instance() {
 start () {
   # insure that /var/run/memcached has proper permissions
   mkdir -p /var/run/memcached
-  if [ "`stat -c %U /var/run/memcached`" != "$USER" ]; then
+  if [ "$(stat -c %U /var/run/memcached)" != "$USER" ]; then
     chown $USER /var/run/memcached
   fi
 

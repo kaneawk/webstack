@@ -11,12 +11,12 @@
 Upgrade_DB() {
   cd ${oneinstack_dir}/src
   [ ! -e "${db_install_dir}/bin/mysql" ] && echo "${CWARNING}MySQL/MariaDB/Percona is not installed on your system! ${CEND}" && exit 1
-  OLD_DB_version_tmp=`${db_install_dir}/bin/mysql -V | awk '{print $5}' | awk -F, '{print $1}'`
-  DB_tmp=`echo ${OLD_DB_version_tmp} | awk -F'-' '{print $2}'`
+  OLD_DB_version_tmp=$(${db_install_dir}/bin/mysql -V | awk '{print $5}' | awk -F, '{print $1}')
+  DB_tmp=$(echo ${OLD_DB_version_tmp} | awk -F'-' '{print $2}')
   if [ "${DB_tmp}" == "MariaDB" ]; then
     [ "${IPADDR_COUNTRY}"x == "CN"x ] && DOWN_ADDR=https://mirrors.tuna.tsinghua.edu.cn/mariadb || DOWN_ADDR=https://downloads.mariadb.org/f
     DB=MariaDB
-    OLD_DB_version=`echo ${OLD_DB_version_tmp} | awk -F'-' '{print $1}'`
+    OLD_DB_version=$(echo ${OLD_DB_version_tmp} | awk -F'-' '{print $1}')
   elif [ -n "${DB_tmp}" -a "${DB_tmp}" != 'MariaDB' ]; then
     DB=Percona
     OLD_DB_version=${OLD_DB_version_tmp}
@@ -48,7 +48,7 @@ Upgrade_DB() {
   echo
   echo "${CSUCCESS}Starting ${DB} backup${CEND}......"
   ${db_install_dir}/bin/mysqldump -uroot -p${dbrootpwd} --opt --all-databases > DB_all_backup_$(date +"%Y%m%d").sql
-  [ -f "DB_all_backup_$(date +"%Y%m%d").sql" ] && echo "${DB} backup success, Backup file: ${MSG}`pwd`/DB_all_backup_$(date +"%Y%m%d").sql${CEND}"
+  [ -f "DB_all_backup_$(date +"%Y%m%d").sql" ] && echo "${DB} backup success, Backup file: ${MSG}$(pwd)/DB_all_backup_$(date +"%Y%m%d").sql${CEND}"
 
   #upgrade
   echo
@@ -59,16 +59,16 @@ Upgrade_DB() {
 
   while :; do echo
     read -p "Please input upgrade ${DB} Version(example: ${OLD_DB_version}): " NEW_DB_version
-    if [ `echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'` == `echo ${OLD_DB_version} | awk -F. '{print $1"."$2}'` ]; then
+    if [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" == "$(echo ${OLD_DB_version} | awk -F. '{print $1"."$2}')" ]; then
       if [ "${DB}" == "MariaDB" ]; then
           DB_name=mariadb-${NEW_DB_version}-${GLIBC_FLAG}-${SYS_BIT_b}
           DB_URL=${DOWN_ADDR}/mariadb-${NEW_DB_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}/${DB_name}.tar.gz
       elif [ "${DB}" == "Percona" ]; then
           DB_name=percona-server-${NEW_DB_version}
-          DB_URL=http://www.percona.com/redir/downloads/Percona-Server-`echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'`/LATEST/source/tarball/${DB_name}.tar.gz
+          DB_URL=http://www.percona.com/redir/downloads/Percona-Server-$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')/LATEST/source/tarball/${DB_name}.tar.gz
       elif [ "${DB}" == "MySQL" ]; then
-          [ `echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'` != '5.5' ] && DB_name=mysql-${NEW_DB_version}-linux-glibc2.5-${SYS_BIT_b} || DB_name=mysql-${NEW_DB_version}-linux2.6-${SYS_BIT_b}
-          DB_URL=${DOWN_ADDR}/MySQL-`echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'`/${DB_name}.tar.gz
+          [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" != '5.5' ] && DB_name=mysql-${NEW_DB_version}-linux-glibc2.5-${SYS_BIT_b} || DB_name=mysql-${NEW_DB_version}-linux2.6-${SYS_BIT_b}
+          DB_URL=${DOWN_ADDR}/MySQL-$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')/${DB_name}.tar.gz
       fi
       [ ! -e "${DB_name}.tar.gz" ] && wget --no-check-certificate -c ${DB_URL} > /dev/null 2>&1
 
@@ -86,18 +86,18 @@ Upgrade_DB() {
   if [ -e "${DB_name}.tar.gz" ]; then
     echo "[${CMSG}${DB_name}.tar.gz${CEND}] found"
     echo "Press Ctrl+c to cancel or Press any key to continue..."
-    char=`get_char`
+    char=$(get_char)
     if [ "${DB}" == "MariaDB" ]; then
       service mysqld stop
-      mv ${mariadb_install_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
-      mv ${mariadb_data_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
+      mv ${mariadb_install_dir}{,_old_$(date +"%Y%m%d_%H%M%S")}
+      mv ${mariadb_data_dir}{,_old_$(date +"%Y%m%d_%H%M%S")}
       mkdir -p ${mariadb_data_dir};chown mysql.mysql -R ${mariadb_data_dir}
       tar xzf ${DB_name}.tar.gz
       [ ! -d "${mariadb_install_dir}" ] && mkdir -p ${mariadb_install_dir}
       mv mariadb-${NEW_DB_version}-*-${SYS_BIT_b}/* ${mariadb_install_dir}
-      if [ "${je_tc_malloc}" == '1' -a "`echo ${OLD_DB_version_tmp} | awk -F'.' '{print $1"."$2}'`" != "10.1" ]; then
+      if [ "${je_tc_malloc}" == '1' -a "$(echo ${OLD_DB_version_tmp} | awk -F'.' '{print $1"."$2}')" != "10.1" ]; then
           sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libjemalloc.so@' ${mariadb_install_dir}/bin/mysqld_safe
-      elif [ "${je_tc_malloc}" == '2' -a "`echo ${OLD_DB_version_tmp} | awk -F'.' '{print $1"."$2}'`" != "10.1" ]; then
+      elif [ "${je_tc_malloc}" == '2' -a "$(echo ${OLD_DB_version_tmp} | awk -F'.' '{print $1"."$2}')" != "10.1" ]; then
           sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libtcmalloc.so@' ${mariadb_install_dir}/bin/mysqld_safe
       fi
       ${mariadb_install_dir}/scripts/mysql_install_db --user=mysql --basedir=${mariadb_install_dir} --datadir=${mariadb_data_dir}
@@ -112,7 +112,7 @@ Upgrade_DB() {
       tar zxf ${DB_name}.tar.gz
       cd ${DB_name}
       make clean
-      if [ "`echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'`" == "5.5" ]; then
+      if [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" == "5.5" ]; then
         cmake . -DCMAKE_INSTALL_PREFIX=${percona_install_dir} \
         -DMYSQL_DATADIR=${percona_data_dir} \
         -DSYSCONFDIR=/etc \
@@ -146,13 +146,13 @@ Upgrade_DB() {
       fi
       make -j ${THREAD}
       service mysqld stop
-      mv ${percona_install_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
-      mv ${percona_data_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
+      mv ${percona_install_dir}{,_old_$(date +"%Y%m%d_%H%M%S")}
+      mv ${percona_data_dir}{,_old_$(date +"%Y%m%d_%H%M%S")}
       [ ! -d "${percona_install_dir}" ] && mkdir -p ${percona_install_dir}
       mkdir -p ${percona_data_dir};chown mysql.mysql -R ${percona_data_dir}
       make install
       cd ..
-      if [ "`echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'`" == "5.7" ]; then
+      if [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" == "5.7" ]; then
           ${percona_install_dir}/bin/mysqld --initialize-insecure --user=mysql --basedir=${percona_install_dir} --datadir=${percona_data_dir}
       else
           ${percona_install_dir}/scripts/mysql_install_db --user=mysql --basedir=${percona_install_dir} --datadir=${percona_data_dir}
@@ -167,15 +167,15 @@ Upgrade_DB() {
     elif [ "${DB}" == "MySQL" ]; then
       tar zxf ${DB_name}.tar.gz
       service mysqld stop
-      mv ${mysql_install_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
-      mv ${mysql_data_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
+      mv ${mysql_install_dir}{,_old_$(date +"%Y%m%d_%H%M%S")}
+      mv ${mysql_data_dir}{,_old_$(date +"%Y%m%d_%H%M%S")}
       [ ! -d "${mysql_install_dir}" ] && mkdir -p ${mysql_install_dir}
       mkdir -p ${mysql_data_dir};chown mysql.mysql -R ${mysql_data_dir}
       mv ${DB_name}/* ${mysql_install_dir}/
       [ "${je_tc_malloc}" == '1' ] && sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libjemalloc.so@' ${mysql_install_dir}/bin/mysqld_safe
       [ "${je_tc_malloc}" == '2' ] && sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libtcmalloc.so@' ${mysql_install_dir}/bin/mysqld_safe
-      [ "`echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'`" != "5.7" ] && ${mysql_install_dir}/scripts/mysql_install_db --user=mysql --basedir=${mysql_install_dir} --datadir=${mysql_data_dir}
-      [ "`echo ${NEW_DB_version} | awk -F. '{print $1"."$2}'`" == "5.7" ] && ${mysql_install_dir}/bin/mysqld --initialize-insecure --user=mysql --basedir=${mysql_install_dir} --datadir=${mysql_data_dir}
+      [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" != "5.7" ] && ${mysql_install_dir}/scripts/mysql_install_db --user=mysql --basedir=${mysql_install_dir} --datadir=${mysql_data_dir}
+      [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" == "5.7" ] && ${mysql_install_dir}/bin/mysqld --initialize-insecure --user=mysql --basedir=${mysql_install_dir} --datadir=${mysql_data_dir}
 
       chown mysql.mysql -R ${mysql_data_dir}
       [ -e "${mysql_install_dir}/my.cnf" ] && rm -rf ${mysql_install_dir}/my.cnf

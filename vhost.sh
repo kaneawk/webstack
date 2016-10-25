@@ -156,8 +156,8 @@ If you enter '.', the field will be left blank.
   [ -z "${SELFSIGNEDSSL_O}U" ] && SELFSIGNEDSSL_OU="IT Dept."
 
   openssl req -new -newkey rsa:2048 -sha256 -nodes -out ${PATH_SSL}/${domain}.csr -keyout ${PATH_SSL}/${domain}.key -subj "/C=${SELFSIGNEDSSL_C}/ST=${SELFSIGNEDSSL_ST}/L=${SELFSIGNEDSSL_L}/O=${SELFSIGNEDSSL_O}/OU=${SELFSIGNEDSSL_OU}/CN=${domain}" > /dev/null 2>&1
-  /bin/cp ${PATH_SSL}/${domain}.csr{,_bk.`date +%Y-%m-%d_%H%M`}
-  /bin/cp ${PATH_SSL}/${domain}.key{,_bk.`date +%Y-%m-%d_%H%M`}
+  /bin/cp ${PATH_SSL}/${domain}.csr{,_bk.$(date +%Y-%m-%d_%H%M)}
+  /bin/cp ${PATH_SSL}/${domain}.key{,_bk.$(date +%Y-%m-%d_%H%M)}
   openssl x509 -req -days 36500 -sha256 -in ${PATH_SSL}/${domain}.csr -signkey ${PATH_SSL}/${domain}.key -out ${PATH_SSL}/${domain}.crt > /dev/null 2>&1
 }
 
@@ -172,10 +172,10 @@ Create_SSL() {
       fi
     done
     if [ "${letsencrypt_yn}" == 'y' ]; then
-      PUBLIC_IPADDR=`./include/get_public_ipaddr.py`
+      PUBLIC_IPADDR=$(./include/get_public_ipaddr.py)
       for D in ${domain} ${moredomainame}
       do
-        Domain_IPADDR=`ping ${D} -c1 | sed '1{s/[^(]*(//;s/).*//;q}'`
+        Domain_IPADDR=$(ping ${D} -c1 | sed '1{s/[^(]*(//;s/).*//;q}')
         [ "${PUBLIC_IPADDR}" != "${Domain_IPADDR}" ] && { echo; echo "${CFAILURE}DNS problem: NXDOMAIN looking up A for ${D}${CEND}"; echo; exit 1; }
       done
 
@@ -184,13 +184,13 @@ Create_SSL() {
       do
         echo
         read -p "Please enter Administrator Email(example: admin@example.com): " Admin_Email
-        if [ -z "`echo ${Admin_Email} | grep '.*@.*\..*'`" ]; then
+        if [ -z "$(echo ${Admin_Email} | grep '.*@.*\..*')" ]; then
           echo "${CWARNING}input error! ${CEND}"
         else
           break
         fi
       done
-      [ "${moredomainame_yn}" == 'y' ] && moredomainame_D="`for D in ${moredomainame}; do echo -d ${D}; done`"
+      [ "${moredomainame_yn}" == 'y' ] && moredomainame_D="$(for D in ${moredomainame}; do echo -d ${D}; done)"
       [ "${nginx_ssl_yn}" == 'y' ] && S=nginx
       [ "${apache_ssl_yn}" == 'y' ] && S=httpd
       [ ! -d "${wwwroot_dir}/${domain}/.well-known" ] && mkdir -p ${wwwroot_dir}/${domain}/.well-known;chown -R ${run_user}.${run_user} ${wwwroot_dir}/${domain}/.well-known
@@ -207,7 +207,7 @@ Create_SSL() {
           Cron_Command="/etc/init.d/httpd graceful"
         fi
         [ "${OS}" == "CentOS" ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
-        [ -z "`grep "${domain} ${moredomainame_D}" ${Cron_file}`" ] && echo "0 10 * * 1 /usr/local/bin/certbot-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=${wwwroot_dir}/${domain} -d ${domain} ${moredomainame_D};${Cron_Command}" >> $Cron_file
+        [ -z "$(grep "${domain} ${moredomainame_D}" ${Cron_file})" ] && echo "0 10 * * 1 /usr/local/bin/certbot-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=${wwwroot_dir}/${domain} -d ${domain} ${moredomainame_D};${Cron_Command}" >> $Cron_file
       else
         echo "${CFAILURE}Error: Let's Encrypt SSL certificate installation failed${CEND}"
         exit 1
@@ -222,12 +222,12 @@ Create_SSL() {
 
 Print_ssl() {
   if [ "${letsencrypt_yn}" == 'y' ]; then
-    echo "`printf "%-30s" "Let's Encrypt SSL Certificate:"`${CMSG}/etc/letsencrypt/live/${domain}/fullchain.pem${CEND}"
-    echo "`printf "%-30s" "SSL Private Key:"`${CMSG}/etc/letsencrypt/live/${domain}/privkey.pem${CEND}"
+    echo "$(printf "%-30s" "Let's Encrypt SSL Certificate:")${CMSG}/etc/letsencrypt/live/${domain}/fullchain.pem${CEND}"
+    echo "$(printf "%-30s" "SSL Private Key:")${CMSG}/etc/letsencrypt/live/${domain}/privkey.pem${CEND}"
   else
-    echo "`printf "%-30s" "Self-signed SSL Certificate:"`${CMSG}${PATH_SSL}/${domain}.crt${CEND}"
-    echo "`printf "%-30s" "SSL Private Key:"`${CMSG}${PATH_SSL}/${domain}.key${CEND}"
-    echo "`printf "%-30s" "SSL CSR File:"`${CMSG}${PATH_SSL}/${domain}.csr${CEND}"
+    echo "$(printf "%-30s" "Self-signed SSL Certificate:")${CMSG}${PATH_SSL}/${domain}.crt${CEND}"
+    echo "$(printf "%-30s" "SSL Private Key:")${CMSG}${PATH_SSL}/${domain}.key${CEND}"
+    echo "$(printf "%-30s" "SSL CSR File:")${CMSG}${PATH_SSL}/${domain}.csr${CEND}"
   fi
 }
 
@@ -258,7 +258,7 @@ Input_Add_domain() {
 
   while :; do echo
     read -p "Please input domain(example: www.example.com): " domain
-    if [ -z "`echo ${domain} | grep '.*\..*'`" ]; then
+    if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
       echo "${CWARNING}input error! ${CEND}"
     else
       break
@@ -286,7 +286,7 @@ Input_Add_domain() {
   if [ "${moredomainame_yn}" == 'y' ]; then
     while :; do echo
       read -p "Type domainname or IP(example: example.com or 121.43.8.8): " moredomain
-      if [ -z "`echo ${moredomain} | grep '.*\..*'`" ]; then
+      if [ -z "$(echo ${moredomain} | grep '.*\..*')" ]; then
         echo "${CWARNING}input error! ${CEND}"
       else
         [ "${moredomain}" == "${domain}" ] && echo "${CWARNING}Domain name already exists! ${CND}" && continue
@@ -296,7 +296,7 @@ Input_Add_domain() {
       fi
     done
     Apache_Domain_alias=ServerAlias${moredomainame}
-    Tomcat_Domain_alias=$(for D in `echo ${moredomainame}`; do echo "<Alias>${D}</Alias>"; done)
+    Tomcat_Domain_alias=$(for D in $(echo ${moredomainame}); do echo "<Alias>${D}</Alias>"; done)
 
     if [ -e "${web_install_dir}/sbin/nginx" ]; then
       while :; do echo
@@ -332,8 +332,8 @@ Input_Add_domain() {
   elif [ "$apache_ssl_yn" == 'y' ]; then
     Create_SSL
     Apache_SSL=$(echo -e "SSLEngine on\n  SSLCertificateFile \"${PATH_SSL}/${domain}.crt\"\n  SSLCertificateKeyFile \"${PATH_SSL}/${domain}.key\"")
-    [ -z "`grep 'Listen 443' ${apache_install_dir}/conf/httpd.conf`" ] && sed -i "s@Listen 80@&\nListen 443@" ${apache_install_dir}/conf/httpd.conf
-    [ -z "`grep 'ServerName 0.0.0.0:443' ${apache_install_dir}/conf/httpd.conf`" ] && sed -i "s@ServerName 0.0.0.0:80@&\nServerName 0.0.0.0:443@" ${apache_install_dir}/conf/httpd.conf
+    [ -z "$(grep 'Listen 443' ${apache_install_dir}/conf/httpd.conf)" ] && sed -i "s@Listen 80@&\nListen 443@" ${apache_install_dir}/conf/httpd.conf
+    [ -z "$(grep 'ServerName 0.0.0.0:443' ${apache_install_dir}/conf/httpd.conf)" ] && sed -i "s@ServerName 0.0.0.0:80@&\nServerName 0.0.0.0:443@" ${apache_install_dir}/conf/httpd.conf
   else
     Nginx_conf="listen 80;"
   fi
@@ -341,7 +341,7 @@ Input_Add_domain() {
   while :; do echo
     echo "Please input the directory for the domain:${domain} :"
     read -p "(Default directory: ${wwwroot_dir}/${domain}): " vhostdir
-    if [ -n "${vhostdir}" -a -z "`echo ${vhostdir} | grep '^/'`" ]; then
+    if [ -n "${vhostdir}" -a -z "$(echo ${vhostdir} | grep '^/')" ]; then
       echo "${CWARNING}input error! Press Enter to continue...${CEND}"
     else
       if [ -z "${vhostdir}" ]; then
@@ -368,7 +368,7 @@ Nginx_anti_hotlinking() {
     fi
   done
 
-  if [ -n "`echo ${domain} | grep '.*\..*\..*'`" ]; then
+  if [ -n "$(echo ${domain} | grep '.*\..*\..*')" ]; then
     domain_allow="*.${domain#*.} ${domain}"
   else
     domain_allow="*.${domain} ${domain}"
@@ -468,8 +468,8 @@ EOF
          prefix="${domain}_access_log." suffix=".txt" pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 </Host>
 EOF
-  [ -z "`grep -o "vhost-${domain} SYSTEM" ${tomcat_install_dir}/conf/server.xml`" ] && sed -i "/vhost-localhost SYSTEM/a<\!ENTITY vhost-${domain} SYSTEM \"file://${tomcat_install_dir}/conf/vhost/${domain}.xml\">" ${tomcat_install_dir}/conf/server.xml
-  [ -z "`grep -o "vhost-${domain};" ${tomcat_install_dir}/conf/server.xml`" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" ${tomcat_install_dir}/conf/server.xml
+  [ -z "$(grep -o "vhost-${domain} SYSTEM" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "/vhost-localhost SYSTEM/a<\!ENTITY vhost-${domain} SYSTEM \"file://${tomcat_install_dir}/conf/vhost/${domain}.xml\">" ${tomcat_install_dir}/conf/server.xml
+  [ -z "$(grep -o "vhost-${domain};" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" ${tomcat_install_dir}/conf/server.xml
 
   echo
   ${web_install_dir}/sbin/nginx -t
@@ -489,10 +489,10 @@ EOF
 #       For more information please visit https://oneinstack.com      #
 #######################################################################
 "
-  echo "`printf "%-30s" "Your domain:"`${CMSG}${domain}${CEND}"
-  echo "`printf "%-30s" "Nginx Virtualhost conf:"`${CMSG}${web_install_dir}/conf/vhost/${domain}.conf${CEND}"
-  echo "`printf "%-30s" "Tomcat Virtualhost conf:"`${CMSG}${tomcat_install_dir}/conf/vhost/${domain}.xml${CEND}"
-  echo "`printf "%-30s" "Directory of:"`${CMSG}${vhostdir}${CEND}"
+  echo "$(printf "%-30s" "Your domain:")${CMSG}${domain}${CEND}"
+  echo "$(printf "%-30s" "Nginx Virtualhost conf:")${CMSG}${web_install_dir}/conf/vhost/${domain}.conf${CEND}"
+  echo "$(printf "%-30s" "Tomcat Virtualhost conf:")${CMSG}${tomcat_install_dir}/conf/vhost/${domain}.xml${CEND}"
+  echo "$(printf "%-30s" "Directory of:")${CMSG}${vhostdir}${CEND}"
   [ "${nginx_ssl_yn}" == 'y' ] && Print_ssl
 }
 
@@ -504,8 +504,8 @@ Create_tomcat_conf() {
     prefix="${domain}_access_log." suffix=".txt" pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 </Host>
 EOF
-  [ -z "`grep -o "vhost-${domain} SYSTEM" ${tomcat_install_dir}/conf/server.xml`" ] && sed -i "/vhost-localhost SYSTEM/a<\!ENTITY vhost-${domain} SYSTEM \"file://${tomcat_install_dir}/conf/vhost/${domain}.xml\">" ${tomcat_install_dir}/conf/server.xml
-  [ -z "`grep -o "vhost-${domain};" ${tomcat_install_dir}/conf/server.xml`" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" ${tomcat_install_dir}/conf/server.xml
+  [ -z "$(grep -o "vhost-${domain} SYSTEM" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "/vhost-localhost SYSTEM/a<\!ENTITY vhost-${domain} SYSTEM \"file://${tomcat_install_dir}/conf/vhost/${domain}.xml\">" ${tomcat_install_dir}/conf/server.xml
+  [ -z "$(grep -o "vhost-${domain};" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" ${tomcat_install_dir}/conf/server.xml
 
   echo
   /etc/init.d/tomcat restart
@@ -516,10 +516,10 @@ EOF
 #       For more information please visit https://oneinstack.com      #
 #######################################################################
 "
-  echo "`printf "%-30s" "Your domain:"`${CMSG}${domain}${CEND}"
-  echo "`printf "%-30s" "Tomcat Virtualhost conf:"`${CMSG}${tomcat_install_dir}/conf/vhost/${domain}.xml${CEND}"
-  echo "`printf "%-30s" "Directory of:"`${CMSG}${vhostdir}${CEND}"
-  echo "`printf "%-30s" "index url:"`${CMSG}http://${domain}:8080/${CEND}"
+  echo "$(printf "%-30s" "Your domain:")${CMSG}${domain}${CEND}"
+  echo "$(printf "%-30s" "Tomcat Virtualhost conf:")${CMSG}${tomcat_install_dir}/conf/vhost/${domain}.xml${CEND}"
+  echo "$(printf "%-30s" "Directory of:")${CMSG}${vhostdir}${CEND}"
+  echo "$(printf "%-30s" "index url:")${CMSG}http://${domain}:8080/${CEND}"
 }
 
 Create_nginx_php-fpm_hhvm_conf() {
@@ -567,10 +567,10 @@ EOF
 #       For more information please visit https://oneinstack.com      #
 #######################################################################
 "
-  echo "`printf "%-30s" "Your domain:"`${CMSG}${domain}${CEND}"
-  echo "`printf "%-30s" "Virtualhost conf:"`${CMSG}${web_install_dir}/conf/vhost/${domain}.conf${CEND}"
-  echo "`printf "%-30s" "Directory of:"`${CMSG}${vhostdir}${CEND}"
-  [ "${rewrite_yn}" == 'y' ] && echo "`printf "%-30s" "Rewrite rule:"`${CMSG}${web_install_dir}/conf/rewrite/${rewrite}.conf${CEND}"
+  echo "$(printf "%-30s" "Your domain:")${CMSG}${domain}${CEND}"
+  echo "$(printf "%-30s" "Virtualhost conf:")${CMSG}${web_install_dir}/conf/vhost/${domain}.conf${CEND}"
+  echo "$(printf "%-30s" "Directory of:")${CMSG}${vhostdir}${CEND}"
+  [ "${rewrite_yn}" == 'y' ] && echo "$(printf "%-30s" "Rewrite rule:")${CMSG}${web_install_dir}/conf/rewrite/${rewrite}.conf${CEND}"
   [ "${nginx_ssl_yn}" == 'y' ] && Print_ssl
 }
 
@@ -593,7 +593,7 @@ Apache_log() {
 }
 
 Create_apache_conf() {
-  [ "`${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}'`" == '4' ] && R_TMP='Require all granted' || R_TMP=
+  [ "$(${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}')" == '4' ] && R_TMP='Require all granted' || R_TMP=
   [ ! -d ${apache_install_dir}/conf/vhost ] && mkdir ${apache_install_dir}/conf/vhost
   cat > ${apache_install_dir}/conf/vhost/${domain}.conf << EOF
 <VirtualHost *:80>
@@ -652,9 +652,9 @@ EOF
 #       For more information please visit https://oneinstack.com      #
 #######################################################################
 "
-  echo "`printf "%-30s" "Your domain:"`${CMSG}${domain}${CEND}"
-  echo "`printf "%-30s" "Virtualhost conf:"`${CMSG}${apache_install_dir}/conf/vhost/${domain}.conf${CEND}"
-  echo "`printf "%-30s" "Directory of:"`${CMSG}${vhostdir}${CEND}"
+  echo "$(printf "%-30s" "Your domain:")${CMSG}${domain}${CEND}"
+  echo "$(printf "%-30s" "Virtualhost conf:")${CMSG}${apache_install_dir}/conf/vhost/${domain}.conf${CEND}"
+  echo "$(printf "%-30s" "Directory of:")${CMSG}${vhostdir}${CEND}"
 }
 
 Create_nginx_apache_mod-php_conf() {
@@ -704,7 +704,7 @@ EOF
   fi
 
   # Apache
-  [ "`${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}'`" == '4' ] && R_TMP="Require all granted" || R_TMP=
+  [ "$(${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}')" == '4' ] && R_TMP="Require all granted" || R_TMP=
   [ ! -d ${apache_install_dir}/conf/vhost ] && mkdir ${apache_install_dir}/conf/vhost
   cat > ${apache_install_dir}/conf/vhost/${domain}.conf << EOF
 <VirtualHost *:88>
@@ -743,11 +743,11 @@ EOF
 #       For more information please visit https://oneinstack.com      #
 #######################################################################
 "
-  echo "`printf "%-30s" "Your domain:"`${CMSG}${domain}${CEND}"
-  echo "`printf "%-30s" "Nginx Virtualhost conf:"`${CMSG}${web_install_dir}/conf/vhost/${domain}.conf${CEND}"
-  echo "`printf "%-30s" "Apache Virtualhost conf:"`${CMSG}${apache_install_dir}/conf/vhost/${domain}.conf${CEND}"
-  echo "`printf "%-30s" "Directory of:"`${CMSG}${vhostdir}${CEND}"
-  [ "${rewrite_yn}" == 'y' ] && echo "`printf "%-28s" "Rewrite rule:"`${CMSG}${web_install_dir}/conf/rewrite/${rewrite}.conf${CEND}"
+  echo "$(printf "%-30s" "Your domain:")${CMSG}${domain}${CEND}"
+  echo "$(printf "%-30s" "Nginx Virtualhost conf:")${CMSG}${web_install_dir}/conf/vhost/${domain}.conf${CEND}"
+  echo "$(printf "%-30s" "Apache Virtualhost conf:")${CMSG}${apache_install_dir}/conf/vhost/${domain}.conf${CEND}"
+  echo "$(printf "%-30s" "Directory of:")${CMSG}${vhostdir}${CEND}"
+  [ "${rewrite_yn}" == 'y' ] && echo "$(printf "%-28s" "Rewrite rule:")${CMSG}${web_install_dir}/conf/rewrite/${rewrite}.conf${CEND}"
   [ "${nginx_ssl_yn}" == 'y' ] && Print_ssl
 }
 
@@ -773,7 +773,7 @@ Add_Vhost() {
     Choose_env
     Input_Add_domain
     Create_tomcat_conf
-  elif [ -e "${web_install_dir}/sbin/nginx" -a -e "`ls ${apache_install_dir}/modules/libphp?.so 2>/dev/null`" ]; then
+  elif [ -e "${web_install_dir}/sbin/nginx" -a -e "$(ls ${apache_install_dir}/modules/libphp?.so 2>/dev/null)" ]; then
     Choose_env
     Input_Add_domain
     Nginx_anti_hotlinking
@@ -797,18 +797,18 @@ Add_Vhost() {
 
 Del_NGX_Vhost() {
   if [ -e "${web_install_dir}/sbin/nginx" ]; then
-    [ -d "${web_install_dir}/conf/vhost" ] && Domain_List=`ls ${web_install_dir}/conf/vhost | sed "s@.conf@@g"`
+    [ -d "${web_install_dir}/conf/vhost" ] && Domain_List=$(ls ${web_install_dir}/conf/vhost | sed "s@.conf@@g")
     if [ -n "${Domain_List}" ]; then
       echo
       echo "Virtualhost list:"
       echo ${CMSG}${Domain_List}${CEND}
         while :; do echo
           read -p "Please input a domain you want to delete: " domain
-          if [ -z "`echo ${domain} | grep '.*\..*'`" ]; then
+          if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
             echo "${CWARNING}input error! ${CEND}"
           else
             if [ -e "${web_install_dir}/conf/vhost/${domain}.conf" ]; then
-              Directory=`grep ^root ${web_install_dir}/conf/vhost/${domain}.conf | awk -F'[ ;]' '{print $2}'`
+              Directory=$(grep ^root ${web_install_dir}/conf/vhost/${domain}.conf | awk -F'[ ;]' '{print $2}')
               rm -rf ${web_install_dir}/conf/vhost/${domain}.conf
               ${web_install_dir}/sbin/nginx -s reload
               while :; do echo
@@ -821,7 +821,7 @@ Del_NGX_Vhost() {
               done
               if [ "${Del_Vhost_wwwroot_yn}" == 'y' ]; then
                 echo "Press Ctrl+c to cancel or Press any key to continue..."
-                char=`get_char`
+                char=$(get_char)
                 rm -rf ${Directory}
               fi
               echo "${CSUCCESS}Domain: ${domain} has been deleted.${CEND}"
@@ -844,18 +844,18 @@ Del_Apache_Vhost() {
       rm -rf ${apache_install_dir}/conf/vhost/${domain}.conf
       /etc/init.d/httpd restart
     else
-      Domain_List=`ls ${apache_install_dir}/conf/vhost | grep -v '0.conf' | sed "s@.conf@@g"`
+      Domain_List=$(ls ${apache_install_dir}/conf/vhost | grep -v '0.conf' | sed "s@.conf@@g")
       if [ -n "${Domain_List}" ]; then
         echo
         echo "Virtualhost list:"
         echo ${CMSG}${Domain_List}${CEND}
         while :; do echo
           read -p "Please input a domain you want to delete: " domain
-          if [ -z "`echo ${domain} | grep '.*\..*'`" ]; then
+          if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
             echo "${CWARNING}input error! ${CEND}"
           else
             if [ -e "${apache_install_dir}/conf/vhost/${domain}.conf" ]; then
-              Directory=`grep '^<Directory' ${apache_install_dir}/conf/vhost/${domain}.conf | awk -F'"' '{print $2}'`
+              Directory=$(grep '^<Directory' ${apache_install_dir}/conf/vhost/${domain}.conf | awk -F'"' '{print $2}')
               rm -rf ${apache_install_dir}/conf/vhost/${domain}.conf
               /etc/init.d/httpd restart
               while :; do echo
@@ -869,7 +869,7 @@ Del_Apache_Vhost() {
 
               if [ "${Del_Vhost_wwwroot_yn}" == 'y' ]; then
                 echo "Press Ctrl+c to cancel or Press any key to continue..."
-                char=`get_char`
+                char=$(get_char)
                 rm -rf ${Directory}
               fi
               echo "${CSUCCESS}Domain: ${domain} has been deleted.${CEND}"
@@ -890,23 +890,23 @@ Del_Apache_Vhost() {
 Del_Tomcat_Vhost() {
   if [ -e "${tomcat_install_dir}/conf/server.xml" ]; then
     if [ -e "${web_install_dir}/sbin/nginx" ]; then
-      if [ -n "`grep vhost-${domain} ${tomcat_install_dir}/conf/server.xml`" ]; then
+      if [ -n "$(grep vhost-${domain} ${tomcat_install_dir}/conf/server.xml)" ]; then
         sed -i /vhost-${domain}/d ${tomcat_install_dir}/conf/server.xml
         rm -rf ${tomcat_install_dir}/conf/vhost/${domain}.xml
         /etc/init.d/tomcat restart
       fi
     else
-      Domain_List=`ls ${tomcat_install_dir}/conf/vhost | grep -v 'localhost.xml' | sed "s@.xml@@g"`
+      Domain_List=$(ls ${tomcat_install_dir}/conf/vhost | grep -v 'localhost.xml' | sed "s@.xml@@g")
       if [ -n "${Domain_List}" ]; then
         echo
         echo "Virtualhost list:"
         echo ${CMSG}${Domain_List}${CEND}
         while :; do echo
           read -p "Please input a domain you want to delete: " domain
-          if [ -z "`echo ${domain} | grep '.*\..*'`" ]; then
+          if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
             echo "${CWARNING}input error! ${CEND}"
           else
-            if [ -n "`grep vhost-${domain} ${tomcat_install_dir}/conf/server.xml`" ]; then
+            if [ -n "$(grep vhost-${domain} ${tomcat_install_dir}/conf/server.xml)" ]; then
               sed -i /vhost-${domain}/d ${tomcat_install_dir}/conf/server.xml
               rm -rf ${tomcat_install_dir}/conf/vhost/${domain}.xml
               /etc/init.d/tomcat restart
@@ -921,7 +921,7 @@ Del_Tomcat_Vhost() {
 
               if [ "${Del_Vhost_wwwroot_yn}" == 'y' ]; then
                 echo "Press Ctrl+c to cancel or Press any key to continue..."
-                char=`get_char`
+                char=$(get_char)
                 rm -rf $Directory
               fi
               echo "${CSUCCESS}Domain: ${domain} has been deleted.${CEND}"

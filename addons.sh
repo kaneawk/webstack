@@ -19,7 +19,7 @@ printf "
 "
 
 # get pwd
-sed -i "s@^oneinstack_dir.*@oneinstack_dir=`pwd`@" ./options.conf
+sed -i "s@^oneinstack_dir.*@oneinstack_dir=$(pwd)@" ./options.conf
 
 . ./versions.txt
 . ./options.conf
@@ -192,7 +192,7 @@ What Are You Doing?
               if [[ ${PHP_main_version} =~ ^5.[3-6]$ ]]; then
                 while :; do
                   read -p "Please input xcache admin password: " xcache_admin_pass
-                  (( ${#xcache_admin_pass} >= 5 )) && { xcache_admin_md5_pass=`echo -n "${xcache_admin_pass}" | md5sum | awk '{print $1}'` ; break ; } || echo "${CFAILURE}xcache admin password least 5 characters! ${CEND}"
+                  (( ${#xcache_admin_pass} >= 5 )) && { xcache_admin_md5_pass=$(echo -n "${xcache_admin_pass}" | md5sum | awk '{print $1}') ; break ; } || echo "${CFAILURE}xcache admin password least 5 characters! ${CEND}"
                 done
                 checkDownload
                 Install_XCache

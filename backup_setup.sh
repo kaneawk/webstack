@@ -65,7 +65,7 @@ while :; do echo
   echo "Please enter the directory for save the backup file: "
   read -p "(Default directory: ${backup_dir}): " NEW_backup_dir
   [ -z "${NEW_backup_dir}" ] && NEW_backup_dir="${backup_dir}"
-  if [ -z "`echo ${NEW_backup_dir}| grep '^/'`" ]; then
+  if [ -z "$(echo ${NEW_backup_dir}| grep '^/')" ]; then
     echo "${CWARNING}input error! ${CEND}"
   else
     break
@@ -77,21 +77,21 @@ while :; do echo
   echo "Pleas enter a valid backup number of days: "
   read -p "(Default days: 5): " expired_days
   [ -z "${expired_days}" ] && expired_days=5
-  [ -n "`echo ${expired_days} | sed -n "/^[0-9]\+$/p"`" ] && break || echo "${CWARNING}input error! Please only enter numbers! ${CEND}"
+  [ -n "$(echo ${expired_days} | sed -n "/^[0-9]\+$/p")" ] && break || echo "${CWARNING}input error! Please only enter numbers! ${CEND}"
 done
 sed -i "s@^expired_days=.*@expired_days=${expired_days}@" ./options.conf
 
 if [ "${CONTENT_BK}" != '2' ]; then
-  databases=`${db_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "show databases\G" | grep Database | awk '{print $2}' | grep -Evw "(performance_schema|information_schema|mysql|sys)"`
+  databases=$(${db_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "show databases\G" | grep Database | awk '{print $2}' | grep -Evw "(performance_schema|information_schema|mysql|sys)")
   while :; do echo
     echo "Please enter one or more name for database, separate multiple database names with commas: "
-    read -p "(Default database: `echo ${databases} | tr ' ' ','`) " db_name
-    db_name=`echo ${db_name} | tr -d ' '`
-    [ -z "${db_name}" ] && db_name="`echo ${databases} | tr ' ' ','`"
+    read -p "(Default database: $(echo ${databases} | tr ' ' ',')) " db_name
+    db_name=$(echo ${db_name} | tr -d ' ')
+    [ -z "${db_name}" ] && db_name="$(echo ${databases} | tr ' ' ',')"
     D_tmp=0
-    for D in `echo ${db_name} | tr ',' ' '`
+    for D in $(echo ${db_name} | tr ',' ' ')
     do
-      [ -z "`echo ${databases} | grep -w ${D}`" ] && { echo "${CWARNING}${D} was not exist! ${CEND}" ; D_tmp=1; }
+      [ -z "$(echo ${databases} | grep -w ${D})" ] && { echo "${CWARNING}${D} was not exist! ${CEND}" ; D_tmp=1; }
     done
     [ "${D_tmp}" != '1' ] && break
   done
@@ -99,14 +99,14 @@ if [ "${CONTENT_BK}" != '2' ]; then
 fi
 
 if [ "${CONTENT_BK}" != '1' ]; then
-  websites=`ls ${wwwroot_dir} | grep -vw default`
+  websites=$(ls ${wwwroot_dir} | grep -vw default)
   while :; do echo
     echo "Please enter one or more name for website, separate multiple website names with commas: "
-    read -p "(Default website: `echo ${websites} | tr ' ' ','`) " website_name
-    website_name=`echo ${website_name} | tr -d ' '`
-    [ -z "${website_name}" ] && website_name="`echo ${websites} | tr ' ' ','`"
+    read -p "(Default website: $(echo ${websites} | tr ' ' ',')) " website_name
+    website_name=$(echo ${website_name} | tr -d ' ')
+    [ -z "${website_name}" ] && website_name="$(echo ${websites} | tr ' ' ',')"
     W_tmp=0
-    for W in `echo ${website_name} | tr ',' ' '`
+    for W in $(echo ${website_name} | tr ',' ' ')
     do
       [ ! -e "${wwwroot_dir}/${W}" ] && { echo "${CWARNING}${wwwroot_dir}/${W} not exist! ${CEND}" ; W_tmp=1; }
     done
@@ -139,7 +139,7 @@ if [[ "${DESC_BK}" =~ ^[2,3]$ ]]; then
     [ -e "~/.ssh/known_hosts" ] && grep ${remote_ip} ~/.ssh/known_hosts | sed -i "/${remote_ip}/d" ~/.ssh/known_hosts
     ./tools/mssh.exp ${IPcode}P ${remote_user} ${PWcode}P ${Portcode}P true 10
     if [ $? -eq 0 ]; then
-      [ -z "`grep ${remote_ip} tools/iplist.txt`" ] && echo "${remote_ip} ${remote_port} ${remote_user} ${remote_password}" >> tools/iplist.txt || echo "${CWARNING}${remote_ip} has been added! ${CEND}"
+      [ -z "$(grep ${remote_ip} tools/iplist.txt)" ] && echo "${remote_ip} ${remote_port} ${remote_user} ${remote_password}" >> tools/iplist.txt || echo "${CWARNING}${remote_ip} has been added! ${CEND}"
       while :; do
         read -p "Do you want to add more host ? [y/n]: " more_host_yn
         if [[ ! "${more_host_yn}" =~ ^[y,n]$ ]]; then

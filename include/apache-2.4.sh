@@ -44,8 +44,8 @@ Install_Apache-2-4() {
     kill -9 $$
   fi
 
-  [ -z "`grep ^'export PATH=' /etc/profile`" ] && echo "export PATH=${apache_install_dir}/bin:\$PATH" >> /etc/profile
-  [ -n "`grep ^'export PATH=' /etc/profile`" -a -z "`grep ${apache_install_dir} /etc/profile`" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${apache_install_dir}/bin:\1@" /etc/profile
+  [ -z "$(grep ^'export PATH=' /etc/profile)" ] && echo "export PATH=${apache_install_dir}/bin:\$PATH" >> /etc/profile
+  [ -n "$(grep ^'export PATH=' /etc/profile)" -a -z "$(grep ${apache_install_dir} /etc/profile)" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${apache_install_dir}/bin:\1@" /etc/profile
   . /etc/profile
 
   /bin/cp ${apache_install_dir}/bin/apachectl /etc/init.d/httpd
@@ -62,7 +62,7 @@ Install_Apache-2-4() {
     sed -i 's/^#ServerName www.example.com:80/ServerName 0.0.0.0:80/' ${apache_install_dir}/conf/httpd.conf
     TMP_PORT=80
     TMP_IP=${IPADDR}
-  elif [[ ${Nginx_version} =~ ^[1-3]$ ]] || [ -e "${web_install_dir}/sbin/nginx" ]; then
+  elif [[ "${Nginx_version}" =~ ^[1-3]$ ]] || [ -e "${web_install_dir}/sbin/nginx" ]; then
     sed -i 's/^#ServerName www.example.com:80/ServerName 127.0.0.1:88/' ${apache_install_dir}/conf/httpd.conf
     sed -i 's@^Listen.*@Listen 127.0.0.1:88@' ${apache_install_dir}/conf/httpd.conf
     TMP_PORT=88
@@ -89,7 +89,7 @@ ${wwwlogs_dir}/*apache.log {
   notifempty
   sharedscripts
   postrotate
-  [ -f ${apache_install_dir}/logs/httpd.pid ] && kill -USR1 \`cat ${apache_install_dir}/logs/httpd.pid\`
+  [ -f ${apache_install_dir}/logs/httpd.pid ] && kill -USR1 \$\(cat ${apache_install_dir}/logs/httpd.pid\)
   endscript
 }
 EOF

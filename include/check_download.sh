@@ -92,7 +92,7 @@ checkDownload(){
 
     if [ "${DB_version}" == '1' ]; then
       # mysql 5.7
-      if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == "aliyun" -a "`../include/check_port.py aliyun-oss.linuxeye.com 80`" == "True" ]; then
+      if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == "aliyun" -a "$(../include/check_port.py aliyun-oss.linuxeye.com 80)" == "True" ]; then
         DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.7
       else
         if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then

@@ -16,15 +16,15 @@ BWLIMIT=$8
 
 while read eachline
 do
-  [ -z "`echo ${eachline} | grep -E '^com|^file'`" ] && continue
+  [ -z "$(echo ${eachline} | grep -E '^com|^file')" ] && continue
 
-  myKEYWORD=`echo ${eachline} | awk -F"${myIFS}" '{ print $1 }'`
-  myCONFIGLINE=`echo ${eachline} | awk -F"${myIFS}" '{ print $2 }'`
+  myKEYWORD=$(echo ${eachline} | awk -F"${myIFS}" '{ print $1 }')
+  myCONFIGLINE=$(echo ${eachline} | awk -F"${myIFS}" '{ print $2 }')
 
   if [ "${myKEYWORD}"x == "file"x ]; then
-    SOURCEFILE=`echo ${myCONFIGLINE} | awk '{ print $1 }'`
-    DESTDIR=`echo ${myCONFIGLINE} | awk '{ print $2 }'`
-    DIRECTION=`echo ${myCONFIGLINE} | awk '{ print $3 }'`
+    SOURCEFILE=$(echo ${myCONFIGLINE} | awk '{ print $1 }')
+    DESTDIR=$(echo ${myCONFIGLINE} | awk '{ print $2 }')
+    DIRECTION=$(echo ${myCONFIGLINE} | awk '{ print $3 }')
     ./mscp.exp ${IP} ${USER} ${PASSWD} ${PORT} ${SOURCEFILE} ${DESTDIR} ${DIRECTION} ${BWLIMIT} ${SCPTIMEOUT}
 
     [ $? -ne 0 ] && echo -e "\033[31mSCP Try Out All Password Failed\033[0m\n"

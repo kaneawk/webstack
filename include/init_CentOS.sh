@@ -7,10 +7,10 @@
 # Project home page:
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
-  
+
 # closed Unnecessary services and remove obsolete rpm package
-[ "${CentOS_RHEL_version}" == '7' ] && [ "`systemctl is-active NetworkManager.service`" == 'active' ] && NM_flag=1
-for Service in `chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis|NetworkManager'`;do chkconfig --level 3 ${Service} off;done
+[ "${CentOS_RHEL_version}" == '7' ] && [ "$(systemctl is-active NetworkManager.service)" == 'active' ] && NM_flag=1
+for Service in $(chkconfig --list | grep 3:on | awk '{print $1}' | grep -vE 'nginx|httpd|tomcat|mysqld|php-fpm|pureftpd|redis-server|memcached|supervisord|aegis|NetworkManager');do chkconfig --level 3 ${Service} off;done
 [ "${NM_flag}" == '1' ] && systemctl enable NetworkManager.service
 for Service in sshd network crond iptables messagebus irqbalance syslog rsyslog;do chkconfig --level 3 ${Service} on;done
 
@@ -22,7 +22,7 @@ sed -i 's/^SELINUX=.*$/SELINUX=disabled/' /etc/selinux/config
 cat > /etc/profile.d/oneinstack.sh << EOF
 HISTSIZE=10000
 PS1="\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h \[\e[35;40m\]\W\[\e[0m\]]\\\\$ "
-HISTTIMEFORMAT="%F %T \`whoami\` "
+HISTTIMEFORMAT="%F %T \$\(whoami\) "
 
 alias l='ls -AFhlt'
 alias lh='l | head'
@@ -34,7 +34,7 @@ alias egrep='egrep --color'
 alias fgrep='fgrep --color'
 EOF
 
-[ -z "`grep ^'PROMPT_COMMAND=' /etc/bashrc`" ] && cat >> /etc/bashrc << EOF
+[ -z "$(grep ^'PROMPT_COMMAND=' /etc/bashrc)" ] && cat >> /etc/bashrc << EOF
 PROMPT_COMMAND='{ msg=\$(history 1 | { read x y; echo \$y; });logger "[euid=\$(whoami)]":\$(who am i):[\`pwd\`]"\$msg"; }'
 EOF
 
@@ -116,10 +116,10 @@ fi
 
 # Update time
 ntpdate pool.ntp.org
-[ ! -e "/var/spool/cron/root" -o -z "`grep 'ntpdate' /var/spool/cron/root`" ] && { echo "*/20 * * * * `which ntpdate` pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/root;chmod 600 /var/spool/cron/root; }
+[ ! -e "/var/spool/cron/root" -o -z "$(grep 'ntpdate' /var/spool/cron/root)" ] && { echo "*/20 * * * * $(which ntpdate) pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/root;chmod 600 /var/spool/cron/root; }
 
 # iptables
-if [ -e "/etc/sysconfig/iptables" ] && [ -n "`grep '^:INPUT DROP' /etc/sysconfig/iptables`" -a -n "`grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/sysconfig/iptables`" -a -n "`grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/sysconfig/iptables`" ]; then
+if [ -e "/etc/sysconfig/iptables" ] && [ -n "$(grep '^:INPUT DROP' /etc/sysconfig/iptables)" -a -n "$(grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/sysconfig/iptables)" -a -n "$(grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/sysconfig/iptables)" ]; then
     IPTABLES_STATUS=yes
 else
     IPTABLES_STATUS=no
@@ -150,7 +150,7 @@ COMMIT
 EOF
 fi
 
-FW_PORT_FLAG=`grep -ow "dport ${SSH_PORT}" /etc/sysconfig/iptables`
+FW_PORT_FLAG=$(grep -ow "dport ${SSH_PORT}" /etc/sysconfig/iptables)
 [ -z "${FW_PORT_FLAG}" -a "${SSH_PORT}" != "22" ] && sed -i "s@dport 22 -j ACCEPT@&\n-A INPUT -p tcp -m state --state NEW -m tcp --dport ${SSH_PORT} -j ACCEPT@" /etc/sysconfig/iptables
 service iptables restart
 service sshd restart

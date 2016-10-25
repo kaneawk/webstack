@@ -11,7 +11,7 @@
 # Custom profile
 cat > /etc/profile.d/oneinstack.sh << EOF
 HISTSIZE=10000
-HISTTIMEFORMAT="%F %T \`whoami\` "
+HISTTIMEFORMAT="%F %T \$\(whoami\) "
 
 alias l='ls -AFhlt --color=auto'
 alias lh='l | head'
@@ -28,14 +28,14 @@ EOF
 sed -i 's@^"syntax on@syntax on@' /etc/vim/vimrc
 
 # PS1
-[ -z "`grep ^PS1 ~/.bashrc`" ] && echo "PS1='\${debian_chroot:+(\$debian_chroot)}\\[\\e[1;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ '" >> ~/.bashrc
+[ -z "$(grep ^PS1 ~/.bashrc)" ] && echo "PS1='\${debian_chroot:+(\$debian_chroot)}\\[\\e[1;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ '" >> ~/.bashrc
 
 # history
-[ -z "`grep history-timestamp ~/.bashrc`" ] && echo "PROMPT_COMMAND='{ msg=\$(history 1 | { read x y; echo \$y; });user=\$(whoami); echo \$(date \"+%Y-%m-%d %H:%M:%S\"):\$user:\`pwd\`/:\$msg ---- \$(who am i); } >> /tmp/\`hostname\`.\`whoami\`.history-timestamp'" >> ~/.bashrc
+[ -z "$(grep history-timestamp ~/.bashrc)" ] && echo "PROMPT_COMMAND='{ msg=\$(history 1 | { read x y; echo \$y; });user=\$(whoami); echo \$(date \"+%Y-%m-%d %H:%M:%S\"):\$user:\`pwd\`/:\$msg ---- \$(who am i); } >> /tmp/\`hostname\`.\`whoami\`.history-timestamp'" >> ~/.bashrc
 
 # /etc/security/limits.conf
 [ -e /etc/security/limits.d/*nproc.conf ] && rename nproc.conf nproc.conf_bk /etc/security/limits.d/*nproc.conf
-[ -z "`grep 'session required pam_limits.so' /etc/pam.d/common-session`" ] && echo "session required pam_limits.so" >> /etc/pam.d/common-session
+[ -z "$(grep 'session required pam_limits.so' /etc/pam.d/common-session)" ] && echo "session required pam_limits.so" >> /etc/pam.d/common-session
 sed -i '/^# End of file/,$d' /etc/security/limits.conf
 cat >> /etc/security/limits.conf <<EOF
 # End of file
@@ -63,7 +63,7 @@ ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 #EOF
 
 # /etc/sysctl.conf
-[ -z "`grep 'fs.file-max' /etc/sysctl.conf`" ] && cat >> /etc/sysctl.conf << EOF
+[ -z "$(grep 'fs.file-max' /etc/sysctl.conf)" ] && cat >> /etc/sysctl.conf << EOF
 fs.file-max=65535
 fs.inotify.max_user_instances = 8192
 net.ipv4.tcp_syncookies = 1
@@ -90,10 +90,10 @@ sed -i 's@^@#@g' /etc/init/control-alt-delete.conf
 
 # Update time
 ntpdate pool.ntp.org
-[ ! -e "/var/spool/cron/crontabs/root" -o -z "`grep ntpdate /var/spool/cron/crontabs/root 2>/dev/null`" ] && { echo "*/20 * * * * `which ntpdate` pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/crontabs/root;chmod 600 /var/spool/cron/crontabs/root; }
+[ ! -e "/var/spool/cron/crontabs/root" -o -z "$(grep ntpdate /var/spool/cron/crontabs/root 2>/dev/null)" ] && { echo "*/20 * * * * $(which ntpdate) pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/crontabs/root;chmod 600 /var/spool/cron/crontabs/root; }
 
 # iptables
-if [ -e "/etc/iptables.up.rules" ] && [ -n "`grep '^:INPUT DROP' /etc/iptables.up.rules`" -a -n "`grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/iptables.up.rules`" -a -n "`grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/iptables.up.rules`" ]; then
+if [ -e "/etc/iptables.up.rules" ] && [ -n "$(grep '^:INPUT DROP' /etc/iptables.up.rules)" -a -n "$(grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/iptables.up.rules)" -a -n "$(grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/iptables.up.rules)" ]; then
     IPTABLES_STATUS=yes
 else
     IPTABLES_STATUS=no
@@ -124,7 +124,7 @@ COMMIT
 EOF
 fi
 
-FW_PORT_FLAG=`grep -ow "dport ${SSH_PORT}" /etc/iptables.up.rules`
+FW_PORT_FLAG=$(grep -ow "dport ${SSH_PORT}" /etc/iptables.up.rules)
 [ -z "${FW_PORT_FLAG}" -a "${SSH_PORT}" != "22" ] && sed -i "s@dport 22 -j ACCEPT@&\n-A INPUT -p tcp -m state --state NEW -m tcp --dport ${SSH_PORT} -j ACCEPT@" /etc/iptables.up.rules
 iptables-restore < /etc/iptables.up.rules
 cat > /etc/network/if-pre-up.d/iptables << EOF

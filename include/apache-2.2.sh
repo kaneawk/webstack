@@ -32,8 +32,8 @@ Install_Apache-2-2() {
     kill -9 $$
   fi
 
-  [ -z "`grep ^'export PATH=' /etc/profile`" ] && echo "export PATH=${apache_install_dir}/bin:\$PATH" >> /etc/profile
-  [ -n "`grep ^'export PATH=' /etc/profile`" -a -z "`grep ${apache_install_dir} /etc/profile`" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${apache_install_dir}/bin:\1@" /etc/profile
+  [ -z "$(grep ^'export PATH=' /etc/profile)" ] && echo "export PATH=${apache_install_dir}/bin:\$PATH" >> /etc/profile
+  [ -n "$(grep ^'export PATH=' /etc/profile)" -a -z "$(grep ${apache_install_dir} /etc/profile)" ] && sed -i "s@^export PATH=\(.*\)@export PATH=${apache_install_dir}/bin:\1@" /etc/profile
   . /etc/profile
 
   /bin/cp ${apache_install_dir}/bin/apachectl /etc/init.d/httpd
@@ -74,7 +74,7 @@ ${wwwlogs_dir}/*apache.log {
   notifempty
   sharedscripts
   postrotate
-  [ -f ${apache_install_dir}/logs/httpd.pid ] && kill -USR1 \`cat ${apache_install_dir}/logs/httpd.pid\`
+  [ -f ${apache_install_dir}/logs/httpd.pid ] && kill -USR1 \$\(cat ${apache_install_dir}/logs/httpd.pid\)
   endscript
 }
 EOF
