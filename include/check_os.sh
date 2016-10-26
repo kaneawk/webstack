@@ -24,6 +24,15 @@ elif [ -n "$(grep 'Deepin' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "
   OS=Debian
   [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
   Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
+# kali rolling
+elif [ -n "$(grep 'Kali GNU/Linux Rolling' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "Kali" ]; then
+  OS=Debian
+  [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+  if [ -n "$(grep 'VERSION="2016.*"' /etc/os-release)" ]; then
+    Debian_version=8
+  else
+    echo ${CFAILURE}Does not support this OS, Please contact the author! ${CEND}
+  fi
 elif [ -n "$(grep 'Ubuntu' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "Ubuntu" -o -n "$(grep 'Linux Mint' /etc/issue)" ]; then
   OS=Ubuntu
   [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
