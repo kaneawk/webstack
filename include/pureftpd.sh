@@ -21,10 +21,11 @@ Install_PureFTPd() {
   make -j ${THREAD} && make install
   if [ -e "${pureftpd_install_dir}/sbin/pure-ftpwho" ]; then
     [ ! -e "${pureftpd_install_dir}/etc" ] && mkdir ${pureftpd_install_dir}/etc
-    cp configuration-file/pure-config.pl ${pureftpd_install_dir}/sbin
+    /bin/cp configuration-file/pure-config.pl ${pureftpd_install_dir}/sbin
+    /bin/cp config/pure-ftpd.conf ${pureftpd_install_dir}/etc
+    popd
     sed -i "s@/usr/local/pureftpd@${pureftpd_install_dir}@" ${pureftpd_install_dir}/sbin/pure-config.pl
     chmod +x ${pureftpd_install_dir}/sbin/pure-config.pl
-    popd
     /bin/cp ${oneinstack_dir}/init.d/Pureftpd-init /etc/init.d/pureftpd
     sed -i "s@/usr/local/pureftpd@${pureftpd_install_dir}@g" /etc/init.d/pureftpd
     chmod +x /etc/init.d/pureftpd
@@ -32,7 +33,6 @@ Install_PureFTPd() {
     [[ "${OS}" =~ ^Ubuntu$|^Debian$ ]] && { sed -i 's@^. /etc/rc.d/init.d/functions@. /lib/lsb/init-functions@' /etc/init.d/pureftpd; update-rc.d pureftpd defaults; }
     [ "${Debian_version}" == '7' ] && sed -i 's@/var/lock/subsys/@/var/lock/@g' /etc/init.d/pureftpd
 
-    /bin/cp config/pure-ftpd.conf ${pureftpd_install_dir}/etc
     sed -i "s@^PureDB.*@PureDB  ${pureftpd_install_dir}/etc/pureftpd.pdb@" ${pureftpd_install_dir}/etc/pure-ftpd.conf
     sed -i "s@^LimitRecursion.*@LimitRecursion  65535 8@" ${pureftpd_install_dir}/etc/pure-ftpd.conf
     ulimit -s unlimited

@@ -31,7 +31,8 @@ elif [ -n "$(grep 'Kali GNU/Linux Rolling' /etc/issue)" -o "$(lsb_release -is 2>
   if [ -n "$(grep 'VERSION="2016.*"' /etc/os-release)" ]; then
     Debian_version=8
   else
-    echo ${CFAILURE}Does not support this OS, Please contact the author! ${CEND}
+    echo "${CFAILURE}Does not support this OS, Please contact the author! ${CEND}"
+    kill -9 $$
   fi
 elif [ -n "$(grep 'Ubuntu' /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == "Ubuntu" -o -n "$(grep 'Linux Mint' /etc/issue)" ]; then
   OS=Ubuntu
