@@ -53,6 +53,28 @@ if [ -e "${php_install_dir}/bin/phpize" ]; then
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
   PHP_detail_version=$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;')
   PHP_main_version=${PHP_detail_version%.*}
+
+  case "${PHP_main_version}" in
+    "5.3")
+      PHP_version=1
+      ;;
+    "5.4")
+      PHP_version=2
+      ;;
+    "5.5")
+      PHP_version=3
+      ;;
+    "5.6")
+      PHP_version=4
+      ;;
+    "7.0" | "7.1")
+      PHP_version=5
+      ;;
+    *)
+      echo "${CFAILURE}Your PHP version ${PHP_main_version} is not supported!${CEND}"
+      kill -9 $$
+      ;;
+  esac
 else
   echo "${CFAILURE}Couldn't find phpize!${CEND}"
   kill -9 $$
@@ -217,9 +239,6 @@ What Are You Doing?
                 ;;
               3)
                 if [[ "${PHP_main_version}" =~ ^5.[3-6]$|^7.[0-1]$ ]]; then
-                  if [[ "${PHP_main_version}" =~ ^7.[0-1]$ ]]; then
-                    PHP_version='5'
-                  fi
                   checkDownload
                   Install_APCU
                   Check_succ
@@ -228,12 +247,8 @@ What Are You Doing?
                 fi
                 ;;
               4)
-                if [ "${PHP_main_version}" == "5.3" ]; then
-                  PHP_version='1' && checkDownload
-                  Install_eAccelerator
-                  Check_succ
-                elif [ "${PHP_main_version}" == "5.4" ]; then
-                  PHP_version='2' && checkDownload
+                if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]]; then
+                  checkDownload
                   Install_eAccelerator
                   Check_succ
                 else
