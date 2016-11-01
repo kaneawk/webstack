@@ -27,9 +27,9 @@ Install_Apache-2-4() {
   [ ! -d "${apache_install_dir}" ] && mkdir -p ${apache_install_dir}
   /bin/cp -R ../apr-${apr_version} ./srclib/apr
   /bin/cp -R ../apr-util-${apr_util_version} ./srclib/apr-util
-  [ "${ZendGuardLoader_yn}" == 'y' -o "${ionCube_yn}" == 'y' ] && MPM=prefork || MPM=worker
-  ./configure --prefix=${apache_install_dir} --enable-headers --enable-deflate --enable-mime-magic --enable-so --enable-rewrite --enable-ssl --with-ssl --enable-expires --enable-static-support --enable-suexec --disable-userdir --with-included-apr --with-mpm=${MPM} --disable-userdir
+  LDFLAGS=-ldl ./configure --prefix=${apache_install_dir} --with-mpm=prefork --with-included-apr --enable-headers --enable-deflate --enable-so --enable-dav --enable-rewrite --enable-ssl --with-ssl --enable-expires --enable-static-support --enable-suexec --enable-modules=all --enable-mods-shared=all
   make -j ${THREAD} && make install
+  unset LDFLAGS
   popd
   # Cleanup
   rm -rf apr-${apr_version}
@@ -68,11 +68,14 @@ Install_Apache-2-4() {
     TMP_PORT=88
     TMP_IP=127.0.0.1
   fi
-  sed -i "s@AddType\(.*\)Z@AddType\1Z\n    AddType application/x-httpd-php .php .phtml\n    AddType application/x-httpd-php-source .phps@" ${apache_install_dir}/conf/httpd.conf
+  sed -i "s@AddType\(.*\)Z@AddType\1Z\n    AddType application/x-httpd-php .php .phtml\n    AddType application/x-httpd-php-source .phps@" $apache_install_dir/conf/httpd.conf
   sed -i "s@#AddHandler cgi-script .cgi@AddHandler cgi-script .cgi .pl@" ${apache_install_dir}/conf/httpd.conf
-  sed -i 's@^#LoadModule rewrite_module@LoadModule rewrite_module@' ${apache_install_dir}/conf/httpd.conf
-  sed -i 's@^#LoadModule\(.*\)mod_deflate.so@LoadModule\1mod_deflate.so@' ${apache_install_dir}/conf/httpd.conf
-  sed -i 's@^#LoadModule\(.*\)mod_ssl.so@LoadModule\1mod_ssl.so@' ${apache_install_dir}/conf/httpd.conf
+  sed -ri 's@^#(.*mod_suexec.so)@\1@' ${apache_install_dir}/conf/httpd.conf
+  sed -ri 's@^#(.*mod_vhost_alias.so)@\1@' ${apache_install_dir}/conf/httpd.conf
+  sed -ri 's@^#(.*mod_rewrite.so)@\1@' ${apache_install_dir}/conf/httpd.conf
+  sed -ri 's@^#(.*mod_deflate.so)@\1@' ${apache_install_dir}/conf/httpd.conf
+  sed -ri 's@^#(.*mod_expires.so)@\1@' ${apache_install_dir}/conf/httpd.conf
+  sed -ri 's@^#(.*mod_ssl.so)@\1@' ${apache_install_dir}/conf/httpd.conf
   sed -i 's@DirectoryIndex index.html@DirectoryIndex index.html index.php@' ${apache_install_dir}/conf/httpd.conf
   sed -i "s@^DocumentRoot.*@DocumentRoot \"${wwwroot_dir}/default\"@" ${apache_install_dir}/conf/httpd.conf
   sed -i "s@^<Directory \"${apache_install_dir}/htdocs\">@<Directory \"${wwwroot_dir}/default\">@" ${apache_install_dir}/conf/httpd.conf

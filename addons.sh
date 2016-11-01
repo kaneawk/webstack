@@ -346,12 +346,11 @@ What Are You Doing?
           pushd ${oneinstack_dir}/src
           src_url=http://www.php.net/distributions/php-${PHP_detail_version}.tar.gz && Download_src
           tar xzf php-${PHP_detail_version}.tar.gz
-          popd
           pushd php-${PHP_detail_version}/ext/fileinfo
           ${php_install_dir}/bin/phpize
           ./configure --with-php-config=${php_install_dir}/bin/php-config
           make -j ${THREAD} && make install
-          popd
+          popd;popd
           echo "extension=fileinfo.so" > ${php_install_dir}/etc/php.d/ext-fileinfo.ini
           Check_succ
         else

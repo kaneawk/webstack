@@ -17,8 +17,8 @@ Install_Apache-2-2() {
   tar xzf httpd-${apache_2_version}.tar.gz
   pushd httpd-${apache_2_version}
   [ ! -d "${apache_install_dir}" ] && mkdir -p ${apache_install_dir}
-  [ "${ZendGuardLoader_yn}" == 'y' -o "${ionCube_yn}" == 'y' ] && MPM=prefork || MPM=worker
-  ./configure --prefix=${apache_install_dir} --enable-headers --enable-deflate --enable-mime-magic --enable-so --enable-rewrite --enable-ssl --with-ssl --enable-expires --enable-static-support --enable-suexec --disable-userdir --with-included-apr --with-mpm=${MPM} --disable-userdir
+  [ "${Ubuntu_version}" == "12" ] && sed -i '@SSL_PROTOCOL_SSLV2@d' modules/ssl/ssl_engine_io.c
+  LDFLAGS=-ldl ./configure --prefix=$apache_install_dir --with-mpm=prefork --with-included-apr --enable-headers --enable-deflate --enable-so --enable-rewrite --enable-ssl --with-ssl --enable-expires --enable-static-support --enable-suexec --enable-modules=all --enable-mods-shared=all
   make -j ${THREAD} && make install
   popd
   # Clean up

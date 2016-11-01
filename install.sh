@@ -179,11 +179,11 @@ while :; do echo
         echo -e "\t${CMSG}7${CEND}. Install Percona-5.7"
         echo -e "\t${CMSG}8${CEND}. Install Percona-5.6"
         echo -e "\t${CMSG}9${CEND}. Install Percona-5.5"
-        echo -e "\t${CMSG}0${CEND}. Install AliSQL-5.6"
+        echo -e "\t${CMSG}10${CEND}. Install AliSQL-5.6"
         read -p "Please input a number:(Default 2 press Enter) " DB_version
         [ -z "${DB_version}" ] && DB_version=2
         if [[ ! "${DB_version}" =~ ^[0-9]$ ]]; then
-          echo "${CWARNING}input error! Please only input number 1,2,3,4,5,6,7,8,9,0${CEND}"
+          echo "${CWARNING}input error! Please only input number 1,2,3,4,5,6,7,8,9,10${CEND}"
         else
           while :; do
             read -p "Please input the root password of database: " dbrootpwd
@@ -427,7 +427,7 @@ while :; do echo
 done
 
 # check jemalloc or tcmalloc
-if [[ "${Nginx_version}" =~ ^[1-3]$ ]] || [ "${DB_yn}" == 'y' -a "${DB_version}" != '0' ]; then
+if [[ "${Nginx_version}" =~ ^[1-3]$ ]] || [ "${DB_yn}" == 'y' -a "${DB_version}" != '10' ]; then
   while :; do echo
     read -p "Do you want to use jemalloc or tcmalloc optimize Database and Web server? [y/n]: " je_tc_malloc_yn
     if [[ ! "${je_tc_malloc_yn}" =~ ^[y,n]$ ]]; then
@@ -581,7 +581,7 @@ case "${DB_version}" in
     . include/percona-5.5.sh
     Install_Percona-5-5 2>&1 | tee -a ${oneinstack_dir}/install.log
     ;;
-  0)
+  10)
     . include/alisql-5.6.sh
     Install_AliSQL-5-6 2>&1 | tee -a ${oneinstack_dir}/install.log
     ;;
