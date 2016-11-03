@@ -339,6 +339,7 @@ while :; do echo
             done
           fi
 
+          # ionCube
           if [ "${TARGET_ARCH}" != "arm64" ]; then
             while :; do echo
               read -p "Do you want to install ionCube? [y/n]: " ionCube_yn
