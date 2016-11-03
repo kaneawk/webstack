@@ -9,7 +9,7 @@
 #       https://github.com/lj2007331/oneinstack
 
 Upgrade_Nginx() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src > /dev/null
   [ ! -e "${nginx_install_dir}/sbin/nginx" ] && echo "${CWARNING}Nginx is not installed on your system! ${CEND}" && exit 1
   OLD_Nginx_version_tmp=$(${nginx_install_dir}/sbin/nginx -v 2>&1)
   OLD_Nginx_version=${OLD_Nginx_version_tmp##*/}
@@ -39,7 +39,7 @@ Upgrade_Nginx() {
     echo "Press Ctrl+c to cancel or Press any key to continue..."
     char=$(get_char)
     tar xzf nginx-${NEW_Nginx_version}.tar.gz
-    cd nginx-${NEW_Nginx_version}
+    pushd nginx-${NEW_Nginx_version}
     make clean
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc # close debug
     ${nginx_install_dir}/sbin/nginx -V &> $$
@@ -53,17 +53,18 @@ Upgrade_Nginx() {
       kill -USR2 $(cat /var/run/nginx.pid)
       sleep 1
       kill -QUIT $(cat /var/run/nginx.pid.oldbin)
+      popd > /dev/null
       echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_Nginx_version}${CEND} to ${CWARNING}${NEW_Nginx_version}${CEND}"
+      rm -rf nginx-${NEW_Nginx_version}
     else
       echo "${CFAILURE}Upgrade Nginx failed! ${CEND}"
     fi
-    cd ..
   fi
-  cd ..
+  popd > /dev/null
 }
 
 Upgrade_Tengine() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
   [ ! -e "${tengine_install_dir}/sbin/nginx" ] && echo "${CWARNING}Tengine is not installed on your system! ${CEND}" && exit 1
   OLD_Tengine_version_tmp=$(${tengine_install_dir}/sbin/nginx -v 2>&1)
   OLD_Tengine_version="$(echo ${OLD_Tengine_version_tmp#*/} | awk '{print $1}')"
@@ -93,7 +94,7 @@ Upgrade_Tengine() {
     echo "Press Ctrl+c to cancel or Press any key to continue..."
     char=$(get_char)
     tar xzf tengine-${NEW_Tengine_version}.tar.gz
-    cd tengine-${NEW_Tengine_version}
+    pushd tengine-${NEW_Tengine_version}
     make clean
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc # close debug
     ${tengine_install_dir}/sbin/nginx -V &> $$
@@ -112,17 +113,18 @@ Upgrade_Tengine() {
       kill -USR2 $(cat /var/run/nginx.pid)
       sleep 1
       kill -QUIT $(cat /var/run/nginx.pid.oldbin)
+      popd > /dev/null
       echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_Tengine_version}${CEND} to ${CWARNING}${NEW_Tengine_version}${CEND}"
+      rm -rf tengine-${NEW_Tengine_version}
     else
       echo "${CFAILURE}Upgrade Tengine failed! ${CEND}"
     fi
-    cd ..
   fi
-  cd ..
+  popd > /dev/null
 }
 
 Upgrade_OpenResty() {
-  cd ${oneinstack_dir}/src
+  pushd ${oneinstack_dir}/src
   [ ! -e "${openresty_install_dir}/nginx/sbin/nginx" ] && echo "${CWARNING}OpenResty is not installed on your system! ${CEND}" && exit 1
   OLD_OpenResty_version_tmp=$(${openresty_install_dir}/nginx/sbin/nginx -v 2>&1)
   OLD_OpenResty_version="$(echo ${OLD_OpenResty_version_tmp#*/} | awk '{print $1}')"
@@ -152,7 +154,7 @@ Upgrade_OpenResty() {
     echo "Press Ctrl+c to cancel or Press any key to continue..."
     char=$(get_char)
     tar xzf openresty-${NEW_OpenResty_version}.tar.gz
-    cd openresty-${NEW_OpenResty_version}
+    pushd openresty-${NEW_OpenResty_version}
     make clean
     openresty_version_tmp=${NEW_OpenResty_version%.*}
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' bundle/nginx-${openresty_version_tmp}/auto/cc/gcc # close debug
@@ -169,11 +171,12 @@ Upgrade_OpenResty() {
       kill -USR2 $(cat /var/run/nginx.pid)
       sleep 1
       kill -QUIT $(cat /var/run/nginx.pid.oldbin)
+      popd > /dev/null
       echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_OpenResty_version}${CEND} to ${CWARNING}${NEW_OpenResty_version}${CEND}"
+      rm -rf openresty-${NEW_OpenResty_version}
     else
       echo "${CFAILURE}Upgrade OpenResty failed! ${CEND}"
     fi
-    cd ..
   fi
-  cd ..
+  popd > /dev/null 
 }

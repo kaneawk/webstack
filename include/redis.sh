@@ -80,7 +80,6 @@ Install_php-redis() {
 extension=redis.so
 EOF
       echo "${CSUCCESS}PHP Redis module installed successfully! ${CEND}"
-      [ "${Apache_version}" != '1' -a "${Apache_version}" != '2' ] && service php-fpm restart || service httpd restart
     else
       echo "${CFAILURE}PHP Redis module install failed, Please contact the author! ${CEND}"
     fi

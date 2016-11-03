@@ -19,7 +19,7 @@ Upgrade_PHP() {
     if [ "${NEW_PHP_version%.*}" == "${OLD_PHP_version%.*}" ]; then
       [ ! -e "php-${NEW_PHP_version}.tar.gz" ] && wget --no-check-certificate -c http://www.php.net/distributions/php-${NEW_PHP_version}.tar.gz > /dev/null 2>&1
       if [ -e "php-${NEW_PHP_version}.tar.gz" ]; then
-        echo "Download [${CMSG}php-${NEW_PHP_version.tar}.gz${CEND}] successfully! "
+        echo "Download [${CMSG}php-${NEW_PHP_version}.tar.gz${CEND}] successfully! "
       else
         echo "${CWARNING}PHP version does not exist! ${CEND}"
       fi
@@ -39,12 +39,20 @@ Upgrade_PHP() {
     pushd php-${NEW_PHP_version}
     ${php_install_dir}/bin/php -i |grep 'Configure Command' | awk -F'=>' '{print $2}' | bash
     make ZEND_EXTRA_LIBS="-liconv"
-    echo "Stoping php-fpm..."
-    service php-fpm stop
-    make install
+    if [ -e "${apache_install_dir}/bin/apachectl" ]; then 
+      echo "Stoping apache..."
+      service httpd stop
+      make install
+      echo "Starting apache..."
+      service httpd start
+    else
+      echo "Stoping php-fpm..."
+      service php-fpm stop
+      make install
+      echo "Starting php-fpm..."
+      service php-fpm start
+    fi
     popd
-    echo "Starting php-fpm..."
-    service php-fpm start
     echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_PHP_version}${CEND} to ${CWARNING}${NEW_PHP_version}${CEND}"
   fi
   # Clean up

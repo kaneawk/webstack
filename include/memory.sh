@@ -39,10 +39,7 @@ Make-swapfile() {
   mkswap /swapfile
   swapon /swapfile
   chmod 600 /swapfile
-  [ -z "$(grep swapfile /etc/fstab)" ] && cat >> /etc/fstab << EOF
-/swapfile    swap    swap    defaults    0 0
-EOF
-
+  [ -z "$(grep swapfile /etc/fstab)" ] && echo '/swapfile    swap    swap    defaults    0 0' >> /etc/fstab
 }
 
 # add swapfile

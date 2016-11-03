@@ -31,7 +31,7 @@ Install_Apache-2-4() {
   make -j ${THREAD} && make install
   unset LDFLAGS
   popd
-  # Cleanup
+  # Clean up
   rm -rf apr-${apr_version}
   rm -rf apr-util-${apr_util_version}
   rm -rf httpd-${apache_4_version}

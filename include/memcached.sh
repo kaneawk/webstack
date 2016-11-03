@@ -60,10 +60,7 @@ Install_php-memcache() {
     make -j ${THREAD} && make install
     popd
     if [ -f "${phpExtensionDir}/memcache.so" ]; then
-      cat > ${php_install_dir}/etc/php.d/ext-memcache.ini << EOF
-extension=memcache.so
-EOF
-      [ "${Apache_version}" != '1' -a "${Apache_version}" != '2' ] && service php-fpm restart || service httpd restart
+      echo "extension=memcache.so" > ${php_install_dir}/etc/php.d/ext-memcache.ini
       echo "${CSUCCESS}PHP memcache module installed successfully! ${CEND}"
     else
       echo "${CFAILURE}PHP memcache module install failed, Please contact the author! ${CEND}"
@@ -108,7 +105,6 @@ extension=memcached.so
 memcached.use_sasl=1
 EOF
       echo "${CSUCCESS}PHP memcached module installed successfully! ${CEND}"
-      [ "${Apache_version}" != '1' -a "${Apache_version}" != '2' ] && service php-fpm restart || service httpd restart
     else
       echo "${CFAILURE}PHP memcached module install failed, Please contact the author! ${CEND}"
     fi

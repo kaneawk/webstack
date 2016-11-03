@@ -11,12 +11,12 @@
 Install_APCU() {
   pushd ${oneinstack_dir}/src
   phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
-  if [ "${PHP_version}" != "5" ]; then
-    tar xzf apcu-${apcu_version}.tgz
-    pushd apcu-${apcu_version}
-  else
+  if [ "$(${php_install_dir}/bin/php -r 'echo PHP_VERSION;' | awk -F. '{print $1}')" == '7' ]; then
     tar xzf apcu-${apcu_for_php7_version}.tgz
     pushd apcu-${apcu_for_php7_version}
+  else
+    tar xzf apcu-${apcu_version}.tgz
+    pushd apcu-${apcu_version}
   fi
 
   ${php_install_dir}/bin/phpize
@@ -32,7 +32,6 @@ apc.shm_size=32M
 apc.ttl=7200
 apc.enable_cli=1
 EOF
-    [ "${Apache_version}" != '1' -a "${Apache_version}" != '2' ] && service php-fpm restart || service httpd restart
     /bin/cp apc.php ${wwwroot_dir}/default
     echo "${CSUCCESS}APCU module installed successfully! ${CEND}"
   else

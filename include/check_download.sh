@@ -92,14 +92,14 @@ checkDownload(){
   if [ "${DB_yn}" == 'y' ]; then
     if [[ "${DB_version}" =~ ^[1,4,7]$ ]] && [ "${dbInstallMethods}" == '2' ]; then
       echo "Download boost..."
-      DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
+      [ "${IPADDR_COUNTRY}"x == "CN"x ] && DOWN_ADDR_BOOST=${mirrorLink} || DOWN_ADDR_BOOST=http://downloads.sourceforge.net/project/boost/boost/${boost_version}
       boostVersion2=$(echo ${boost_version} | awk -F. '{print $1}')_$(echo ${boost_version} | awk -F. '{print $2}')_$(echo ${boost_version} | awk -F. '{print $3}')
       src_url=${DOWN_ADDR_BOOST}/boost_${boostVersion2}.tar.gz && Download_src
     fi
 
     case "${DB_version}" in
       1)
-        # mysql 5.7
+        # MySQL 5.7
         if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == "aliyun" -a "$(../include/check_port.py aliyun-oss.linuxeye.com 80)" == "True" ]; then
           DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.7
         else
@@ -120,10 +120,10 @@ checkDownload(){
           fi
         fi
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download mysql 5.7 binary package..."
+          echo "Download MySQL 5.7 binary package..."
           FILE_NAME=mysql-${mysql_5_7_version}-linux-glibc2.5-${SYS_BIT_b}.tar.gz
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download mysql 5.7 source package..."
+          echo "Download MySQL 5.7 source package..."
           FILE_NAME=mysql-${mysql_5_7_version}.tar.gz
         fi
         # start download
@@ -146,7 +146,7 @@ checkDownload(){
         ;;
 
       2)
-        # mysql 5.6
+        # MySQL 5.6
         if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == "aliyun" -a "$(../include/check_port.py aliyun-oss.linuxeye.com 80)" == "True" ]; then
           DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.6
         else
@@ -167,7 +167,7 @@ checkDownload(){
           fi
         fi
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download mysql 5.6 binary package..."
+          echo "Download MySQL 5.6 binary package..."
           FILE_NAME=mysql-${mysql_5_6_version}-linux-glibc2.5-${SYS_BIT_b}.tar.gz
         elif [ "${dbInstallMethods}" == '2' ]; then
           echo "Download MySQL 5.6 source package..."
@@ -191,7 +191,7 @@ checkDownload(){
         ;;
 
       3)
-        # mysql 5.5
+        # MySQL 5.5
         if [ "${IPADDR_COUNTRY}"x == "CN"x -a "${IPADDR_ISP}" == "aliyun" -a "$(../include/check_port.py aliyun-oss.linuxeye.com 80)" == "True" ]; then
           DOWN_ADDR_MYSQL=http://aliyun-oss.linuxeye.com/mysql/MySQL-5.5
         else
@@ -212,7 +212,7 @@ checkDownload(){
           fi
         fi
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download mysql 5.5 binary package..."
+          echo "Download MySQL 5.5 binary package..."
           FILE_NAME=mysql-${mysql_5_5_version}-linux2.6-${SYS_BIT_b}.tar.gz
         elif [ "${dbInstallMethods}" == '2' ]; then
           echo "Download MySQL 5.5 source package..."
@@ -237,9 +237,9 @@ checkDownload(){
         ;;
 
       4)
-        # mariaDB 10.1
+        # MariaDB 10.1
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download mariaDB 10.1 binary package..."
+          echo "Download MariaDB 10.1 binary package..."
           FILE_NAME=mariadb-${mariadb_10_1_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_10_1_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
@@ -250,7 +250,7 @@ checkDownload(){
             MARAIDB_TAR_MD5=$(curl -Lk http://archive.mariadb.org/mariadb-${mariadb_10_1_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}/md5sums.txt |  grep ${FILE_NAME} | awk '{print $1}')
           fi
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download mariaDB 10.1 source package..."
+          echo "Download MariaDB 10.1 source package..."
           FILE_NAME=mariadb-${mariadb_10_1_version}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_10_1_version}/source
@@ -276,9 +276,9 @@ checkDownload(){
         ;;
 
       5)
-        # mariaDB 10.0
+        # MariaDB 10.0
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download mariaDB 10.0 binary package..."
+          echo "Download MariaDB 10.0 binary package..."
           FILE_NAME=mariadb-${mariadb_10_0_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
@@ -289,7 +289,7 @@ checkDownload(){
             MARAIDB_TAR_MD5=$(curl -Lk http://archive.mariadb.org/mariadb-${mariadb_10_0_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}/md5sums.txt |  grep ${FILE_NAME} | awk '{print $1}')
           fi
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download mariaDB 10.0 source package..."
+          echo "Download MariaDB 10.0 source package..."
           FILE_NAME=mariadb-${mariadb_10_0_version}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_10_0_version}/source
@@ -315,9 +315,9 @@ checkDownload(){
         ;;
 
       6)
-        # mariaDB 5.5
+        # MariaDB 5.5
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download mariaDB 5.5 binary package..."
+          echo "Download MariaDB 5.5 binary package..."
           FILE_NAME=mariadb-${mariadb_5_5_version}-${GLIBC_FLAG}-${SYS_BIT_b}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}
@@ -328,7 +328,7 @@ checkDownload(){
             MARAIDB_TAR_MD5=$(curl -Lk http://archive.mariadb.org/mariadb-${mariadb_5_5_version}/bintar-${GLIBC_FLAG}-${SYS_BIT_a}/md5sums.txt |  grep ${FILE_NAME} | awk '{print $1}')
           fi
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download mariaDB 10.0 source package..."
+          echo "Download MariaDB 5.5 source package..."
           FILE_NAME=mariadb-${mariadb_5_5_version}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_MARIADB=https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-${mariadb_5_5_version}/source
@@ -354,14 +354,14 @@ checkDownload(){
         ;;
 
       7)
-        # precona 5.7
+        # Precona 5.7
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download percona 5.7 binary package..."
+          echo "Download Percona 5.7 binary package..."
           FILE_NAME=Percona-Server-${percona_5_7_version}-Linux.${SYS_BIT_b}.${sslLibVer}.tar.gz
           DOWN_ADDR_PERCONA=https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-${percona_5_7_version}/binary/tarball
           PERCONA_TAR_MD5=$(curl -Lk https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-${percona_5_7_version}/binary/tarball/${FILE_NAME}.md5sum |  grep ${FILE_NAME} | awk '{print $1}')
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download percona 5.7 source package..."
+          echo "Download Percona 5.7 source package..."
           FILE_NAME=percona-server-${percona_5_7_version}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_PERCONA=${mirrorLink}
@@ -388,15 +388,15 @@ checkDownload(){
         ;;
 
       8)
-        # precona 5.6
+        # Precona 5.6
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download percona 5.6 binary package..."
+          echo "Download Percona 5.6 binary package..."
           perconaVerStr1=$(echo ${percona_5_6_version} | sed "s@-@-rel@")
           FILE_NAME=Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}.tar.gz
           DOWN_ADDR_PERCONA=https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-${percona_5_6_version}/binary/tarball
           PERCONA_TAR_MD5=$(curl -Lk https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-${percona_5_6_version}/binary/tarball/${FILE_NAME}.md5sum |  grep ${FILE_NAME} | awk '{print $1}')
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download percona 5.6 source package..."
+          echo "Download Percona 5.6 source package..."
           FILE_NAME=percona-server-${percona_5_6_version}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_PERCONA=${mirrorLink}
@@ -423,15 +423,15 @@ checkDownload(){
         ;;
 
       9)
-        # precona 5.5
+        # Percona 5.5
         if [ "${dbInstallMethods}" == '1' ]; then
-          echo "Download percona 5.5 binary package..."
+          echo "Download Percona 5.5 binary package..."
           perconaVerStr1=$(echo ${percona_5_5_version} | sed "s@-@-rel@")
           FILE_NAME=Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}.tar.gz
           DOWN_ADDR_PERCONA=https://www.percona.com/downloads/Percona-Server-5.5/Percona-Server-${percona_5_5_version}/binary/tarball
           PERCONA_TAR_MD5=$(curl -Lk https://www.percona.com/downloads/Percona-Server-5.5/Percona-Server-${percona_5_5_version}/binary/tarball/${FILE_NAME}.md5sum |  grep ${FILE_NAME} | awk '{print $1}')
         elif [ "${dbInstallMethods}" == '2' ]; then
-          echo "Download percona 5.5 source package..."
+          echo "Download Percona 5.5 source package..."
           FILE_NAME=percona-server-${percona_5_5_version}.tar.gz
           if [ "${IPADDR_COUNTRY}"x == "CN"x ]; then
             DOWN_ADDR_PERCONA=${mirrorLink}
@@ -456,8 +456,9 @@ checkDownload(){
           echo "[${CMSG}${FILE_NAME}${CEND}] found."
         fi
         ;;
-      0)
-        # alisql 5.6
+
+      10)
+        # AliSQL 5.6
         DOWN_ADDR_ALISQL=${mirrorLink}
         echo "Download AliSQL 5.6 source package..."
         FILE_NAME=alisql-${alisql_5_6_version}.tar.gz

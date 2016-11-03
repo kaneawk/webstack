@@ -29,7 +29,6 @@ Install_ZendOPcache() {
     # write opcache configs
     writeOPCacheConf
     echo "${CSUCCESS}PHP OPcache module installed successfully! ${CEND}"
-    [ "${Apache_version}" != '1' -a "${Apache_version}" != '2' ] && service php-fpm restart || service httpd restart
   else
     echo "${CFAILURE}PHP OPcache module install failed, Please contact the author! ${CEND}"
   fi
@@ -41,8 +40,8 @@ Install_ZendOPcache() {
 
 writeOPCacheConf() {
 
-  if [[ "${PHP_main_version}" =~ ^5.[3-6]$ ]]; then
-    # For php 5.x
+  if [[ "${PHP_main_version}" =~ ^5.[3-4]$ ]]; then
+    # For php 5.3 5.4
     cat > ${php_install_dir}/etc/php.d/ext-opcache.ini << EOF
 [opcache]
 zend_extension=${phpExtensionDir}/opcache.so
@@ -57,7 +56,7 @@ opcache.enable_cli=1
 ;opcache.optimization_level=0
 EOF
   else
-    # For php 7+
+    # For php 5.5+
     cat > ${php_install_dir}/etc/php.d/ext-opcache.ini << EOF
 [opcache]
 zend_extension=opcache.so
