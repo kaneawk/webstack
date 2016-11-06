@@ -126,13 +126,13 @@ Choose_env() {
 
   case "${NGX_FLAG}" in
     "php")
-      NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n  #fastcgi_pass remote_php_ip:9000;\n  fastcgi_pass unix:/dev/shm/php-cgi.sock;\n  fastcgi_index index.php;\n  include fastcgi.conf;\n}")
+      NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n  #fastcgi_pass remote_php_ip:9000;\n  fastcgi_pass unix:/dev/shm/php-cgi.sock;\n  fastcgi_index index.php;\n  include fastcgi.conf;\n  }")
       ;;
     "java")
-      NGX_CONF=$(echo -e "location ~ {\n  proxy_pass http://127.0.0.1:8080;\n  include proxy.conf;\n}")
+      NGX_CONF=$(echo -e "location ~ {\n  proxy_pass http://127.0.0.1:8080;\n  include proxy.conf;\n  }")
       ;;
     "hhvm")
-      NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n  fastcgi_pass unix:/var/log/hhvm/sock;\n  fastcgi_index index.php;\n  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n  include fastcgi_params;\n}")
+      NGX_CONF=$(echo -e "location ~ .*\.(php|php5)?$ {\n  fastcgi_pass unix:/var/log/hhvm/sock;\n  fastcgi_index index.php;\n  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n  include fastcgi_params;\n  }")
       ;;
   esac
 }
