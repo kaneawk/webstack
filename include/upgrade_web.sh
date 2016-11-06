@@ -40,12 +40,14 @@ Upgrade_Nginx() {
     char=$(get_char)
     tar xzf nginx-${NEW_Nginx_version}.tar.gz
     pushd nginx-${NEW_Nginx_version}
-    make clean
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc # close debug
     ${nginx_install_dir}/sbin/nginx -V &> $$
     nginx_configure_arguments=$(cat $$ | grep "configure arguments:" | awk -F: '{print $2}')
     rm -rf $$
-    ./configure ${nginx_configure_arguments}
+    [ -n "$(echo ${nginx_configure_arguments} | grep jemalloc)"] && malloc_module="--with-ld-opt='-ljemalloc'"
+    [ -n "$(echo ${nginx_configure_arguments} | grep perftools)" ] && malloc_module="--with-google_perftools_module"
+
+    ./configure --prefix=${nginx_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_v2_module --with-http_ssl_module --with-ipv6 --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module}
     make -j ${THREAD}
     if [ -f "objs/nginx" ]; then
       /bin/mv ${nginx_install_dir}/sbin/nginx{,$(date +%m%d)}
@@ -55,10 +57,14 @@ Upgrade_Nginx() {
       kill -QUIT $(cat /var/run/nginx.pid.oldbin)
       popd > /dev/null
       echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_Nginx_version}${CEND} to ${CWARNING}${NEW_Nginx_version}${CEND}"
-      rm -rf nginx-${NEW_Nginx_version}
     else
       echo "${CFAILURE}Upgrade Nginx failed! ${CEND}"
     fi
+
+    # Clean up
+    rm -rf pcre-${pcre_version}
+    rm -rf openssl-${openssl_version}
+    rm -rf nginx-${NEW_Nginx_version}
   fi
   popd > /dev/null
 }
@@ -95,12 +101,14 @@ Upgrade_Tengine() {
     char=$(get_char)
     tar xzf tengine-${NEW_Tengine_version}.tar.gz
     pushd tengine-${NEW_Tengine_version}
-    make clean
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' auto/cc/gcc # close debug
     ${tengine_install_dir}/sbin/nginx -V &> $$
     tengine_configure_arguments=$(cat $$ | grep "configure arguments:" | awk -F: '{print $2}')
     rm -rf $$
-    ./configure ${tengine_configure_arguments}
+    [ -n "$(echo ${tengine_configure_arguments} | grep jemalloc)"] && malloc_module="--with-ld-opt='-ljemalloc'"
+    [ -n "$(echo ${tengine_configure_arguments} | grep perftools)" ] && malloc_module="--with-google_perftools_module"
+
+    ./configure --prefix=${tengine_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_spdy_module --with-http_ssl_module --with-ipv6 --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-http_concat_module=shared --with-http_sysguard_module=shared --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module}
     make -j ${THREAD}
     if [ -f "objs/nginx" ]; then
       /bin/mv ${tengine_install_dir}/sbin/nginx{,$(date +%m%d)}
@@ -115,10 +123,14 @@ Upgrade_Tengine() {
       kill -QUIT $(cat /var/run/nginx.pid.oldbin)
       popd > /dev/null
       echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_Tengine_version}${CEND} to ${CWARNING}${NEW_Tengine_version}${CEND}"
-      rm -rf tengine-${NEW_Tengine_version}
     else
       echo "${CFAILURE}Upgrade Tengine failed! ${CEND}"
     fi
+
+    # Clean up
+    rm -rf pcre-${pcre_version}
+    rm -rf openssl-${openssl_version}
+    rm -rf tengine-${NEW_Tengine_version}
   fi
   popd > /dev/null
 }
@@ -155,7 +167,6 @@ Upgrade_OpenResty() {
     char=$(get_char)
     tar xzf openresty-${NEW_OpenResty_version}.tar.gz
     pushd openresty-${NEW_OpenResty_version}
-    make clean
     openresty_version_tmp=${NEW_OpenResty_version%.*}
     sed -i 's@CFLAGS="$CFLAGS -g"@#CFLAGS="$CFLAGS -g"@' bundle/nginx-${openresty_version_tmp}/auto/cc/gcc # close debug
     ${openresty_install_dir}/nginx/sbin/nginx -V &> $$
@@ -173,10 +184,14 @@ Upgrade_OpenResty() {
       kill -QUIT $(cat /var/run/nginx.pid.oldbin)
       popd > /dev/null
       echo "You have ${CMSG}successfully${CEND} upgrade from ${CWARNING}${OLD_OpenResty_version}${CEND} to ${CWARNING}${NEW_OpenResty_version}${CEND}"
-      rm -rf openresty-${NEW_OpenResty_version}
     else
       echo "${CFAILURE}Upgrade OpenResty failed! ${CEND}"
     fi
+
+    # Clean up
+    rm -rf pcre-${pcre_version}
+    rm -rf openssl-${openssl_version}
+    rm -rf openresty-${NEW_OpenResty_version}
   fi
-  popd > /dev/null 
+  popd > /dev/null
 }
