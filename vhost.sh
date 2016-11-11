@@ -219,9 +219,9 @@ Create_SSL() {
           Cron_Command="/etc/init.d/httpd graceful"
         fi
         [ "${OS}" == "CentOS" ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
-        [ -z "$(grep "${domain} ${moredomainame_D}" ${Cron_file})" ] && echo "0 10 * * 1 /usr/local/bin/certbot-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=${wwwroot_dir}/${domain} -d ${domain} ${moredomainame_D};${Cron_Command}" >> $Cron_file
+        [ -z "$(grep "${domain} ${moredomainame_D}" ${Cron_file})" ] && echo "0 10 * * 1 /usr/local/bin/certbot-auto certonly --agree-tos --renew-by-default --webroot -w ${wwwroot_dir}/${domain} -d ${domain} ${moredomainame_D};${Cron_Command}" >> $Cron_file
       else
-        echo "${CFAILURE}Error: Let's Encrypt SSL certificate installation failed${CEND}"
+        echo "${CFAILURE}Error: Let's Encrypt SSL certificate installation failed! ${CEND}"
         exit 1
       fi
     else
