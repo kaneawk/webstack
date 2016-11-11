@@ -455,6 +455,8 @@ server {
   ${N_log}
   index index.html index.htm index.jsp;
   root ${vhostdir};
+  #error_page 404 = /404.html;
+  #error_page 502 = /502.html;
   ${Nginx_redirect}
   ${anti_hotlinking}
   location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
@@ -465,9 +467,10 @@ server {
     expires 7d;
     access_log off;
   }
+  location ~ /\.ht {
+    deny all;
+  }
   ${NGX_CONF}
-  #error_page 404 = /404.html;
-  #error_page 502 = /502.html;
 }
 EOF
 
@@ -544,6 +547,8 @@ server {
   index index.html index.htm index.php;
   include ${web_install_dir}/conf/rewrite/${rewrite}.conf;
   root ${vhostdir};
+  #error_page 404 = /404.html;
+  #error_page 502 = /502.html;
   ${Nginx_redirect}
   ${anti_hotlinking}
   ${NGX_CONF}
@@ -555,8 +560,9 @@ server {
     expires 7d;
     access_log off;
   }
-  #error_page 404 = /404.html;
-  #error_page 502 = /502.html;
+  location ~ /\.ht {
+    deny all;
+  }
 }
 EOF
 
@@ -667,6 +673,7 @@ EOF
   echo "$(printf "%-30s" "Your domain:")${CMSG}${domain}${CEND}"
   echo "$(printf "%-30s" "Virtualhost conf:")${CMSG}${apache_install_dir}/conf/vhost/${domain}.conf${CEND}"
   echo "$(printf "%-30s" "Directory of:")${CMSG}${vhostdir}${CEND}"
+  [ "${apache_ssl_yn}" == 'y' ] && Print_ssl
 }
 
 Create_nginx_apache_mod-php_conf() {
@@ -699,6 +706,9 @@ server {
   location ~ .*\.(js|css)?$ {
     expires 7d;
     access_log off;
+  }
+  location ~ /\.ht {
+    deny all;
   }
 }
 EOF
@@ -820,7 +830,7 @@ Del_NGX_Vhost() {
             echo "${CWARNING}input error! ${CEND}"
           else
             if [ -e "${web_install_dir}/conf/vhost/${domain}.conf" ]; then
-              Directory=$(grep ^root ${web_install_dir}/conf/vhost/${domain}.conf | awk -F'[ ;]' '{print $2}')
+              Directory=$(grep '^  root' ${web_install_dir}/conf/vhost/${domain}.conf | head -1 | awk -F'[ ;]' '{print $(NF-1)}')
               rm -rf ${web_install_dir}/conf/vhost/${domain}.conf
               ${web_install_dir}/sbin/nginx -s reload
               while :; do echo
@@ -867,7 +877,7 @@ Del_Apache_Vhost() {
             echo "${CWARNING}input error! ${CEND}"
           else
             if [ -e "${apache_install_dir}/conf/vhost/${domain}.conf" ]; then
-              Directory=$(grep '^<Directory' ${apache_install_dir}/conf/vhost/${domain}.conf | awk -F'"' '{print $2}')
+              Directory=$(grep '^<Directory ' ${apache_install_dir}/conf/vhost/${domain}.conf | head -1 | awk -F'"' '{print $2}')
               rm -rf ${apache_install_dir}/conf/vhost/${domain}.conf
               /etc/init.d/httpd restart
               while :; do echo
