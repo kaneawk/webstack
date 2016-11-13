@@ -297,7 +297,7 @@ Input_Add_domain() {
   done
 
   while :; do echo
-    echo "Please input the directory for the domain:${domain} :"
+    echo "Please input the directory for the domain: ${domain}"
     read -p "(Default directory: ${wwwroot_dir}/${domain}): " vhostdir
     if [ -n "${vhostdir}" -a -z "$(echo ${vhostdir} | grep '^/')" ]; then
       echo "${CWARNING}input error! Press Enter to continue...${CEND}"

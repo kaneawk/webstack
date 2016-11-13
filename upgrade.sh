@@ -68,8 +68,8 @@ What Are You Doing?
 "
     echo
     read -p "Please input the correct option: " Number
-    if [[ ! "${Number}" =~ ^[1-5,q]$ ]]; then
-      echo "${CWARNING}input error! Please only input 1,2,3,4,5 and q${CEND}"
+    if [[ ! "${Number}" =~ ^[1-6,q]$ ]]; then
+      echo "${CWARNING}input error! Please only input 1,2,3,4,5,6 and q${CEND}"
     else
       case "${Number}" in
         1)
