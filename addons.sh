@@ -71,12 +71,12 @@ if [ -e "${php_install_dir}/bin/phpize" ]; then
       PHP_version=5
       ;;
     *)
-      echo "${CFAILURE}Your PHP version ${PHP_main_version} is not supported!${CEND}"
+      echo "${CFAILURE}Your PHP version ${PHP_main_version} is not supported! ${CEND}"
       kill -9 $$
       ;;
   esac
 else
-  echo "${CFAILURE}Couldn't find phpize!${CEND}"
+  echo "${CFAILURE}Couldn't find phpize! ${CEND}"
   kill -9 $$
 fi
 
@@ -124,12 +124,23 @@ EOF
   fi
 
   pushd ${oneinstack_dir}/src
-  src_url=https://dl.eff.org/certbot-auto && Download_src
-  /bin/mv certbot-auto /usr/local/bin/
-  chmod +x /usr/local/bin/certbot-auto
-  certbot-auto -n
+  if [ ! -e "/usr/bin/pip" ]; then
+    src_url=http://mirrors.linuxeye.com/oneinstack/src/pip-${pip_version}.tar.gz && Download_src
+    tar xzf pip-${pip_version}.tar.gz
+    pushd pip-${pip_version}
+    python setup.py install
+    popd
+    rm -rf pip-${pip_version}
+  fi
+  if [ ! -e "~/.pip/pip.conf" ] ;then
+    # get the IP information
+    PUBLIC_IPADDR=$(../include/get_public_ipaddr.py)
+    IPADDR_COUNTRY=$(../include/get_ipaddr_state.py ${PUBLIC_IPADDR} | awk '{print $1}')
+    [ "${IPADDR_COUNTRY}"x != "CN"x ] && { mkdir ~/.pip; echo -e "[global]\nindex-url = https://pypi.tuna.tsinghua.edu.cn/simple" > ~/.pip/pip.conf; }
+  fi
+  pip install certbot
   popd
-  if [ -e "/root/.local/share/letsencrypt/bin/letsencrypt" ] && certbot-auto -h | grep '\-\-standalone' > /dev/null ; then
+  if [ -e "/usr/bin/certbot" ]; then
     echo; echo "${CSUCCESS}Let's Encrypt client installed successfully! ${CEND}"
   else
     echo; echo "${CFAILURE}Let's Encrypt client install failed, Please try again! ${CEND}"
@@ -137,9 +148,10 @@ EOF
 }
 
 Uninstall_letsencrypt() {
-  rm -rf /usr/local/bin/cerbot-auto /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt
+  pip uninstall certbot
+  rm -rf /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt
   [ "${OS}" == "CentOS" ] && Cron_file=/var/spool/cron/root || Cron_file=/var/spool/cron/crontabs/root
-  sed -i '/certbot-auto/d' ${Cron_file}
+  sed -i '/certbot/d' ${Cron_file}
   echo; echo "${CMSG}Let's Encrypt client uninstall completed${CEND}";
 }
 
