@@ -18,7 +18,7 @@ installDepsDebian() {
   grep security /etc/apt/sources.list > /tmp/security.sources.list
   apt-get -y upgrade -o Dir::Etc::SourceList=/tmp/security.sources.list
 
-  apt-get autoremove
+  apt-get -y autoremove
 
   # Install needed packages
   case "${Debian_version}" in
@@ -83,7 +83,7 @@ installDepsUbuntu() {
   done
   dpkg -l | grep ^rc | awk '{print $2}' | xargs dpkg -P
 
-  apt-get autoremove
+  apt-get -y autoremove
 
   echo "${CMSG}Installing dependencies packages...${CEND}"
   apt-get -y update
