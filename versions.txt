@@ -90,4 +90,3 @@ libevent_version=2.0.22-stable
 tmux_version=2.3
 htop_version=2.0.2
 bison_version=2.7.1
-pip_version=9.0.1
