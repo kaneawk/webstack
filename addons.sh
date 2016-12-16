@@ -67,8 +67,11 @@ if [ -e "${php_install_dir}/bin/phpize" ]; then
     "5.6")
       PHP_version=4
       ;;
-    "7.0" | "7.1")
+    "7.0")
       PHP_version=5
+      ;;
+    "7.1")
+      PHP_version=6
       ;;
     *)
       echo "${CFAILURE}Your PHP version ${PHP_main_version} is not supported! ${CEND}"

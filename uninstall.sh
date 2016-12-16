@@ -259,7 +259,7 @@ What Are You Doing?
 }
 
 if [ $# == 0 ]; then
-    Menu
+  Menu
 elif [ $# == 1 ]; then
   case $1 in
   all)

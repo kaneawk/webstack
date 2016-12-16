@@ -228,10 +228,11 @@ while :; do echo
         echo -e "\t${CMSG}3${CEND}. Install php-5.5"
         echo -e "\t${CMSG}4${CEND}. Install php-5.6"
         echo -e "\t${CMSG}5${CEND}. Install php-7.0"
-        read -p "Please input a number:(Default 3 press Enter) " PHP_version
-        [ -z "${PHP_version}" ] && PHP_version=3
-        if [[ ! "${PHP_version}" =~ ^[1-5]$ ]]; then
-          echo "${CWARNING}input error! Please only input number 1,2,3,4,5${CEND}"
+        echo -e "\t${CMSG}6${CEND}. Install php-7.1"
+        read -p "Please input a number:(Default 4 press Enter) " PHP_version
+        [ -z "${PHP_version}" ] && PHP_version=4
+        if [[ ! "${PHP_version}" =~ ^[1-6]$ ]]; then
+          echo "${CWARNING}input error! Please only input number 1,2,3,4,5,6${CEND}"
         else
           while :; do echo
             read -p "Do you want to install opcode cache of the PHP? [y/n]: " PHP_cache_yn
@@ -303,6 +304,20 @@ while :; do echo
                     done
                     ;;
                   5)
+                    while :; do
+                      echo "Please select a opcode cache of the PHP:"
+                      echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
+                      echo -e "\t${CMSG}3${CEND}. Install APCU"
+                      read -p "Please input a number:(Default 1 press Enter) " PHP_cache
+                      [ -z "${PHP_cache}" ] && PHP_cache=1
+                      if [[ ! "${PHP_cache}" =~ ^[1,3]$ ]]; then
+                        echo "${CWARNING}input error! Please only input number 1,3${CEND}"
+                      else
+                        break
+                      fi
+                    done
+                    ;;
+                  6)
                     while :; do
                       echo "Please select a opcode cache of the PHP:"
                       echo -e "\t${CMSG}1${CEND}. Install Zend OPcache"
@@ -617,6 +632,10 @@ case "${PHP_version}" in
   5)
     . include/php-7.0.sh
     Install_PHP70 2>&1 | tee -a ${oneinstack_dir}/install.log
+    ;;
+  6)
+    . include/php-7.1.sh
+    Install_PHP71 2>&1 | tee -a ${oneinstack_dir}/install.log
     ;;
 esac
 
