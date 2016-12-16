@@ -218,8 +218,15 @@ Create_SSL() {
   DocumentRoot "${vhostdir}"
   ServerName ${domain}
   ${Apache_Domain_alias}
-  ErrorLog "/dev/null" common
-  CustomLog "/dev/null" common
+<Directory "${vhostdir}">
+  SetOutputFilter DEFLATE
+  Options FollowSymLinks ExecCGI
+  Require all granted
+  AllowOverride All
+  Order allow,deny
+  Allow from all
+  DirectoryIndex index.html index.php
+</Directory>
 </VirtualHost>
 EOF
         /etc/init.d/httpd restart > /dev/null
@@ -496,7 +503,7 @@ EOF
   [ "${https_yn}" == 'y' ] && sed -i "s@^root.*;@&\nif (\$ssl_protocol = \"\") { return 301 https://\$host\$request_uri; }@" ${web_install_dir}/conf/vhost/${domain}.conf
 
   cat > ${tomcat_install_dir}/conf/vhost/${domain}.xml << EOF
-<Host name="${domain}" appBase="webapps" unpackWARs="true" autoDeploy="true"> ${Tomcat_Domain_alias}
+<Host name="${domain}" appBase="${vhostdir}" unpackWARs="true" autoDeploy="true"> ${Tomcat_Domain_alias}
   <Context path="" docBase="${vhostdir}" debug="0" reloadable="false" crossContext="true"/>
   <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
          prefix="${domain}_access_log." suffix=".txt" pattern="%h %l %u %t &quot;%r&quot; %s %b" />
