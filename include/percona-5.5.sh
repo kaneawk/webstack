@@ -8,7 +8,7 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_Percona-5-5() {
+Install_Percona55() {
   pushd ${oneinstack_dir}/src
 
   id -u mysql >/dev/null 2>&1
@@ -18,7 +18,7 @@ Install_Percona-5-5() {
   mkdir -p ${percona_data_dir};chown mysql.mysql -R ${percona_data_dir}
 
   if [ "${dbInstallMethods}" == '1' ]; then
-    perconaVerStr1=$(echo ${percona_5_5_version} | sed "s@-@-rel@")
+    perconaVerStr1=$(echo ${percona55_version} | sed "s@-@-rel@")
     tar xvf Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}.tar.gz
     mv Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}/* ${percona_install_dir}
 
@@ -28,8 +28,8 @@ Install_Percona-5-5() {
       sed -i 's@executing mysqld_safe@executing mysqld_safe\nexport LD_PRELOAD=/usr/local/lib/libtcmalloc.so@' ${percona_install_dir}/bin/mysqld_safe
     fi
   elif [ "${dbInstallMethods}" == '2' ]; then
-    tar xvf percona-server-${percona_5_5_version}.tar.gz
-    pushd percona-server-${percona_5_5_version}
+    tar xvf percona-server-${percona55_version}.tar.gz
+    pushd percona-server-${percona55_version}
 
     if [ "${je_tc_malloc}" == '1' ]; then
       EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ljemalloc'"
@@ -64,7 +64,7 @@ Install_Percona-5-5() {
 
   # Clean up
   rm -rf Percona-Server-${perconaVerStr1}-Linux.${SYS_BIT_b}.${sslLibVer}
-  rm -rf percona-server-${percona_5_5_version}
+  rm -rf percona-server-${percona55_version}
 
   if [ ! -d "${percona_install_dir}/support-files" ]; then
     rm -rf ${percona_install_dir}

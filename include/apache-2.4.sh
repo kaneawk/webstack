@@ -8,7 +8,7 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_Apache-2-4() {
+Install_Apache24() {
   pushd ${oneinstack_dir}/src
 
   tar xzf pcre-${pcre_version}.tar.gz
@@ -20,10 +20,10 @@ Install_Apache-2-4() {
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
 
-  tar xzf httpd-${apache_4_version}.tar.gz
+  tar xzf httpd-${apache24_version}.tar.gz
   tar xzf apr-${apr_version}.tar.gz
   tar xzf apr-util-${apr_util_version}.tar.gz
-  pushd httpd-${apache_4_version}
+  pushd httpd-${apache24_version}
   [ ! -d "${apache_install_dir}" ] && mkdir -p ${apache_install_dir}
   /bin/cp -R ../apr-${apr_version} ./srclib/apr
   /bin/cp -R ../apr-util-${apr_util_version} ./srclib/apr-util
@@ -34,7 +34,7 @@ Install_Apache-2-4() {
   # Clean up
   rm -rf apr-${apr_version}
   rm -rf apr-util-${apr_util_version}
-  rm -rf httpd-${apache_4_version}
+  rm -rf httpd-${apache24_version}
 
   if [ -e "${apache_install_dir}/conf/httpd.conf" ]; then
     echo "${CSUCCESS}Apache installed successfully! ${CEND}"

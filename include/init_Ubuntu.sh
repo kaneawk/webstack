@@ -11,7 +11,7 @@
 # Custom profile
 cat > /etc/profile.d/oneinstack.sh << EOF
 HISTSIZE=10000
-HISTTIMEFORMAT="%F %T \$\(whoami\) "
+HISTTIMEFORMAT="%F %T \$(whoami) "
 
 alias l='ls -AFhlt --color=auto'
 alias lh='l | head'
@@ -94,14 +94,14 @@ ntpdate pool.ntp.org
 
 # iptables
 if [ -e "/etc/iptables.up.rules" ] && [ -n "$(grep '^:INPUT DROP' /etc/iptables.up.rules)" -a -n "$(grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/iptables.up.rules)" -a -n "$(grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/iptables.up.rules)" ]; then
-    IPTABLES_STATUS=yes
+  IPTABLES_STATUS=yes
 else
-    IPTABLES_STATUS=no
+  IPTABLES_STATUS=no
 fi
 
 if [ "${IPTABLES_STATUS}" == "no" ]; then
-    [ -e "/etc/iptables.up.rules" ] && /bin/mv /etc/iptables.up.rules{,_bk}
-    cat > /etc/iptables.up.rules << EOF
+  [ -e "/etc/iptables.up.rules" ] && /bin/mv /etc/iptables.up.rules{,_bk}
+  cat > /etc/iptables.up.rules << EOF
 # Firewall configuration written by system-config-securitylevel
 # Manual customization of this file is not recommended.
 *filter

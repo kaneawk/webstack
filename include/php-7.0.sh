@@ -8,7 +8,7 @@
 #       https://oneinstack.com
 #       https://github.com/lj2007331/oneinstack
 
-Install_PHP-7-0() {
+Install_PHP70() {
   pushd ${oneinstack_dir}/src
 
   tar xzf libiconv-${libiconv_version}.tar.gz
@@ -59,8 +59,8 @@ Install_PHP-7-0() {
 
   id -u ${run_user} >/dev/null 2>&1
   [ $? -ne 0 ] && useradd -M -s /sbin/nologin ${run_user}
-  tar xzf php-${php_7_version}.tar.gz
-  pushd php-${php_7_version}
+  tar xzf php-${php70_version}.tar.gz
+  pushd php-${php70_version}
   ./buildconf
   [ ! -d "${php_install_dir}" ] && mkdir -p ${php_install_dir}
   [ "${PHP_cache}" == '1' ] && PHP_cache_tmp="--enable-opcache" || PHP_cache_tmp="--disable-opcache"
@@ -94,7 +94,7 @@ Install_PHP-7-0() {
     echo "${CSUCCESS}PHP installed successfully! ${CEND}"
   else
     rm -rf ${php_install_dir}
-    rm -rf php-${php_6_version}
+    rm -rf php-${php70_version}
     echo "${CFAILURE}PHP install failed, Please Contact the author! ${CEND}"
     kill -9 $$
   fi
@@ -240,6 +240,6 @@ EOF
     service httpd restart
   fi
   popd
-  rm -rf php-${php_7_version}
+  rm -rf php-${php70_version}
   popd
 }

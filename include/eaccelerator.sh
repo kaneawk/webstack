@@ -22,7 +22,7 @@ Install_eAccelerator() {
       pushd eaccelerator-eaccelerator-42067ac
       ;;
     *)
-      echo "Your php version does not support eAccelerator!"
+      echo "${CWARNING}Your php does not support eAccelerator! ${CEND}"
       kill -9 $$
   esac
   ${php_install_dir}/bin/phpize

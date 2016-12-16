@@ -110,7 +110,7 @@ Upgrade_DB() {
       [ $? -eq 0 ] &&  echo "You have ${CMSG}successfully${CEND} upgrade from ${CMSG}${OLD_DB_version}${CEND} to ${CMSG}${NEW_DB_version}${CEND}"
     elif [ "${DB}" == "Percona" ]; then
       tar zxf ${DB_name}.tar.gz
-      cd ${DB_name}
+      pushd ${DB_name}
       make clean
       if [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" == "5.5" ]; then
         cmake . -DCMAKE_INSTALL_PREFIX=${percona_install_dir} \
@@ -151,7 +151,7 @@ Upgrade_DB() {
       [ ! -d "${percona_install_dir}" ] && mkdir -p ${percona_install_dir}
       mkdir -p ${percona_data_dir};chown mysql.mysql -R ${percona_data_dir}
       make install
-      cd ..
+      popd
       if [ "$(echo ${NEW_DB_version} | awk -F. '{print $1"."$2}')" == "5.7" ]; then
           ${percona_install_dir}/bin/mysqld --initialize-insecure --user=mysql --basedir=${percona_install_dir} --datadir=${percona_data_dir}
       else

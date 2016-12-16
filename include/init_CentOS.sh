@@ -22,7 +22,7 @@ sed -i 's/^SELINUX=.*$/SELINUX=disabled/' /etc/selinux/config
 cat > /etc/profile.d/oneinstack.sh << EOF
 HISTSIZE=10000
 PS1="\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h \[\e[35;40m\]\W\[\e[0m\]]\\\\$ "
-HISTTIMEFORMAT="%F %T \$\(whoami\) "
+HISTTIMEFORMAT="%F %T \$(whoami) "
 
 alias l='ls -AFhlt'
 alias lh='l | head'
@@ -103,15 +103,15 @@ EOF
 sysctl -p
 
 if [ "${CentOS_RHEL_version}" == '5' ]; then
-    sed -i 's@^[3-6]:2345:respawn@#&@g' /etc/inittab
-    sed -i 's@^ca::ctrlaltdel@#&@' /etc/inittab
-    sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
+  sed -i 's@^[3-6]:2345:respawn@#&@g' /etc/inittab
+  sed -i 's@^ca::ctrlaltdel@#&@' /etc/inittab
+  sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
 elif [ "${CentOS_RHEL_version}" == '6' ]; then
-    sed -i 's@^ACTIVE_CONSOLES.*@ACTIVE_CONSOLES=/dev/tty[1-2]@' /etc/sysconfig/init
-    sed -i 's@^start@#start@' /etc/init/control-alt-delete.conf
-    sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
+  sed -i 's@^ACTIVE_CONSOLES.*@ACTIVE_CONSOLES=/dev/tty[1-2]@' /etc/sysconfig/init
+  sed -i 's@^start@#start@' /etc/init/control-alt-delete.conf
+  sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/sysconfig/i18n
 elif [ "${CentOS_RHEL_version}" == '7' ]; then
-    sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/locale.conf
+  sed -i 's@LANG=.*$@LANG="en_US.UTF-8"@g' /etc/locale.conf
 fi
 
 # Update time
@@ -120,14 +120,14 @@ ntpdate pool.ntp.org
 
 # iptables
 if [ -e "/etc/sysconfig/iptables" ] && [ -n "$(grep '^:INPUT DROP' /etc/sysconfig/iptables)" -a -n "$(grep 'NEW -m tcp --dport 22 -j ACCEPT' /etc/sysconfig/iptables)" -a -n "$(grep 'NEW -m tcp --dport 80 -j ACCEPT' /etc/sysconfig/iptables)" ]; then
-    IPTABLES_STATUS=yes
+  IPTABLES_STATUS=yes
 else
-    IPTABLES_STATUS=no
+  IPTABLES_STATUS=no
 fi
 
 if [ "$IPTABLES_STATUS" == "no" ]; then
-    [ -e "/etc/sysconfig/iptables" ] && /bin/mv /etc/sysconfig/iptables{,_bk}
-    cat > /etc/sysconfig/iptables << EOF
+  [ -e "/etc/sysconfig/iptables" ] && /bin/mv /etc/sysconfig/iptables{,_bk}
+  cat > /etc/sysconfig/iptables << EOF
 # Firewall configuration written by system-config-securitylevel
 # Manual customization of this file is not recommended.
 *filter

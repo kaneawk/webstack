@@ -19,7 +19,7 @@ printf "
 #######################################################################
 "
 
-cd src
+pushd src > /dev/null
 . ../options.conf
 . ../include/color.sh
 . ../include/check_os.sh
@@ -62,7 +62,7 @@ Iptables_set() {
     read -p "Please input Shadowsocks port(Default: ${Shadowsocks_Default_port}): " Shadowsocks_port
     [ -z "${Shadowsocks_port}" ] && Shadowsocks_port=${Shadowsocks_Default_port}
     if [ ${Shadowsocks_port} -ge 1 >/dev/null 2>&1 -a ${Shadowsocks_port} -le 65535 >/dev/null 2>&1 ]; then
-      [ -z "$(netstat -an | grep :${Shadowsocks_port})" ] && break || echo "${CWARNING}This port is already used! ${CEND}"
+      [ -z "$(netstat -tpln | grep :${Shadowsocks_port}$)" ] && break || echo "${CWARNING}This port is already used! ${CEND}"
     else
       echo "${CWARNING}input error! Input range: 1~65535${CEND}"
     fi
@@ -102,7 +102,7 @@ Def_parameter() {
     done
     AddUser_shadowsocks
     Iptables_set
-    pkgList="wget unzip openssl-devel gcc swig python python-devel python-setuptools autoconf libtool libevent automake make curl curl-devel zlib-devel perl perl-devel cpio expat-devel gettext-devel git asciidoc xmlto"
+    pkgList="wget unzip openssl-devel gcc swig python python-devel python-setuptools autoconf libtool libevent automake make curl curl-devel zlib-devel perl perl-devel cpio expat-devel gettext-devel git asciidoc xmlto pcre-devel"
     for Package in ${pkgList}; do
       yum -y install ${Package}
     done
@@ -145,10 +145,10 @@ Install_shadowsocks-python() {
 
 Install_shadowsocks-libev() {
   git clone https://github.com/shadowsocks/shadowsocks-libev.git
-  cd shadowsocks-libev
+  pushd shadowsocks-libev
   ./configure
   make -j ${THREAD} && make install
-  cd ..
+  popd
   if [ -f  /usr/local/bin/ss-server ]; then
     /bin/cp ../init.d/Shadowsocks-libev-init /etc/init.d/shadowsocks
     chmod +x /etc/init.d/shadowsocks
