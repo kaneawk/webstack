@@ -40,7 +40,7 @@ if [ -e "/etc/ssh/sshd_config" ]; then
   while :; do echo
     read -p "Please input SSH port(Default: ${ssh_port}): " SSH_PORT
     [ -z "${SSH_PORT}" ] && SSH_PORT=${ssh_port}
-    if [ "${SSH_PORT}" -eq '22' >/dev/null 2>&1 -o "${SSH_PORT}" -gt '1024' >/dev/null 2>&1 -a ${SSH_PORT} -lt '65535' >/dev/null 2>&1 ]; then
+    if [ "${SSH_PORT}" -eq '22' -o "${SSH_PORT}" -gt '1024' -a ${SSH_PORT} -lt '65535' ] 2>/dev/null; then
       break
     else
       echo "${CWARNING}input error! Input range: 22,1025~65534${CEND}"
@@ -182,9 +182,7 @@ while :; do echo
         echo -e "\t${CMSG}10${CEND}. Install AliSQL-5.6"
         read -p "Please input a number:(Default 2 press Enter) " DB_version
         [ -z "${DB_version}" ] && DB_version=2
-        if [[ ! "${DB_version}" =~ ^[0-9]$ ]]; then
-          echo "${CWARNING}input error! Please only input number 1,2,3,4,5,6,7,8,9,10${CEND}"
-        else
+        if [ "${DB_version}" -ge '1' -a "${DB_version}" -le '10' ] 2>/dev/null; then
           while :; do
             read -p "Please input the root password of database: " dbrootpwd
             [ -n "$(echo ${dbrootpwd} | grep '[+|&]')" ] && { echo "${CWARNING}input error,not contain a plus sign (+) and & ${CEND}"; continue; }
@@ -205,8 +203,9 @@ while :; do echo
               fi
             done
           fi
-
           break
+        else
+          echo "${CWARNING}input error! Please only input number 1,2,3,4,5,6,7,8,9,10${CEND}"
         fi
       done
     fi
