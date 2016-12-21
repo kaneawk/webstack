@@ -13,7 +13,7 @@ clear
 printf "
 #######################################################################
 #       OneinStack for CentOS/RadHat 5+ Debian 6+ and Ubuntu 12+      #
-#       upgrade Web,Database,PHP,Redis,phpMyAdmin for OneinStack      #
+#       Upgrade Software versions for OneinStack                      #
 #       For more information please visit https://oneinstack.com      #
 #######################################################################
 "
