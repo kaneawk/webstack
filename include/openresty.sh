@@ -32,7 +32,7 @@ Install_OpenResty() {
   fi
 
   [ ! -d "${openresty_install_dir}" ] && mkdir -p ${openresty_install_dir}
-  ./configure --prefix=${openresty_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-http_mp4_module --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module}
+  ./configure --prefix=${openresty_install_dir} --user=${run_user} --group=${run_user} --with-http_stub_status_module --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_realip_module --with-http_flv_module --with-http_mp4_module --with-openssl=../openssl-${openssl_version} --with-pcre=../pcre-${pcre_version} --with-pcre-jit ${malloc_module} ${nginx_modules_options}
   make -j ${THREAD} && make install
   popd
   # Clean up
